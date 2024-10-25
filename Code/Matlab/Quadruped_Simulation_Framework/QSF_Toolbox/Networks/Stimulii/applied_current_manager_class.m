@@ -2333,6 +2333,394 @@ classdef applied_current_manager_class
         end
         
         
+        %% Applied Current Parameter Packing Functions.
+        
+        % ---------- Inversion Subnetwork Functions ----------
+        
+        % Implement a function to pack the parameters for an absolute inversion subnetwork.
+        function inversion_parameters = pack_absolute_inversion_parameters( self, R2, Gm2 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm2 = self.Gm_DEFAULT; end
+            if nargin < 2, R2 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            inversion_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            inversion_parameters{ 1 } = R2;
+            inversion_parameters{ 2 } = Gm2;            
+            
+        end
+        
+        
+        % Implement a function to pack the parameters for a relative inversion subnetwork.
+        function inversion_parameters = pack_relative_inversion_parameters( self, R2, Gm2 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm2 = self.Gm_DEFAULT; end
+            if nargin < 2, R2 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            inversion_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            inversion_parameters{ 1 } = R2;
+            inversion_parameters{ 2 } = Gm2;            
+            
+        end
+        
+        
+        % ---------- Reduced Inversion Subnetwork Functions ----------
+        
+        % Implement a function to pack the parameters for a reduced absolute inversion subnetwork.
+        function reduced_inversion_parameters = pack_reduced_absolute_inversion_parameters( self, R2, Gm2 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm2 = self.Gm_DEFAULT; end
+            if nargin < 2, R2 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            reduced_inversion_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            reduced_inversion_parameters{ 1 } = R2;
+            reduced_inversion_parameters{ 2 } = Gm2;            
+            
+        end
+        
+        
+        % Implement a function to pack the parameters for a reduced relative inversion subnetwork.
+        function reduced_inversion_parameters = pack_reduced_relative_inversion_parameters( self, R2, Gm2 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm2 = self.Gm_DEFAULT; end
+            if nargin < 2, R2 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            reduced_inversion_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            reduced_inversion_parameters{ 1 } = R2;
+            reduced_inversion_parameters{ 2 } = Gm2;            
+            
+        end
+        
+        
+        % ---------- Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to pack the parameters for an absolute multiplication subnetwork.
+        function multiplication_parameters = pack_absolute_multiplication_parameters( self, R3, Gm3 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm3 = self.Gm_DEFAULT; end
+            if nargin < 2, R3 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            multiplication_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            multiplication_parameters{ 1 } = R3;
+            multiplication_parameters{ 2 } = Gm3;            
+            
+        end
+        
+        
+        % Implement a function to pack the parameters for a relative multiplication subnetwork.
+        function multiplication_parameters = pack_relative_multiplication_parameters( self, R3, Gm3 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm3 = self.Gm_DEFAULT; end
+            if nargin < 2, R3 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            multiplication_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            multiplication_parameters{ 1 } = R3;
+            multiplication_parameters{ 2 } = Gm3;            
+            
+        end
+        
+        
+        % ---------- Reduced Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to pack the parameters for a reduced absolute multiplication subnetwork.
+        function reduced_multiplication_parameters = pack_reduced_absolute_multiplication_parameters( self, R3, Gm3 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm3 = self.Gm_DEFAULT; end
+            if nargin < 2, R3 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            reduced_multiplication_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            reduced_multiplication_parameters{ 1 } = R3;
+            reduced_multiplication_parameters{ 2 } = Gm3;            
+            
+        end
+        
+        
+        % Implement a function to pack the parameters for a reduced relative multiplication subnetwork.
+        function reduced_multiplication_parameters = pack_reduced_relative_multiplication_parameters( self, R3, Gm3 )
+            
+            % Set the default input arguments.
+            if nargin < 3, Gm3 = self.Gm_DEFAULT; end
+            if nargin < 2, R3 = self.R_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            reduced_multiplication_parameters = cell( 1, 2 );
+            
+            % Pack the parameters.
+            reduced_multiplication_parameters{ 1 } = R3;
+            reduced_multiplication_parameters{ 2 } = Gm3;            
+            
+        end
+        
+        
+        %% Applied Current Unpacking Parameter Functions.
+        
+        % ---------- Inversion Subnetwork Functions ----------
+        
+        % Implement a function to unpack absolute inversion subnetwork parameters.
+        function [ R2, Gm2 ] = unpack_absolute_inversion_parameters( self, inversion_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, inversion_parameters = {  }; end                                                      	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( inversion_parameters )                                                                      % If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R2 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm2 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( inversion_parameters ) == 2                                                              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = inversion_parameters{ 1 };                                                                     % [V] Activation Domain.
+                Gm2 = inversion_parameters{ 2 };                                                                    % [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % Implement a function to unpack relative inversion subnetwork parameters.
+        function [ R2, Gm2 ] = unpack_relative_inversion_parameters( self, inversion_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, inversion_parameters = {  }; end                                                      	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( inversion_parameters )                                                                      % If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R2 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm2 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( inversion_parameters ) == 2                                                              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = inversion_parameters{ 1 };                                                                     % [V] Activation Domain.
+                Gm2 = inversion_parameters{ 2 };                                                                    % [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % ---------- Reduced Inversion Subnetwork Functions ----------
+        
+        % Implement a function to unpack reduced absolute inversion subnetwork parameters.
+        function [ R2, Gm2 ] = unpack_reduced_absolute_inversion_parameters( self, reduced_inversion_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, reduced_inversion_parameters = {  }; end                                                      	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( reduced_inversion_parameters )                                                                      % If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R2 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm2 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( reduced_inversion_parameters ) == 2                                                              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = reduced_inversion_parameters{ 1 };                                                                     % [V] Activation Domain.
+                Gm2 = reduced_inversion_parameters{ 2 };                                                                    % [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % Implement a function to unpack reduced relative inversion subnetwork parameters.
+        function [ R2, Gm2 ] = unpack_reduced_relative_inversion_parameters( self, reduced_inversion_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, reduced_inversion_parameters = {  }; end                                              	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( reduced_inversion_parameters )                                                           	% If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R2 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm2 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( reduced_inversion_parameters ) == 2                                                     	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = reduced_inversion_parameters{ 1 };                                                            	% [V] Activation Domain.
+                Gm2 = reduced_inversion_parameters{ 2 };                                                          	% [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % ---------- Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to unpack absolute multiplication subnetwork parameters.
+        function [ R3, Gm3 ] = unpack_absolute_multiplication_parameters( self, multiplication_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, multiplication_parameters = {  }; end                                                 	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( multiplication_parameters )                                                                	% If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R3 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm3 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( multiplication_parameters ) == 2                                                       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = multiplication_parameters{ 1 };                                                              	% [V] Activation Domain.
+                Gm3 = multiplication_parameters{ 2 };                                                             	% [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % Implement a function to unpack relative multiplication subnetwork parameters.
+         function [ R3, Gm3 ] = unpack_relative_multiplication_parameters( self, multiplication_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, multiplication_parameters = {  }; end                                                 	% [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( multiplication_parameters )                                                                	% If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R3 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm3 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( multiplication_parameters ) == 2                                                       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = multiplication_parameters{ 1 };                                                              	% [V] Activation Domain.
+                Gm3 = multiplication_parameters{ 2 };                                                             	% [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+           
+        
+        % ---------- Reduced Multiplication Subnetwork Functions ----------
+
+        % Implement a function to unpack reduced absolute multiplication subnetwork parameters.
+        function [ R3, Gm3 ] = unpack_reduced_absolute_multiplication_parameters( self, reduced_multiplication_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, reduced_multiplication_parameters = {  }; end                                            % [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( reduced_multiplication_parameters )                                                       	% If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R3 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm3 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( reduced_multiplication_parameters ) == 2                                               	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = reduced_multiplication_parameters{ 1 };                                                       	% [V] Activation Domain.
+                Gm3 = reduced_multiplication_parameters{ 2 };                                                   	% [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % Implement a function to unpack reduced relative multiplication subnetwork parameters.
+        function [ R3, Gm3 ] = unpack_reduced_relative_multiplication_parameters( self, reduced_multiplication_parameters )
+            
+            % Set the default input arguments.
+            if nargin < 2, reduced_multiplication_parameters = {  }; end                                            % [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( reduced_multiplication_parameters )                                                       	% If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R3 = self.R_DEFAULT;                                                                                % [V] Activation Domain.                                                                                            % [V] Activation Domain.
+                Gm3 = self.Gm_DEFAULT;                                                                              % [S] Membrane Conductance.                                                                                          % [S] Membrane Conductance.
+                
+            elseif length( reduced_multiplication_parameters ) == 2                                               	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = reduced_multiplication_parameters{ 1 };                                                       	% [V] Activation Domain.
+                Gm3 = reduced_multiplication_parameters{ 2 };                                                   	% [S] Membrane Conductance.
+            
+            else                                                                                                    % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+            
+        
         %% Applied Current Creation Functions.
         
         % Implement a function to create a new applied current.
@@ -3212,7 +3600,7 @@ classdef applied_current_manager_class
         % ---------- Inversion Subnetwork Functions ----------
 
         % Implement a function to design the applied currents for an inversion subnetwork.
-        function [ Ias2, applied_currents, self ] = design_inversion_applied_current( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias2, applied_currents, self ] = design_inversion_applied_current( self, neuron_IDs, inversion_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of neurons.
             n_neurons = self.num_inversion_neurons;
@@ -3222,17 +3610,17 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, inversion_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Retrieve the applied current IDs associated with the provided neuron IDs.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Process the parameters.
-            parameters = self.process_inversion_Ias2_parameters( parameters, encoding_scheme );
+            inversion_parameters = self.process_inversion_Ias2_parameters( inversion_parameters, encoding_scheme );
             
             % Compute the inversion applied current magnitude outputs.
-            [ Ias2, applied_currents, self ] = self.compute_inversion_Ias2( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias2, applied_currents, self ] = self.compute_inversion_Ias2( applied_current_IDs, inversion_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
             
         end
         
@@ -3240,7 +3628,7 @@ classdef applied_current_manager_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
 
         % Implement a function to design the applied currents for a reduced inversion subnetwork.
-        function [ Ias2, applied_currents, self ] = design_reduced_inversion_applied_current( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias2, applied_currents, self ] = design_reduced_inversion_applied_current( self, neuron_IDs, reduced_inversion_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of neurons.
             n_neurons = self.num_reduced_inversion_neurons;
@@ -3250,17 +3638,17 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, reduced_inversion_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Retrieve the applied current IDs associated with the provided neuron IDs.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Process the parameters.
-            parameters = self.process_reduced_inversion_Ias2_parameters( parameters, encoding_scheme );
+            reduced_inversion_parameters = self.process_reduced_inversion_Ias2_parameters( reduced_inversion_parameters, encoding_scheme );
             
             % Compute the inversion applied current magnitude outputs.
-            [ Ias2, applied_currents, self ] = self.compute_reduced_inversion_Ias2( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias2, applied_currents, self ] = self.compute_reduced_inversion_Ias2( applied_current_IDs, reduced_inversion_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
             
         end
         
@@ -3296,7 +3684,7 @@ classdef applied_current_manager_class
         % ---------- Multiplication Subnetwork Functions ----------
         
         % Implement a function to design the applied currents for a multiplication subnetwork.
-        function [ Ias3, applied_currents, self ] = design_multiplication_applied_current( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias3, applied_currents, self ] = design_multiplication_applied_current( self, neuron_IDs, multiplication_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of multiplication neurons.
             n_neurons = self.num_multiplication_neurons_DEFAULT;
@@ -3306,17 +3694,17 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, multiplication_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Retrieve the applied current IDs associated with the provided neuron IDs.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Process the parameters.
-            parameters = self.process_multiplication_Ias3_parameters( parameters, encoding_scheme, applied_currents );
+            multiplication_parameters = self.process_multiplication_Ias3_parameters( multiplication_parameters, encoding_scheme, applied_currents );
             
             % Compute the multiplication applied current magnitude outputs.
-            [ Ias3, applied_currents, self ] = self.compute_multiplication_Ias3( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias3, applied_currents, self ] = self.compute_multiplication_Ias3( applied_current_IDs, multiplication_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
             
         end
         
@@ -3324,7 +3712,7 @@ classdef applied_current_manager_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
 
         % Implement a function to design the applied currents for a reduced multiplication subnetwork.
-        function [ Ias3, applied_currents, self ] = design_reduced_multiplication_applied_current( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias3, applied_currents, self ] = design_reduced_multiplication_applied_current( self, neuron_IDs, reduced_multiplication_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of reduced multiplication neurons.
             n_neurons = self.num_reduced_multiplication_neurons_DEFAULT;
@@ -3334,17 +3722,17 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, reduced_multiplication_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Retrieve the applied current IDs associated with the provided neuron IDs.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Process the parameters.
-            parameters = self.process_reduced_multiplication_Ias3_parameters( parameters, encoding_scheme, applied_currents );
+            reduced_multiplication_parameters = self.process_reduced_multiplication_Ias3_parameters( reduced_multiplication_parameters, encoding_scheme, applied_currents );
             
             % Compute the multiplication applied current magnitude outputs.
-            [ Ias3, applied_currents, self ] = self.compute_reduced_multiplication_Ias3( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias3, applied_currents, self ] = self.compute_reduced_multiplication_Ias3( applied_current_IDs, reduced_multiplication_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
             
         end
         
@@ -3352,7 +3740,7 @@ classdef applied_current_manager_class
         % ---------- Integration Subnetwork Functions ----------
         
         % Implement a function to design the applied currents for an integration subnetwork.
-        function [ Ias, applied_currents, self ] = design_integration_applied_currents( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias, applied_currents, self ] = design_integration_applied_currents( self, neuron_IDs, integration_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of neurons.
             n_neurons = self.num_integration_neurons_DEFAULT;
@@ -3362,23 +3750,23 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, integration_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Process the parameters.
-            parameters = self.process_integration_Ias_parameters( parameters, encoding_scheme, applied_currents );
+            integration_parameters = self.process_integration_Ias_parameters( integration_parameters, encoding_scheme, applied_currents );
             
             % Get the applied current IDs that comprise this integration subnetwork.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Compute the applied current magnitudes associated with this subnetwork.
-            [ Ias, applied_currents, self ] = self.compute_integration_Ias( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias, applied_currents, self ] = self.compute_integration_Ias( applied_current_IDs, integration_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
             
         end
         
         
         % Implement a function to design the applied currents for a voltage based integration subnetwork.
-        function [ Ias, applied_currents, self ] = design_vbi_applied_currents( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias, applied_currents, self ] = design_vbi_applied_currents( self, neuron_IDs, vbi_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of neurons.
             n_neurons = self.num_vbi_neurons_DEFAULT;
@@ -3388,23 +3776,23 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, vbi_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Process the parameters.
-            parameters = self.process_vbi_Ias_parameters( parameters, encoding_scheme, applied_currents );
+            vbi_parameters = self.process_vbi_Ias_parameters( vbi_parameters, encoding_scheme, applied_currents );
             
             % Get the applied current IDs that comprise this voltage based integration subnetwork.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
             
             % Compute the applied current magnitudes associated with this subnetwork.
-            [ Ias, applied_currents, self ] = self.compute_vbi_Ias( applied_current_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
+            [ Ias, applied_currents, self ] = self.compute_vbi_Ias( applied_current_IDs, vbi_parameters, encoding_scheme, applied_currents, set_flag, undetected_option );
            
         end
         
         
         % Implement a function to design the applied currents for a split voltage based integration subnetwork.
-        function [ Ias, applied_currents, self ] = design_svbi_applied_currents( self, neuron_IDs, parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function [ Ias, applied_currents, self ] = design_svbi_applied_currents( self, neuron_IDs, svbi_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
              % Compute the number of neurons.
             n_neurons = self.num_svbi_neurons_DEFAULT;
@@ -3414,12 +3802,12 @@ classdef applied_current_manager_class
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
             if nargin < 5, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 3, parameters = {  }; end
+            if nargin < 3, svbi_parameters = {  }; end
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Process the parameters.
-            parameters_Ias1 = self.process_svbi_Ias1_parameters( parameters{ 1 }, encoding_scheme, applied_currents );
-            parameters_Ias2 = self.process_svbi_Ias2_parameters( parameters{ 2 }, encoding_scheme, applied_currents );
+            parameters_Ias1 = self.process_svbi_Ias1_parameters( svbi_parameters{ 1 }, encoding_scheme, applied_currents );
+            parameters_Ias2 = self.process_svbi_Ias2_parameters( svbi_parameters{ 2 }, encoding_scheme, applied_currents );
 
             % Get the applied current IDs that comprise this split voltage based integration subnetwork.
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
