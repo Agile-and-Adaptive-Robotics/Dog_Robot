@@ -6,13 +6,13 @@
 clear; clc; close('all');
 
 % Add paths needed for loading data and using functions
-addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Optimizer functions and data')
-addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results')
+addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Zheng\Parameter optimization\Optimizer functions and data')
+addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Zheng\Parameter optimization\Results')
 
 % Create folder to save results to and add file path
-folder_title = 'Robot_damping_calcs_Haonan';
-mkdir(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title))
-addpath(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title)) 
+% folder_title = 'Robot_damping_calcs_Haonan';
+% mkdir(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title))
+% addpath(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title)) 
 
 %% Load and format data to be used
 
@@ -21,7 +21,7 @@ sysName = 'MechPropBigRat';
 sysProp = load('-mat', sysName);
 
 % Load the data file for all joint data
-DampData = load('-mat', 'DampDataHaonanK118');
+DampData = load('-mat', 'DampDataHaonanK119');
 
 % Set start time step
 time_step = 0.001;                                                  % [ s ]
@@ -201,8 +201,8 @@ legend('Actual response', 'ODE response')
 %% Save results
 
 % save results - optimized parameters and figure
-save(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title, '\Results_HaonanK118_adjusted.mat'), 'b_sols', 'rt_ode', 'rt_data')
-saveas(fig, strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title, '\Results_HaonanK118_adjusted.fig'))
+% save(strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title, '\Results_HaonanK118_adjusted.mat'), 'b_sols', 'rt_ode', 'rt_data')
+% saveas(fig, strcat('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Results\', folder_title, '\Results_HaonanK118_adjusted.fig'))
 % fprintf('Data saved.\n')
 
 

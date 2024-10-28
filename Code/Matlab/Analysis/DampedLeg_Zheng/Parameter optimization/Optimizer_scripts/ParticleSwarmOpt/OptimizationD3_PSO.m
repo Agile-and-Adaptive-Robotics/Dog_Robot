@@ -7,9 +7,9 @@
 clear; clc; close('all');
 
 % Add paths needed for loading data and using functions
-addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\Optimizer functions and data')
-addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\IC_check')
-addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Krnacik\Haonan\Parameter optimization\dyn_prop_calc')
+addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Zheng\Parameter optimization\Optimizer functions and data')
+addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Zheng\Parameter optimization\IC_check')
+addpath('C:\GitHub\Quadruped_Robot\Code\Matlab\Analysis\DampedLeg_Zheng\Parameter optimization\dyn_prop_calc')
 
 % Create folder to save results to and add file path
 % folder_title = 'PSOD3_results';
@@ -63,7 +63,7 @@ time_step = 0.001;                                                  % [ s ]
 %% Set optimization specifications (IC, BC, options)
 
 % Load results from hand optimized starting conditions
-load('-mat', 'Haonan_random_IC');
+load('-mat', 'HandOPTD3_IC');
 IC_data     = [b_i(1) k_i(1) b_i(2) k_i(2) b_i(3) k_i(3)];
 
 % Set options for the particle swarm optimization
