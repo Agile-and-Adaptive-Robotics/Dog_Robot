@@ -1163,7 +1163,457 @@ classdef network_class
         end
         
         
+        %% Subnetwork Gain Design Functions.
+        
+        % ---------- Transmission Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a transmission subnetwork.
+        function c = compute_transmission_c( self, gain_parameters, encoding_scheme )
+        
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the transmission gain.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is absolute...
+            
+                % Set the gain to be the provided gains.
+                c = gain_parameters;
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is relative...
+                
+                % Compute the gain.
+                c = self.network_utilities.compute_relative_transmission_c(  );
+            
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Addition Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of an addition subnetwork.
+        function cs = compute_addition_cs( self, gain_parameters, encoding_scheme )
+        
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Set the gains to be the provided gains.
+                cs = gain_parameters;
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Retrieve the existing gains.
+                cs_nm2 = gain_parameters{ 1 };
+            
+                % Compute the final gain.
+                c_nm1 = self.network_utilities.compute_relative_addition_c( cs_nm2 );
+                
+                % Concatenate the gains.
+                cs = [ cs_nm2, c_nm1 ];
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+                        
+        end
+        
+        
+        % ---------- Subtraction Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a subtraction subnetwork.
+        function cs = compute_subtraction_cs( self, gain_parameters, encoding_scheme )
+        
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Set the gains to be the provided gains.
+                cs = gain_parameters;
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Retrieve the existing gains.
+                cs_nm2 = gain_parameters{ 1 };
+            
+                % Compute the final gain.
+                c_nm1 = self.network_utilities.compute_relative_subtraction_c( cs_nm2 );
+                
+                % Concatenate the gains.
+                cs = [ cs_nm2, c_nm1 ];
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+                        
+        end
+        
+        
+        % ---------- Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of an inversion subnetwork.
+        function [ c1, c2, c3 ] = compute_inversion_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                c3 = gain_parameters{ 2 };
+                delta = gain_parameters{ 3 };
+                R1 = gain_parameters{ 4 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_absolute_inversion_c2( c1, c3, delta, R1 );
+                                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                c3 = gain_parameters{ 1 };
+                delta = gain_parameters{ 2 };
+                R2 = gain_parameters{ 3 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utilities.compute_relative_inversion_gains( c3, delta, R2 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a reduced inversion subnetwork.
+        function [ c1, c2 ] = compute_reduced_inversion_cs( self, gain_parameters, encoding_scheme )
+               
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                delta = gain_parameters{ 2 };
+                R1 = gain_parameters{ 3 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_reduced_absolute_inversion_c2( c1, delta, R1 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                delta = gain_parameters{ 1 };
+                R2 = gain_parameters{ 2 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utiltiies.compute_reduced_relative_inversion_gains( delta, R2 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a division subnetwork.
+        function [ c1, c2, c3 ] = compute_division_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                c3 = gain_parameters{ 2 };
+                delta = gain_parameters{ 3 };
+                R1 = gain_parameters{ 4 };
+                R2 = gain_parameters{ 5 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_absolute_division_c2( c1, c3, delta, R1, R2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                c3 = gain_parameters{ 1 };
+                delta = gain_parameters{ 2 };
+                R3 = gain_parameters{ 3 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utilities.compute_relative_division_gains( c3, delta, R3 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a reduced division subnetwork.
+        function [ c1, c2 ] = compute_reduced_division_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                delta = gain_parameters{ 2 };
+                R1 = gain_parameters{ 3 };
+                R2 = gain_parameters{ 4 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_reduced_absolute_division_c2( c1, delta, R1, R2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )            	% If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                delta = gain_parameters{ 1 };
+                R3 = gain_parameters{ 2 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utilities.compute_reduced_relative_division_gains( delta, R3 );
+                
+            else                                                    	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a division after inversion subnetwork.
+        function [ c1, c2, c3 ] = compute_dai_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                c3 = gain_parameters{ 2 };
+                delta2 = gain_parameters{ 3 };
+                R1 = gain_parameters{ 4 };
+                R2 = gain_parameters{ 5 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_absolute_dai_c2( c1, c3, delta2, R1, R2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                c3 = gain_parameters{ 1 };
+                delta1 = gain_parameters{ 2 };
+                delta2 = gain_parameters{ 3 };
+                R2 = gain_parameters{ 4 };
+                R3 = gain_parameters{ 5 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utilities.compute_relative_dai_gains( c3, delta1, delta2, R2, R3 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a reduced division after inversion subnetwork.
+        function [ c1, c2 ] = compute_reduced_dai_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                delta2 = gain_parameters{ 2 };
+                R1 = gain_parameters{ 3 };
+                R2 = gain_parameters{ 4 };
+                
+                % Compute the gain c2.
+                c2 = self.network_utilities.compute_reduced_absolute_dai_c2( c1, delta2, R1, R2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                delta1 = gain_parameters{ 1 };
+                delta2 = gain_parameters{ 2 };
+                R2 = gain_parameters{ 3 };
+                R3 = gain_parameters{ 4 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2 ] = self.network_utilities.compute_reduced_relative_dai_gains( delta1, delta2, R2, R3 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a multiplication subnetwork.
+        function [ c1, c2, c3, c4, c5, c6 ] = compute_multiplication_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                c3 = gain_parameters{ 2 };
+                c4 = gain_parameters{ 3 };
+                c6 = gain_parameters{ 4 };
+                delta1 = gain_parameters{ 5 };
+                delta2 = gain_parameters{ 6 };
+                R1 = gain_parameters{ 7 };
+                R2 = gain_parameters{ 8 };
+                R3 = gain_parameters{ 9 };
+                
+                % Compute the gains.
+                [ c2, c5 ] = self.network_utilities.compute_absolute_multiplication_gains( c1, c3, c4, c6, delta1, delta2, R1, R2, R3 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                c3 = gain_parameters{ 1 };
+                c6 = gain_parameters{ 2 };
+                delta1 = gain_parameters{ 3 };
+                delta2 = gain_parameters{ 4 };
+                R3 = gain_parameters{ 5 };
+                R4 = gain_parameters{ 6 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2, c4, c5 ] = self.network_utilities.compute_relative_multiplication_gains( c3, c6, delta1, delta2, R3, R4 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to compute the gain of a reduced multiplication subnetwork.
+        function [ c1, c2, c3, c4 ] = compute_reduced_multiplication_cs( self, gain_parameters, encoding_scheme )
+           
+            % Set the default input arguments.
+            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to compute the gain.
+            if strcmpi( encoding_scheme, 'absolute' )                   % If the encoding scheme is 'absolute'...
+                
+                % Unpack the gain parameters.
+                c1 = gain_parameters{ 1 };
+                c3 = gain_parameters{ 2 };
+                delta1 = gain_parameters{ 3 };
+                delta2 = gain_parameters{ 4 };
+                R1 = gain_parameters{ 5 };
+                R2 = gain_parameters{ 6 };
+                R3 = gain_parameters{ 7 };
+                
+                % Compute the gains c2 & c4.
+                [ c2, c4 ] = self.network_utilities.compute_reduced_absolute_multiplication_gains( c1, c3, delta1, delta2, R1, R2, R3 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )               % If the encoding scheme is 'relative'...
+                
+                % Unpack the gain parameters.
+                delta1 = gain_parameters{ 1 };
+                delta2 = gain_parameters{ 2 };
+                R3 = gain_parameters{ 3 };
+                R4 = gain_parameters{ 4 };
+                
+                % Compute the gains c1 & c2.
+                [ c1, c2, c3, c4 ] = self.network_utilities.compute_reduced_relative_mulitplication_gains( delta1, delta2, R3, R4 );
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
+        
         %% Subnetwork Applied Current Design Functions.
+        
+        % ---------- Transmission Subnetwork Functions ----------
+
         
         % ---------- Addition Subnetwork Functions ----------
 
@@ -3310,6 +3760,38 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for an absolute transmission subnetwork.
+        function design_parameters = pack_absolute_transmission_synapse_design_parameters( self, R2, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R2;
+            design_parameters{ 2 } = Ia2;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative transmission subnetwork.
+        function design_parameters = pack_relative_transmission_synapse_design_parameters( self, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia2;
+            
+        end
+        
+        
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for an absolute addition subnetwork.
@@ -3354,6 +3836,38 @@ classdef network_class
             addition_parameters{ 2 } = Rs;
             addition_parameters{ 3 } = Gms;
             addition_parameters{ 4 } = Cms;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for an absolute addition subnetwork.
+        function design_parameters = pack_absolute_addition_synapse_design_parameters( self, Ia_n, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia_n;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative addition subnetwork.
+        function design_parameters = pack_relative_addition_synapse_design_parameters( self, c_n, Ia_n, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, c_n = self.c_relative_addition_DEFAULT; end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = c_n;
+            design_parameters{ 2 } = Ia_n;
             
         end
         
@@ -3406,6 +3920,38 @@ classdef network_class
             subtraction_parameters{ 3 } = Rs;
             subtraction_parameters{ 4 } = Gms;
             subtraction_parameters{ 5 } = Cms;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for an absolute subtraction subnetwork.
+        function design_parameters = pack_absolute_subtraction_synapse_design_parameters( self, Ia_n, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia_n;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative subtraction subnetwork.
+        function design_parameters = pack_relative_subtraction_synapse_design_parameters( self, c_n, Ia_n, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, c_n = self.c_relative_subtraction_DEFAULT; end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = c_n;
+            design_parameters{ 2 } = Ia_n;
             
         end
         
@@ -3474,6 +4020,59 @@ classdef network_class
         end
 
         
+        % Implement a function to pack the synapse design parameters for an absolute inversion subnetwork.
+        function design_parameters = pack_absolute_inversion_synapse_design_parameters( self, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia2;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative inversion subnetwork.
+        function design_parameters = pack_relative_inversion_synapse_design_parameters( self, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia2;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for an absolute inversion subnetwork.
+        function design_parameters = pack_absolute_inversion_app_current_design_parameters( self, R2, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R2;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a relative inversion subnetwork.
+        function design_parameters = pack_relative_inversion_app_current_design_parameters( ~ )
+            
+            % Pack the design parameters.
+            design_parameters = {  };
+            
+        end
+        
+        
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for a reduced absolute inversion subnetwork.
@@ -3530,6 +4129,59 @@ classdef network_class
             reduced_inversion_parameters{ 5 } = Gm2;
             reduced_inversion_parameters{ 6 } = Cm1;
             reduced_inversion_parameters{ 7 } = Cm2;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced absolute inversion subnetwork.
+        function design_parameters = pack_reduced_absolute_inversion_synapse_design_parameters( self, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia2;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced relative inversion subnetwork.
+        function design_parameters = pack_reduced_relative_inversion_synapse_design_parameters( self, Ia2, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia2;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced absolute inversion subnetwork.
+        function design_parameters = pack_reduced_absolute_inversion_app_current_design_parameters( self, R2, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R2;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced relative inversion subnetwork.
+        function design_parameters = pack_reduced_relative_inversion_app_current_design_parameters( ~ )
+            
+            % Pack the design parameters.
+            design_parameters = {  };
             
         end
         
@@ -3610,6 +4262,38 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for an absolute division subnetwork.
+        function design_parameters = pack_absolute_division_synapse_design_parameters( self, R3, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            design_parameters{ 2 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative division subnetwork.
+        function design_parameters = pack_relative_division_synapse_design_parameters( self, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia3;
+            
+        end
+        
+        
         % ---------- Reduced Division Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for a reduced absolute division subnetwork.
@@ -3678,6 +4362,38 @@ classdef network_class
             reduced_division_parameters{ 8 } = Cm1;
             reduced_division_parameters{ 9 } = Cm2;
             reduced_division_parameters{ 10 } = Cm3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced absolute division subnetwork.
+        function design_parameters = pack_reduced_absolute_division_synapse_design_parameters( self, R3, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            design_parameters{ 2 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced relative division subnetwork.
+        function design_parameters = pack_reduced_relative_division_synapse_design_parameters( self, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia3;
             
         end
         
@@ -3762,6 +4478,27 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for an absolute division after inversion subnetwork.
+        function design_parameters = pack_absolute_dai_synapse_design_parameters( ~ )
+            
+            % Set the design parameters.
+            design_parameters = {  };
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative division after inversion subnetwork.
+        function design_parameters = pack_relative_dai_synapse_design_parameters( self, c1 )
+            
+            % Set the default input arguments.
+            if nargin < 2, c1 = self.c_relative_dai_DEFAULT; end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = c1;
+            
+        end
+        
+        
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for a reduced absolute division after inversion subnetwork.
@@ -3834,6 +4571,29 @@ classdef network_class
             reduced_dai_parameters{ 9 } = Cm1;
             reduced_dai_parameters{ 10 } = Cm2;
             reduced_dai_parameters{ 11 } = Cm3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced absolute division after inversion subnetwork.
+        function design_parameters = pack_reduced_absolute_dai_synapse_design_parameters( self, R3, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Set the design parameters.
+            design_parameters{ 1 } = R3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced relative division after inversion subnetwork.
+        function design_parameters = pack_reduced_relative_dai_synapse_design_parameters( ~ )
+            
+            % Set the design parameters.
+            design_parameters = {  };
             
         end
         
@@ -3934,6 +4694,64 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for an absolute multiplication subnetwork.
+        function design_parameters = pack_absolute_multiplication_synapse_design_parameters( self, R3, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            design_parameters{ 2 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a relative multiplication subnetwork.
+        function design_parameters = pack_relative_multiplication_synapse_design_parameters( self, c4, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, applied_current_manager = self.applied_current_manager; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, c4 = self.c1_relative_dai_DEFAULT; end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = c4;
+            design_parameters{ 2 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for an absolute multiplication subnetwork.
+        function design_parameters = pack_absolute_multiplication_app_current_design_parameters( self, R3, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a relative multiplication subnetwork.
+        function design_parameters = pack_relative_multiplication_app_current_design_parameters( ~ )
+           
+            % Pack the design parameters.
+            design_parameters = {  };
+            
+        end
+        
+        
+        
         % ---------- Reduced Multiplication Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for a reduced absolute multiplication subnetwork.
@@ -4021,6 +4839,59 @@ classdef network_class
             
         end
         
+        
+        % Implement a function to pack the synapse design parameters for a reduced absolute multiplication subnetwork.
+        function design_parameters = pack_reduced_absolute_multiplication_synapse_design_parameters( self, R3, R4, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 6, applied_current_manager = self.applied_current_manager; end
+            if nargin < 5, neuron_manager = self.neuron_manager; end
+            if nargin < 4, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 3, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            design_parameters{ 2 } = R4;
+            design_parameters{ 3 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced relative multiplication subnetwork.
+        function design_parameters = pack_reduced_relative_multiplication_synapse_design_parameters( self, Ia3, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced absolute multiplication subnetwork.
+        function design_parameters = pack_reduced_absolute_multiplication_app_current_design_parameters( self, R3, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            
+            % Pack the design parameters.
+            design_parameters{ 1 } = R3;
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced relative multiplication subnetwork.
+
+                
+                
         
         %% Parameter Unpacking Functions.
         
@@ -6137,12 +7008,11 @@ classdef network_class
         % ---------- Transmission Subnetwork Functions ----------
         
         % Implement a function to design a transmission subnetwork using existing neurons.
-        function [ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
-            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
-            if nargin < 7, applied_current_manager = self.synapse_manager; end                                          % [class] Applied Current Manager Class.
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
+            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                                          % [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -6153,14 +7023,37 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the subnetwork gains.
+            c = self.compute_transmission_c( gain_parameters, encoding_scheme );
+            
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.transmission_parameters2neuron_parameters( transmission_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            neuron_parameters = network.transmission_parameters2neuron_parameters( transmission_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the subnetwork neurons.
             [ Gnas, R2, neurons, neuron_manager, network ] = network.design_transmission_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                design_parameters{ 1 } = R2;
+                design_parameters{ 2 } = Ia2;
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.
+                design_parameters{ 1 } = Ia2;
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+            
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.transmission_parameters2synapse_parameters( transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            synapse_parameters = network.transmission_parameters2synapse_parameters( transmission_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the subnetwork subnetwork synapses.
             [ dEs21, gs21, ~, synapses, synapse_manager, network ] = network.design_transmission_synapse( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -6174,12 +7067,11 @@ classdef network_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to design an addition subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, Rn, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_addition_subnetwork( self, neuron_IDs, addition_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ Gnas, Rn, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_addition_subnetwork( self, neuron_IDs, addition_parameters, encoding_scheme, neuron_manager, synapse_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                           	% [str] Undetected Option.
-            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                               	% [T/F] Set Flag.
-            if nargin < 7, applied_current_manager = self.applied_current_manager; end                          % [class] Applied Current Manager Class.
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                           	% [str] Undetected Option.
+            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                               	% [T/F] Set Flag.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                         	% [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                          	% [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                               	% [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -6190,14 +7082,20 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the addition subnetwork gains.
+            cs = self.network_utilities.compute_addition_cs( gain_parameters, encoding_scheme );
+            
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.addition_parameters2neuron_parameters( addition_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            neuron_parameters = network.addition_parameters2neuron_parameters( addition_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the addition subnetwork neurons.
             [ Gnas, Rn, neurons, neuron_manager, network ] = network.design_addition_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
+            % Pack the design parameters.
+            % design_parameters = 
+            
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.addition_parameters2synapse_parameters( addition_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            synapse_parameters = network.addition_parameters2synapse_parameters( addition_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the addition subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_addition_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -6214,9 +7112,8 @@ classdef network_class
         function [ Gnas, Rn, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_subtraction_subnetwork( self, neuron_IDs, subtraction_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
-            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
-            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
+            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                                          % [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -6226,17 +7123,23 @@ classdef network_class
             
             % Create an instance of the network object.
             network = self;
+            
+            % Compute the gains.
+            cs = self.network_utilities.compute_subtraction_cs( gain_parameters, encoding_scheme );
            
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.subtraction_parameters2neuron_parameters( subtraction_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            neuron_parameters = network.subtraction_parameters2neuron_parameters( subtraction_parameters, encoding_scheme, neuron_manager, undetected_option );
             
-            % Design the subtraction subnetwork neurons.                        
+            % Design the subtraction subnetwork neurons.                                    
             [ Gnas, Rn, neurons, neuron_manager, network ] = network.design_subtraction_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.subtraction_parameters2synapse_parameters( subtraction_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            % Pack the design parameters.
+            % design_parameters = 
             
-            % Design the subtraction subnetwork synapses.                        
+            % Convert subnetwork parameters to synapse parameters.            
+            synapse_parameters = network.subtraction_parameters2synapse_parameters( subtraction_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the subtraction subnetwork synapses.                                    
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_subtraction_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.
@@ -6298,22 +7201,31 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the subnetwork gains.
+            [ c1, c2, c3 ] = self.network_utilities.compute_inversion_cs( gain_parameters, encoding_scheme );
+            
             % Convert subnetwork parameters to neuron parameters.
             neuron_parameters = network.inversion_parameters2neuron_parameters( inversion_parameters, encoding_scheme, neuron_manager, undetected_option );
-                        
-            % Design the inversion subnetwork neurons.                        
+            
+            % Design the inversion subnetwork neurons.            
             [ Gnas, R2, neurons, neuron_manager, network ] = network.design_inversion_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to applied current parameters.
-            applied_current_parameters = network.inversion_parameters2applied_current_parameters( inversion_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            % Pack the design parameters.
+            % design_parameters = 
             
-            % Design the inversion subnetwork applied current.
+            % Convert subnetwork parameters to applied current parameters.            
+            applied_current_parameters = network.inversion_parameters2applied_current_parameters( inversion_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            
+            % Design the inversion subnetwork applied current.            
             [ Ias2, applied_currents, applied_current_manager, network ] = network.design_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
             
+            % Pack the design parameters.
+            % design_parameters = 
+            
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.inversion_parameters2synapse_parameters( inversion_parameters, Ias2, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
-                        
-            % Design the inversion subnetwork synapse.                        
+            synapse_parameters = network.inversion_parameters2synapse_parameters( inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the inversion subnetwork synapse.                                    
             [ dEs21, gs21, ~, synapses, synapse_manager, network ] = network.design_inversion_synapse( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.
@@ -6341,22 +7253,31 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
-            % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_inversion_parameters2neuron_parameters( reduced_inversion_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            % Compute the subnetwork gains.
+            [ c1, c2 ] = self.network_utilities.compute_reduced_inversion_cs( gain_parameters, encoding_scheme );
             
-            % Design the inversion subnetwork neurons.                        
+            % Convert subnetwork parameters to neuron parameters.            
+            neuron_parameters = network.reduced_inversion_parameters2neuron_parameters( reduced_inversion_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
+            % Design the inversion subnetwork neurons.                                    
             [ Gnas, R2, neurons, neuron_manager, network ] = network.design_reduced_inversion_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to applied current parameters.
-            applied_current_parameters = network.reduced_inversion_parameters2applied_current_parameters( reduced_inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            % Pack the design parameters.
+            % design_parameters = 
             
-            % Design the inversion subnetwork applied current.
+            % Convert subnetwork parameters to applied current parameters.            
+            applied_current_parameters = network.reduced_inversion_parameters2applied_current_parameters( reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            
+            % Design the inversion subnetwork applied current.            
             [ Ias2, applied_currents, applied_current_manager, network ] = network.design_reduced_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_inversion_parameters2synapse_parameters( reduced_inversion_parameters, Ias2, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
-                        
-            % Design the inversion subnetwork synapse.                        
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to synapse parameters.                        
+            synapse_parameters = network.reduced_inversion_parameters2synapse_parameters( reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the inversion subnetwork synapse.                                    
             [ dEs21, gs21, ~, synapses, synapse_manager, network ] = network.design_reduced_inversion_synapse( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.
@@ -6368,12 +7289,11 @@ classdef network_class
         % ---------- Division Subnetwork Functions ----------
         
         % Implement a function to design a division subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R3, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_division_subnetwork( self, neuron_IDs, division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ Gnas, R3, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_division_subnetwork( self, neuron_IDs, division_parameters, encoding_scheme, neuron_manager, synapse_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
-            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
-            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
+            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                                          % [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -6384,14 +7304,20 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the subnetwork gains.
+            [ c1, c2, c3 ] = self.network_utilities.compute_division_cs( gain_parameters, encoding_scheme );
+            
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.division_parameters2neuron_parameters( division_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            neuron_parameters = network.division_parameters2neuron_parameters( division_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_division_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.division_parameters2synapse_parameters( division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to synapse parameters.  
+            synapse_parameters = network.division_parameters2synapse_parameters( division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_division_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -6408,9 +7334,8 @@ classdef network_class
         function [ Gnas, R3, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_reduced_division_subnetwork( self, neuron_IDs, reduced_division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
-            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                                     	% [T/F] Set Flag.
-            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
+            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                                     	% [T/F] Set Flag.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                                          % [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -6421,16 +7346,25 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the subnetwork gains.
+            [ c1, c2 ] = self.network_utilities.compute_reduced_division_cs( gain_parameters, encoding_scheme );
+            
+            % Pack the design requirements.
+            % design_requirements = 
+            
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_division_parameters2neuron_parameters( reduced_division_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
-
-            % Design the division subnetwork neurons.                        
+            neuron_parameters = network.reduced_division_parameters2neuron_parameters( reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
+            % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_reduced_division_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_division_parameters2synapse_parameters( reduced_division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            % Pack the design requirements.
+            % design_requirements = 
             
-            % Design the division subnetwork synapses.                        
+            % Convert subnetwork parameters to synapse parameters.
+            synapse_parameters = network.reduced_division_parameters2synapse_parameters( reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_division_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.
@@ -6457,18 +7391,27 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
-            % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.dai_parameters2neuron_parameters( dai_parameters, encoding_scheme, neuron_manager, undetected_option );
+            % Compute the subnetwork gains.
+            [ c1, c2, c3 ] = self.compute_dai_cs( gain_parameters, encoding_scheme );
             
-            % Design the division subnetwork neurons.            
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to neuron parameters.
+            neuron_parameters = network.dai_parameters2neuron_parameters( dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
+            % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_dai_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
+            % Pack the design parameters.
+            % design_parameters = 
+            
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.dai_parameters2synapse_parameters( dai_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.dai_parameters2synapse_parameters( dai_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_dai_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
-                        
+            
             % Determine whether to update the network object.
             if set_flag, self = network; end
             
@@ -6493,18 +7436,27 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            % Compute the subnetwork gains.
+            [ c1, c2 ] = self.network_utilities.compute_reduced_dai_cs( gain_parameters, encoding_scheme );
+            
+            % Pack the design parameters.
+            % design_parameters = 
+
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_dai_parameters2neuron_parameters( reduced_dai_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.reduced_dai_parameters2neuron_parameters( reduced_dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
-            % Design the division subnetwork neurons.            
+            % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_reduced_dai_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
-                        
-            % Convert the subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_dai_parameters2synapse_parameters( reduced_dai_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
-            % Design the division subnetwork synapses.
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert the subnetwork parameters to synapse parameters.
+            synapse_parameters = network.reduced_dai_parameters2synapse_parameters( reduced_dai_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the division subnetwork synapses.                                 
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_dai_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
-                                    
+            
             % Determine whether to update the network object.
             if set_flag, self = network; end
             
@@ -6530,22 +7482,34 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
-            % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.multiplication_parameters2neuron_parameters( multiplication_parameters, encoding_scheme, neuron_manager, undetected_option );
+            % Compute the subnetwork gains.
+            [ c1, c2, c3, c4, c5, c6 ] = self.network_utilities.compute_multiplication_cs( gain_parameters, encoding_scheme );
             
-            % Design the multiplication subnetwork neurons.                        
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to neuron parameters.            
+            neuron_parameters = network.multiplication_parameters2neuron_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
+            % Design the multiplication subnetwork neurons.                                    
             [ Gnas, Rs, neurons, neuron_manager, network ] = network.design_multiplication_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
-            % Convert subnetwork parameters to applied current parameters.
-            applied_current_parameters = network.multiplication_parameters2applied_current_parameters( multiplication_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
-
-            % Design the multiplication subnetwork applied currents.
-            [ Ias3, applied_currents, applied_current_manager, network ] = network.design_multiplication_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
-                        
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.multiplication_parameters2synapse_parameters( multiplication_parameters, Ias3, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            % Pack the design parameters.
+            % design_parameters = 
             
-            % Design the multiplication subnetwork synapses.
+            % Convert subnetwork parameters to applied current parameters.
+            applied_current_parameters = network.multiplication_parameters2applied_current_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            
+            % Design the multiplication subnetwork applied currents.                                    
+            [ Ias3, applied_currents, applied_current_manager, network ] = network.design_multiplication_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
+            
+            % Pack design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to synapse parameters.            
+            synapse_parameters = network.multiplication_parameters2synapse_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the multiplication subnetwork synapses.            
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_multiplication_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.
@@ -6573,22 +7537,34 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
-            % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_multiplication_parameters2neuron_parameters( reduced_multiplication_parameters, encoding_scheme, neuron_manager, undetected_option );
+            % Compute the subnetwork gains.
+            [ c1, c2, c3, c4 ] = self.network_utilities.compute_reduced_multiplication_cs( gain_parameters, encoding_scheme );
             
-            % Design the multiplication subnetwork neurons.                        
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to neuron parameters.            
+            neuron_parameters = network.reduced_multiplication_parameters2neuron_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
+            % Design the multiplication subnetwork neurons.                                                
             [ Gnas, Rs, neurons, neuron_manager, network ] = network.design_reduced_multiplication_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
-                        
-            % Convert subnetwork parameters to applied current parameters.
-            applied_current_parameters = network.reduced_multiplication_parameters2applied_current_parameters( reduced_multiplication_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
             
-            % Design the multiplication subnetwork applied currents.
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to applied current parameters.            
+            applied_current_parameters = network.reduced_multiplication_parameters2applied_current_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            
+            % Design the multiplication subnetwork applied currents.                                    
             [ Ias3, applied_currents, applied_current_manager, network ] = network.design_reduced_multiplication_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
-                                    
-            % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_multiplication_parameters2synapse_parameters( reduced_multiplication_parameters, Ias3, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
             
-            % Design the multiplication subnetwork synapses.
+            % Pack the design parameters.
+            % design_parameters = 
+            
+            % Convert subnetwork parameters to synapse parameters.            
+            synapse_parameters = network.reduced_multiplication_parameters2synapse_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            
+            % Design the multiplication subnetwork synapses.            
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_multiplication_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
             
             % Determine whether to update the network object.

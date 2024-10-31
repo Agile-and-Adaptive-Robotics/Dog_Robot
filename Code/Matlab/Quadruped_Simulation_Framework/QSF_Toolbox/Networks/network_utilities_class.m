@@ -77,7 +77,7 @@ classdef network_utilities_class
                 
             % Compute the synaptic conductance associated with this neuron. % CPG SUBNETWORK SEEMS TO REQUIRE SATURATION... % MULTIPLICATION SUBNETWORK SEEMS TO REQUIRE NO SATURATION...
             Gs = gs.*( min( max( U'./R, 0 ), 1 ) );                      	% [S] Synaptic Conductance. % SATURATION (APPEARS TO BE REQUIRED BY CPG SUBNETWORK).
-%             Gs = gs.*( U'./R );                                          	% [S] Synaptic Conductance. % NO SATURATION (APPEARS TO BE REQUIRED BY MULTIPLICATION SUBNETWORK).
+            % Gs = gs.*( U'./R );                                          	% [S] Synaptic Conductance. % NO SATURATION (APPEARS TO BE REQUIRED BY MULTIPLICATION SUBNETWORK).
             
         end
         
@@ -378,13 +378,13 @@ classdef network_utilities_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to compute the gain of a relative addition subnetwork.
-        function c = compute_relative_addition_c( self, n_neurons )
+        function c_nm1 = compute_relative_addition_c( self, cs_nm2 )
            
             % Set the default input arguments.
-            if nargin < 2, n_neurons = self.n_relative_addition_neurons_DEFAULT; end
+            if nargin < 2, cs_nm2 = self.c_relative_addition_DEFAULT; end
             
             % Compute the gain.
-            c = 1/n_neurons;            % [-] Subnetwork Gain.
+            c_nm1 = 1 - sum( cs_nm2 );            % [-] Subnetwork Gain.
             
         end
         
@@ -392,13 +392,13 @@ classdef network_utilities_class
         % ---------- Subtraction Subnetwork Functions ----------
         
         % Implement a function to compute the gain of a relative subtraction subnetwork.
-        function c = compute_relative_subtraction_c( self, n_neurons )
+        function c_nm1 = compute_relative_subtraction_c( self, cs_nm2 )
             
             % Set the default input arguments.
-            if nargin < 2, n_neurons = self.n_relative_subtraction_neurons_DEFAULT; end
+            if nargin < 2, cs_nm2 = self.c_relative_subtraction_DEFAULT; end
             
             % Compute the gain.
-            c = 1/n_neurons;                                % [-] Subnetwork Gain.
+            c_nm1 = 1 - sum( cs_nm2 );            % [-] Subnetwork Gain.
             
         end
         
@@ -793,8 +793,8 @@ classdef network_utilities_class
         end
             
         
-        % Implement a function to compute the gain c4 of an absolute multiplication subnetwork.
-        function c4 = compute_absolute_multiplication_c4( self, c4, c6, delta2, R1, R3 )
+        % Implement a function to compute the gain c5 of an absolute multiplication subnetwork.
+        function c5 = compute_absolute_multiplication_c5( self, c4, c6, delta2, R1, R3 )
             
             % Set the default input arguments.
             if nargin < 6, R3 = self.R_DEFAULT; end
@@ -804,13 +804,13 @@ classdef network_utilities_class
             if nargin < 2, c4 = self.c1_absolute_dai_DEFAULT; end
             
             % Compute the gain.
-            c4 = self.compute_absolute_dai_c2( c4, c6, delta2, R1, R3 );
+            c5 = self.compute_absolute_dai_c2( c4, c6, delta2, R1, R3 );
             
         end
         
         
         % Implement a function to compute the gains of an absolute multiplication subnetwork.
-        function [ c2, c4 ] = compute_absolute_multiplication_gains( self, c1, c3, c4, c6, delta1, delta2, R1, R2, R3 )
+        function [ c2, c5 ] = compute_absolute_multiplication_gains( self, c1, c3, c4, c6, delta1, delta2, R1, R2, R3 )
         
             % Set the default input arguments.
             if nargin < 10, R3 = self.R_DEFAULT; end
@@ -827,7 +827,7 @@ classdef network_utilities_class
             c2 = self.compute_absolute_multiplication_c2( c1, c3, delta1, R2 );
             
             % Compute the gain c4.
-            c4 = self.compute_absolute_multiplication_c4( c4, c6, delta2, R1, R3 );
+            c5 = self.compute_absolute_multiplication_c5( c4, c6, delta2, R1, R3 );
             
         end
         
