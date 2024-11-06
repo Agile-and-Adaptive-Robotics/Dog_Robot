@@ -370,7 +370,7 @@ classdef network_utilities_class
         function c = compute_relative_transmission_c( ~ )
         
             % Compute the gain.
-            c = 1;                      % [-] Subnetwork Gain.
+            c = 1.0;                      % [-] Subnetwork Gain.
             
         end
         

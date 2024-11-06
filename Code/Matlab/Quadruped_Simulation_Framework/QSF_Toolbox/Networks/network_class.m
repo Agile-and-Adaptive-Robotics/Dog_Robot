@@ -1178,7 +1178,7 @@ classdef network_class
             if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is absolute...
             
                 % Set the gain to be the provided gains.
-                c = gain_parameters;
+                c = gain_parameters{ 1 };
                 
             elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is relative...
                 
@@ -3792,6 +3792,43 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for a transmission subnetwork.
+        function design_parameters = pack_transmission_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R2 = varargin{ 1 };
+                Ia2 = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_transmission_synapse_design_parameters( R2, Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                Ia2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_transmission_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for an absolute addition subnetwork.
@@ -3868,6 +3905,43 @@ classdef network_class
             % Pack the design parameters.
             design_parameters{ 1 } = c_n;
             design_parameters{ 2 } = Ia_n;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for an addition subnetwork.
+        function design_parameters = pack_addition_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                Ia_n = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_addition_synapse_design_parameters( Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                c_n = varargin{ 1 };
+                Ia_n = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_addition_synapse_design_parameters( c_n, Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -3952,6 +4026,43 @@ classdef network_class
             % Pack the design parameters.
             design_parameters{ 1 } = c_n;
             design_parameters{ 2 } = Ia_n;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a subtraction subnetwork.
+        function design_parameters = pack_subtraction_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                Ia_n = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_subtraction_synapse_design_parameters( Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                c_n = varargin{ 1 };
+                Ia_n = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_subtraction_synapse_design_parameters( c_n, Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -4050,6 +4161,42 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for an inversion subnetwork.
+        function design_parameters = pack_inversion_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                Ia2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                Ia2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % Implement a function to pack the applied current design parameters for an absolute inversion subnetwork.
         function design_parameters = pack_absolute_inversion_app_current_design_parameters( self, R2, neuron_manager, undetected_option )
             
@@ -4069,6 +4216,38 @@ classdef network_class
             
             % Pack the design parameters.
             design_parameters = {  };
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for an inversion subnetwork.
+        function design_parameters = pack_inversion_app_current_design_parameters( self, encoding_scheme, neuron_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_inversion_app_current_design_parameters( R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_inversion_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -4163,6 +4342,42 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for a reduced inversion subnetwork.
+        function design_parameters = pack_reduced_inversion_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                Ia2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                      
+                % Retrieve the variable arguments.
+                Ia2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % Implement a function to pack the applied current design parameters for a reduced absolute inversion subnetwork.
         function design_parameters = pack_reduced_absolute_inversion_app_current_design_parameters( self, R2, neuron_manager, undetected_option )
             
@@ -4182,6 +4397,38 @@ classdef network_class
             
             % Pack the design parameters.
             design_parameters = {  };
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced inversion subnetwork.
+        function design_parameters = pack_reduced_inversion_app_current_design_parameters( self, encoding_scheme, neuron_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_inversion_app_current_design_parameters( R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_inversion_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -4294,6 +4541,43 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for a division subnetwork.
+        function design_parameters = pack_division_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, undetected_option, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+                Ia3 = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_division_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                      
+                % Retrieve the variable arguments.
+                Ia3 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_relative_division_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % ---------- Reduced Division Subnetwork Functions ----------
         
         % Implement a function to pack the parameters for a reduced absolute division subnetwork.
@@ -4366,6 +4650,60 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for a reduced absolute division subnetwork.
+        function design_parameters = pack_reduced_absolute_division_neuron_design_parameters( self, c2 )
+        
+            % Set the default input arguments.
+            if nargin < 2, c2 = self.c2_reduced_absolute_division_DEFAULT; end
+            
+            % Preallocate a cell to store the parameters.
+            design_parameters = cell( 1, 1 );
+            
+            % Pack the parameters.
+            design_parameters{ 1 } = c2;
+            
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced relative division subnetwork.
+        function design_parameters = pack_reduced_relative_division_neuron_design_parameters( ~ )
+            
+            % Set the design parameters to be empty.
+            design_parameters = [  ];
+            
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced division subnetwork.
+        function design_parameters = pack_reduced_division_neuron_design_parameters( self, encoding_scheme, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                c2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_division_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.
+               design_parameters = self.pack_reduced_relative_division_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for a reduced absolute division subnetwork.
         function design_parameters = pack_reduced_absolute_division_synapse_design_parameters( self, R3, Ia3, neuron_manager, applied_current_manager, undetected_option )
             
@@ -4394,6 +4732,42 @@ classdef network_class
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia3;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced division subnetwork.
+        function design_parameters = pack_reduced_division_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+                Ia3 = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_division_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                Ia3 = varargin{ 1 };
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_division_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -4478,6 +4852,60 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for an absolute division after inversion subnetwork.
+        function design_parameters = pack_absolute_dai_neuron_design_parameters( self, c2 )
+            
+           % Set the default input arguments.
+            if nargin < 2, c2 = self.c2_absolute_dai_DEFAULT; end
+            
+            % Preallocate a cell to store the parameters.
+            design_parameters = cell( 1, 1 );
+            
+            % Pack the parameters.
+            design_parameters{ 1 } = c2;
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a relative division after inversion subnetwork.
+        function design_parameters = pack_relative_dai_neuron_design_parameters( ~ )
+            
+            % Set the parameters to be empty.
+            design_parameters = [  ];
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a division after inversion subnetwork.
+        function design_parameters = pack_dai_neuron_design_parameters( self, encoding_scheme, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                c2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_dai_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_relative_dai_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for an absolute division after inversion subnetwork.
         function design_parameters = pack_absolute_dai_synapse_design_parameters( ~ )
             
@@ -4495,6 +4923,36 @@ classdef network_class
             
             % Pack the design parameters.
             design_parameters{ 1 } = c1;
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a division after inversion subnetwork.
+        function design_parameters = pack_dai_synapse_design_parameters( self, encoding_scheme, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+                
+                % Pack the design parameters.
+                design_parameters = pack_absolute_dai_synapse_design_parameters(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                c1 = varargin{ 1 };
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_relative_dai_synapse_design_parameters( c1 );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end
             
         end
         
@@ -4575,6 +5033,60 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for a reduced absolute division after inversion subnetwork.
+        function design_parameters = pack_reduced_absolute_dai_neuron_design_parameters( self, c2 )
+            
+           % Set the default input arguments.
+            if nargin < 2, c2 = self.c2_absolute_dai_DEFAULT; end
+            
+            % Preallocate a cell to store the parameters.
+            design_parameters = cell( 1, 1 );
+            
+            % Pack the parameters.
+            design_parameters{ 1 } = c2;
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced relative division after inversion subnetwork.
+        function design_parameters = pack_reduced_relative_dai_neuron_design_parameters( ~ )
+            
+            % Set the parameters to be empty.
+            design_parameters = [  ];
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced division after inversion subnetwork.
+        function design_parameters = pack_reduced_dai_neuron_design_parameters( encoding_scheme, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                c2 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_dai_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_dai_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for a reduced absolute division after inversion subnetwork.
         function design_parameters = pack_reduced_absolute_dai_synapse_design_parameters( self, R3, neuron_manager, undetected_option )
             
@@ -4594,6 +5106,37 @@ classdef network_class
             
             % Set the design parameters.
             design_parameters = {  };
+            
+        end
+        
+        
+        % Implement a function to pack the synapse design parameters for a reduced division after inversion subnetwork.
+        function design_parameters = pack_reduced_dai_synapse_design_parameters( encoding_scheme, neuron_manager, varargin )
+           
+            % Set the default input arguments.
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_dai_synapse_design_parameters( R3, neuron_manager, undetected_option );
+
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_dai_synapse_design_parameters(  );
+
+            else                                                    % Otherwise...
+
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+
+            end 
             
         end
         
@@ -4694,6 +5237,60 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for an absolute multiplication subnetwork.
+        function design_parameters = pack_absolute_multiplication_neuron_design_parameters( self, c5 )
+            
+           % Set the default input arguments.
+            if nargin < 2, c5 = self.c2_absolute_dai_DEFAULT; end
+            
+            % Preallocate a cell to store the parameters.
+            design_parameters = cell( 1, 1 );
+            
+            % Pack the parameters.
+            design_parameters{ 1 } = c5;
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a relative multiplication subnetwork.
+        function design_parameters = pack_relative_multiplication_neuron_design_parameters( ~ )
+            
+            % Set the parameters to be empty.
+            design_parameters = [  ];
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a multiplication subnetwork.
+        function design_parameters = pack_multiplication_neuron_design_parameters( self, encoding_scheme, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                c5 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_multiplication_neuron_design_parameters( c5 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_relative_multiplication_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for an absolute multiplication subnetwork.
         function design_parameters = pack_absolute_multiplication_synapse_design_parameters( self, R3, Ia3, neuron_manager, applied_current_manager, undetected_option )
             
@@ -4728,6 +5325,43 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for a multiplication subnetwork.
+        function design_parameters = pack_multiplication_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+                Ia3 = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_multiplication_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                c4 = varargin{ 1 };
+                Ia3 = varargin{ 2 };
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_relative_multiplication_synapse_design_parameters( c4, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
+        
         % Implement a function to pack the applied current design parameters for an absolute multiplication subnetwork.
         function design_parameters = pack_absolute_multiplication_app_current_design_parameters( self, R3, neuron_manager, undetected_option )
             
@@ -4750,6 +5384,36 @@ classdef network_class
             
         end
         
+        
+        % Implement a function to pack the applied current design parameters for a multiplication subnetwork.
+        function design_parameters = pack_multiplication_app_current_design_parameters( self, encoding_scheme, neuron_manager, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_absolute_multiplication_app_current_design_parameters( R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_relative_multiplication_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
         
         
         % ---------- Reduced Multiplication Subnetwork Functions ----------
@@ -4840,6 +5504,63 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the neuron design parameters for a reduced absolute multiplication subnetwork.
+        function design_parameters = pack_reduced_absolute_multiplication_neuron_design_parameters( self, c2, c4 )
+            
+            % Set the default input arguments.
+            if nargin < 3, c4 = self.c2_reduced_absolute_dai_DEFAULT; end
+            if nargin < 2, c2 = self.c2_reduced_absolute_inversion_DEFAULT; end
+
+            % Preallocate a cell to store the parameters.
+            design_parameters = cell( 1, 2 );
+
+            % Pack the parameters.
+            design_parameters{ 1 } = c2;
+            design_parameters{ 2 } = c4;
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced relative multiplication subnetwork.
+        function design_parameters = pack_reduced_relative_multiplication_neuron_design_parameters( ~ )
+            
+            % Set the parameters to be empty.
+            design_parameters = [  ];
+        
+        end
+        
+        
+        % Implement a function to pack the neuron design parameters for a reduced multiplication subnetwork.
+        function design_parameters = pack_reduced_multiplication_neuron_design_parameters( self, encoding_scheme, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                c2 = varargin{ 1 };
+                c4 = varargin{ 2 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_multiplication_neuron_design_parameters( c2, c4 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_multiplication_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for a reduced absolute multiplication subnetwork.
         function design_parameters = pack_reduced_absolute_multiplication_synapse_design_parameters( self, R3, R4, Ia3, neuron_manager, applied_current_manager, undetected_option )
             
@@ -4874,8 +5595,45 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the synapse design parameters for a reduced multiplication subnetwork.
+        function design_parameters = pack_reduced_multiplication_synapse_design_parameters( self, encoding_scheme, neuron_manager, applied_current_manager, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
+                R4 = varargin{ 2 };
+                Ia3 = varargin{ 3 };
+                
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_multiplication_synapse_design_parameters( R3, R4, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Retrieve the variable arguments.
+                Ia3 = varargin{ 1 };
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_multiplication_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
+        
         % Implement a function to pack the applied current design parameters for a reduced absolute multiplication subnetwork.
-        function design_parameters = pack_reduced_absolute_multiplication_app_current_design_parameters( self, R3, neuron_manager, undetected_option )
+        function design_parameters = pack_reduced_absolute_mult_app_current_design_parameters( self, R3, neuron_manager, undetected_option )
             
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
@@ -4889,9 +5647,44 @@ classdef network_class
         
         
         % Implement a function to pack the applied current design parameters for a reduced relative multiplication subnetwork.
+        function design_parameters = pack_reduced_relative_mult_app_current_design_parameters( ~ )
+           
+            % Pack the design parameters.
+            design_parameters = {  };
+            
+        end
+        
+        
+        % Implement a function to pack the applied current design parameters for a reduced multiplication subnetwork.
+        function design_parameters = pack_reduced_multiplication_app_current_design_parameters( self, encoding_scheme, neuron_manager, varargin )
+            
+            % Set the default input arguments.
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
 
+                % Retrieve the variable arguments.
+                R3 = varargin{ 1 };
                 
+                % Pack the design parameters.
+                design_parameters = self.pack_reduced_absolute_mult_app_current_design_parameters( R3, neuron_manager, undetected_option );
                 
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+            	% Pack the design parameters.
+                design_parameters = self.pack_reduced_relative_mult_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+            
+        end
+        
         
         %% Parameter Unpacking Functions.
         
@@ -4975,6 +5768,68 @@ classdef network_class
         end
            
         
+        % Implement a function to unpack the synapse design parameters for an absolute transmission subnetwork.
+        function [ R2, Ia2 ] = unpack_absolute_transmission_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2           % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = design_parameters{ 1 };
+                Ia2 = design_parameters{ 2 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative transmission subnetwork.
+        function Ia2 = unpack_relative_transmission_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1           % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia2 = design_parameters{ 2 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for an absolute addition subnetwork.
@@ -5036,6 +5891,68 @@ classdef network_class
                 Rs = addition_parameters{ 2 };
                 Gms = addition_parameters{ 3 };
                 Cms = addition_parameters{ 4 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for an absolute addition subnetwork.
+        function Ia_n = unpack_absolute_addition_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia_n = design_parameters{ 1 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative addition subnetwork.
+        function [ c_n, Ia_n ] = unpack_relative_addition_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c_n = self.c_relative_addition_DEFAULT; 
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c_n = design_parameters{ 1 };
+                Ia_n = design_parameters{ 2 };
                 
             else                                              	% Otherwise...
                 
@@ -5114,6 +6031,68 @@ classdef network_class
                 Cms = subtraction_parameters{ 5 };
                 
             else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+
+        
+        % Implement a function to unpack the synapse design parameters for an absolute subtraction subnetwork.
+        function Ia_n = unpack_absolute_subtraction_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                
+                % Set the parameters to default values.
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia_n = design_parameters{ 1 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative subtraction subnetwork.
+        function [ c_n, Ia_n ] = unpack_relative_subtraction_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                   % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c_n = self.c_relative_subtraction_DEFAULT; 
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2       	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c_n = design_parameters{ 1 };
+                Ia_n = design_parameters{ 2 };
+                
+            else                                              	% Otherwise...
                 
                 % Throw an error.
                 error( 'Unable to unpack parameters.' )
@@ -5211,6 +6190,103 @@ classdef network_class
         end
         
         
+        % Implement a function to unpack the synapse design parameters for an absolute inversion subnetwork.
+        function Ia2 = unpack_absolute_inversion_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative inversion subnetwork.
+        function Ia2 = unpack_relative_inversion_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for an absolute inversion subnetwork.
+        function R2 = unpack_absolute_inversion_app_current_design_parameters( self, design_parameters, neuron_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a relative inversion subnetwork.
+        function [  ] = unpack_relative_inversion_app_current_design_parameters( ~ )
+           
+            
+            
+        end
+        
+        
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for a reduced absolute inversion subnetwork.
@@ -5291,6 +6367,138 @@ classdef network_class
                 error( 'Unable to unpack parameters.' )
                 
             end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced absolute inversion subnetwork.
+        function c2 = unpack_reduced_absolute_inversion_neuron_design_parameters( self, design_parameters )
+            
+            % Set the default input arguments. 
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c2 = self.c2_reduced_absolute_inversion_DEFAULT;
+                
+            elseif length( design_parameters ) == 1         % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c2 = design_parameters{ 1 };
+                
+            else                                          	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced relative inversion subnetwork.
+        function [  ] = unpack_reduced_relative_inversion_neuron_design_parameters( ~ )
+            
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced absolute inversion subnetwork.
+        function Ia2 = unpack_reduced_absolute_inversion_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced relative inversion subnetwork.
+        function Ia2 = unpack_reduced_relative_inversion_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a reduced absolute inversion subnetwork.
+        function R2 = unpack_reduced_absolute_inversion_app_current_design_parameters( self, design_parameters, neuron_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                      % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                
+            elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a reduced relative inversion subnetwork.
+        function [  ] = unpack_reduced_relative_inversion_app_current_design_parameters( ~ )
+           
+            
             
         end
         
@@ -5395,6 +6603,68 @@ classdef network_class
         end
         
         
+        % Implement a function to unpack the synapse design parameters for an absolute division subnetwork.
+        function [ R3, Ia3 ] = unpack_absolute_division_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2        	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = design_parameters{ 1 };
+                Ia3 = design_parameters{ 2 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative division subnetwork.
+        function Ia3 = unpack_relative_division_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1        	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia3 = design_parameters{ 1 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
         % ---------- Reduced Division Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for a reduced absolute division subnetwork.
@@ -5480,6 +6750,103 @@ classdef network_class
                 Cm1 = reduced_division_parameters{ 8 };
                 Cm2 = reduced_division_parameters{ 9 };
                 Cm3 = reduced_division_parameters{ 10 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced absolute division subnetwork.
+        function c2 = unpack_reduced_absolute_division_neuron_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                       % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c2 = self.c2_reduced_absolute_division_DEFAULT;
+                
+            elseif length( design_parameters ) == 1               % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced relative division subnetwork.
+        function [  ] = unpack_reduced_relative_division_neuron_design_parameters( ~ )
+            
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced absolute division subnetwork.
+        function [ R3, Ia3 ] = unpack_reduced_absolute_division_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2        	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R3 = design_parameters{ 1 };
+                Ia3 = design_parameters{ 2 };
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced relative division subnetwork.
+        function Ia3 = unpack_reduced_relative_division_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+           
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1        	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                Ia3 = design_parameters{ 1 };
                 
             else                                              	% Otherwise...
                 
@@ -5595,6 +6962,76 @@ classdef network_class
         end
         
         
+        % Implement a function to unpack the neuron design parameters for a reduced absolute division after inversion subnetwork.
+        function c2 = unpack_absolute_dai_neuron_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                       % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c2 = self.c2_reduced_absolute_dai_DEFAULT;
+                
+            elseif length( design_parameters ) == 1               % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced relative division after inversion subnetwork.
+        function [  ] = unpack_relative_dai_neuron_design_parameters( ~ )
+            
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for an absolute division after inversion subnetwork.
+        function [  ] = unpack_absolute_dai_synapse_design_parameters( ~ )
+           
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative division after inversion subnetwork.
+        function c1 = unpack_relative_dai_synapse_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                    % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c1 = self.c1_absolute_dai_DEFAULT;
+                
+            elseif length( design_parameters ) == 1            % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c1 = design_parameters{ 1 };
+                
+            else                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+                
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for a reduced absolute division after inversion subnetwork.
@@ -5691,6 +7128,78 @@ classdef network_class
                 error( 'Unable to unpack parameters.' )
                 
             end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced absolute division after inversion subnetwork.
+        function c2 = unpack_reduced_absolute_dai_neuron_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                       % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c2 = self.c2_reduced_absolute_dai_DEFAULT;
+                
+            elseif length( design_parameters ) == 1               % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c2 = design_parameters{ 1 };
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced relative division after inversion subnetwork.
+        function [  ] = unpack_reduced_relative_dai_neuron_design_parameters( ~ )
+        
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced absolute division after inversion subnetwork.
+        function R3 = unpack_reduced_absolute_dai_synapse_design_parameters( self, design_parameters, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                    % If the parameters are empty...
+                 
+                % Set the parameters to default values. 
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+
+            elseif length( design_parameters ) == 1         	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.              
+                R3 = design_parameters{ 1 };
+                
+            else                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced relative division after inversion subnetwork.
+        function [  ] = unpack_reduced_relative_dai_synapse_design_parameters( ~ )
+           
+            
             
         end
         
@@ -5815,6 +7324,142 @@ classdef network_class
         end
         
         
+        % Implement a function to unpack the neuron design parameters for an absolute multiplication subnetwork.
+        function c5 = unpack_absolute_multiplication_neuron_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c5 = self.c2_absolute_dai_DEFAULT;
+                
+            elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c5 = design_parameters{ 1 };   
+                
+            else                                              	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a relative multiplication subnetwork.
+        function [  ] = unpack_relative_multiplication_neuron_design_parameters( ~ )
+           
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for an absolute multiplication subnetwork.
+        function [ R3, Ia3 ] = unpack_absolute_multiplication_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2             % If there are a specific number of parameters...
+                
+                % Unpack the parameters.             
+                R3 = design_parameters{ 1 };
+                Ia3 = design_parameters{ 2 };
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a relative multiplication subnetwork.
+        function [ c4, Ia3 ] = unpack_relative_multiplication_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c4 = self.c1_relative_dai_DEFAULT;
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 2           	% If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c4 = design_parameters{ 1 };
+                Ia3 = design_parameters{ 2 };
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for an absolute multiplication subnetwork.
+        function R3 = unpack_absolute_multiplication_app_current_design_parameters( self, design_parameters, neuron_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                
+            elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
+                
+                % Unpack the parameters.             
+                R3 = design_parameters{ 1 };
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a relative multiplication subnetwork.
+        function [  ] = unpack_relative_multiplication_app_current_design_parameters( ~ )
+        
+            
+            
+        end
+        
+        
         % ---------- Reduced Multiplication Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for a reduced absolute multiplication subnetwork.
@@ -5927,6 +7572,144 @@ classdef network_class
         end
         
         
+        % Implement a function to unpack the neuron design parameters for a reduced absolute multiplication subnetwork.
+        function [ c2, c4 ] = unpack_reduced_absolute_multiplication_neuron_design_parameters( self, design_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c2 = self.c2_absolute_inversion_DEFAULT;
+                c4 = self.c1_absolute_dai_DEFAULT;
+                
+            elseif length( design_parameters ) == 2             % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c2 = design_parameters{ 1 };
+                c4 = design_parameters{ 2 };           
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the neuron design parameters for a reduced relative multiplication subnetwork.
+        function [  ] = unpack_reduced_relative_multiplication_neuron_design_parameters( ~ )
+        
+            
+            
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced absolute multiplication subnetwork. 
+        function [ R3, R4, Ia3 ] = unpack_reduced_absolute_mult_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 3             % If there are a specific number of parameters...
+
+                % Unpack the parameters.               
+                R3 = design_parameters{ 1 };
+                R4 = design_parameters{ 2 };
+                Ia3 = design_parameters{ 3 };
+
+            else                                                        % Otherwise...
+
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+
+            end
+
+        end
+        
+        
+        % Implement a function to unpack the synapse design parameters for a reduced relative multiplication subnetwork.
+        function Ia3 = unpack_reduced_relative_mult_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
+
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, applied_current_manager = self.applied_current_manager; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+
+                % Set the parameters to default values.
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                
+            elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
+
+                % Unpack the parameters.               
+                Ia3 = design_parameters{ 1 };
+
+            else                                                        % Otherwise...
+
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+
+            end
+
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a reduced absolute multiplication subnetwork.
+        function R3 = unpack_reduced_absolute_mult_app_current_design_parameters( self, design_parameters, neuron_manager, undetected_option )
+        
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neuron_manager = self.neuron_manager; end
+            if nargin < 2, design_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( design_parameters )                     % If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                
+            elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
+                
+                % Unpack the parameters.             
+                R3 = design_parameters{ 1 };
+                
+            else                                                        % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+        
+        % Implement a function to unpack the applied current design parameters for a reduced relative multiplication subnetwork.
+        function [  ] = unpack_reduced_relative_mult_app_current_design_parameters( ~ )
+        
+            
+            
+        end
+        
+        
         %% Parameter Conversion Functions.
         
         % ---------- Transmission Subnetwork Functions ----------
@@ -5965,10 +7748,11 @@ classdef network_class
         
         
         % Implement a function to convert transmission parameters to synapse parameters.
-        function synapse_parameters = transmission_parameters2synapse_parameters( self, transmission_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = transmission_parameters2synapse_parameters( self, transmission_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -5982,8 +7766,7 @@ classdef network_class
                 [ ~, ~, ~, Gm2, ~, ~ ] = self.unpack_absolute_transmission_parameters( transmission_parameters, neuron_manager, undetected_option );
                                 
                 % Unpack design parameters.
-                R2 = design_parameters{ 1 };
-                Ia2 = design_parameters{ 2 };
+                [ R2, Ia2 ] = self.unpack_absolute_transmission_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_absolute_transmission_parameters( R2, Gm2, Ia2 );
@@ -5993,8 +7776,8 @@ classdef network_class
                 % Pack neuron parameters.
                 [ ~, R2, ~, Gm2, ~, ~ ] = self.unpack_relative_transmission_parameters( transmission_parameters, neuron_manager, undetected_option );
                 
-                % Unpack design parameters.
-                Ia2 = design_parameters{ 1 };
+                % Unpack design parameters.                
+                Ia2 = self.unpack_relative_transmission_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_relative_transmission_parameters( R2, Gm2, Ia2 );
@@ -6045,10 +7828,11 @@ classdef network_class
         
         
         % Implement a function to convert addition parameters to synapse parameters.
-        function synapse_parameters = addition_parameters2synapse_parameters( self, addition_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = addition_parameters2synapse_parameters( self, addition_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
           
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6062,7 +7846,7 @@ classdef network_class
                 [ cs, Rs_input, Gms, ~ ] = self.unpack_absolute_addition_parameters( addition_parameters, neuron_manager, undetected_option );
                                 
                 % Unpack design parameters.
-                Ia_n = design_parameters{ 1 };
+                Ia_n = self.unpack_absolute_addition_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Process the parameters.
                 Gm_n = Gms( end );
@@ -6076,8 +7860,7 @@ classdef network_class
                 [ cs_nm1, Rs, Gms, ~ ] = self.unpack_relative_addition_parameters( addition_parameters, neuron_manager, undetected_option );
                 
                 % Unpack the design parameters.
-                c_n = design_parameters{ 1 };
-                Ia_n = design_parameters{ 2 };
+                [ c_n, Ia_n ] = self.unpack_relative_addition_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Process the parameters.
                 cs = [ cs_nm1, c_n ];
@@ -6133,10 +7916,11 @@ classdef network_class
         
         
         % Implement a function to convert subtraction parameters to synapse parameters.
-        function synapse_parameters = subtraction_parameters2synapse_parameters( self, subtraction_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = subtraction_parameters2synapse_parameters( self, subtraction_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6150,7 +7934,7 @@ classdef network_class
                 [ cs, ss, Rs_input, Gms, ~ ] = self.unpack_absolute_subtraction_parameters( subtraction_parameters, neuron_manager, undetected_option );
                 
                 % Unpack the design parameters.
-                Ia_n = design_parameters{ 1 };
+                Ia_n = self.unpack_absolute_subtraction_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Process the parameters.
                 Gm_n = Gms( end );
@@ -6164,8 +7948,7 @@ classdef network_class
                 [ cs_mn1, ss, Rs, Gms, ~ ] = self.unpack_relative_subtraction_parameters( subtraction_parameters, neuron_manager, undetected_option );
                 
                 % Unpack the design parameters.
-                c_n = design_parameters{ 1 };
-                Ia_n = design_parameters{ 2 };
+                [ c_n, Ia_n ] = self.unpack_relative_subtraction_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Process the parameters.
                 cs = [ cs_mn1, c_n ];
@@ -6221,10 +8004,11 @@ classdef network_class
         
         
         % Implement a function to convert inversion parameters to synapse parameters.
-        function synapse_parameters = inversion_parameters2synapse_parameters( self, inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = inversion_parameters2synapse_parameters( self, inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6238,7 +8022,7 @@ classdef network_class
                 [ ~, ~, delta, ~, ~, Gm2, ~, ~ ] = self.unpack_absolute_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia2 = design_parameters{ 1 };
+                Ia2 = self.unpack_absolute_inversion_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.                
                 synapse_parameters = synapse_manager.pack_absolute_inversion_parameters( delta, Gm2, Ia2 );
@@ -6249,7 +8033,7 @@ classdef network_class
                 [ ~, delta, ~, ~, ~, Gm2, ~, ~ ] = self.unpack_relative_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia2 = design_parameters{ 1 };
+                Ia2 = self.unpack_relative_inversion_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_relative_inversion_parameters( delta, Gm2, Ia2 );
@@ -6282,7 +8066,7 @@ classdef network_class
                 [ ~, ~, ~, ~, ~, Gm2, ~, ~ ] = self.unpack_absolute_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R2 = design_parameters{ 1 };
+                R2 = self.unpack_absolute_inversion_app_current_design_parameters( design_parameters, neuron_manager, undetected_option );
                 
                 % Pack synapse parameters.                
                 applied_current_parameters = applied_current_manager.pack_absolute_inversion_parameters( R2, Gm2 );
@@ -6308,7 +8092,7 @@ classdef network_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to convert reduced inversion parameters to neuron parameters.
-        function neuron_parameters = reduced_inversion_parameters2neuron_parameters( self, reduced_inversion_parameters, encoding_scheme, neuron_manager, undetected_option )
+        function neuron_parameters = reduced_inversion_parameters2neuron_parameters( self, reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
             
             % Set the default input arguments.
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
@@ -6321,6 +8105,9 @@ classdef network_class
 
                 % Unpack reduced inversion parameters.
                 [ c1, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
+                
+                % Unpack the design parameters.
+                c2 = self.unpack_reduced_absolute_inversion_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.
                 neuron_parameters = neuron_manager.pack_reduced_absolute_inversion_parameters( c1, c2 );
@@ -6341,10 +8128,11 @@ classdef network_class
         
         
         % Implement a function to convert reduced inversion parameters to synapse parameters.
-        function synapse_parameters = reduced_inversion_parameters2synapse_parameters( self, reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = reduced_inversion_parameters2synapse_parameters( self, reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6358,7 +8146,7 @@ classdef network_class
                 [ ~, delta, ~, ~, Gm2, ~, ~ ] = self.unpack_reduced_absolute_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia2 = design_parameters{ 1 };
+                Ia2 = self.unpack_reduced_absolute_inversion_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_reduced_absolute_inversion_parameters( delta, Gm2, Ia2 );
@@ -6369,7 +8157,7 @@ classdef network_class
                 [ delta, ~, ~, ~, Gm2, ~, ~ ] = self.unpack_reduced_relative_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia2 = design_parameters{ 1 };
+                Ia2 = self.unpack_reduced_relative_inversion_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_reduced_relative_inversion_parameters( delta, Gm2, Ia2 );
@@ -6403,7 +8191,7 @@ classdef network_class
                 [ ~, ~, ~, ~, Gm2, ~, ~ ] = self.unpack_reduced_absolute_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
                 
                 % Unpack the design parameters.
-                R2 = design_parameters{ 1 };
+                R2 = self.unpack_reduced_absolute_inversion_app_current_design_parameters( design_parameters, neuron_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 applied_current_parameters = applied_current_manager.pack_reduced_absolute_inversion_parameters( R2, Gm2 );
@@ -6462,10 +8250,11 @@ classdef network_class
         
         
         % Implement a function to convert division parameters to synapse parameters.
-        function synapse_parameters = division_parameters2synapse_parameters( self, division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = division_parameters2synapse_parameters( self, division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6479,8 +8268,7 @@ classdef network_class
                 [ ~, ~, delta, ~, ~, ~, ~, Gm3, ~, ~, ~ ] = self.unpack_absolute_division_parameters( division_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
-                Ia3 = design_parameters{ 2 };
+                [ R3, Ia3 ] = self.unpack_absolute_division_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.                                
                 synapse_parameters = synapse_manager.pack_absolute_division_parameters( delta, R3, Gm3, Ia3 );
@@ -6491,7 +8279,7 @@ classdef network_class
                 [ ~, delta, ~, ~, R3, ~, ~, Gm3, ~, ~, ~ ] = self.unpack_relative_division_parameters( division_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia3 = design_parameters{ 1 };
+                Ia3 = self.unpack_relative_division_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.                
                 synapse_parameters = synapse_manager.pack_relative_division_parameters( delta, R3, Gm3, Ia3 );
@@ -6525,7 +8313,7 @@ classdef network_class
                 [ c1, ~, R1, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_division_parameters( reduced_division_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c2 = design_parameters{ 1 };
+                c2 = self.unpack_reduced_absolute_division_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.                
                 neuron_parameters = neuron_manager.pack_reduced_absolute_division_parameters( c1, c2, R1, neuron_manager.neurons, undetected_option );
@@ -6546,10 +8334,11 @@ classdef network_class
         
         
         % Implement a function to convert reduced division parameters to synapse parameters.
-        function synapse_parameters = reduced_division_parameters2synapse_parameters( self, reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = reduced_division_parameters2synapse_parameters( self, reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6563,8 +8352,7 @@ classdef network_class
                 [ ~, delta, ~, ~, ~, ~, Gm3, ~, ~, ~ ] = self.unpack_reduced_absolute_division_parameters( reduced_division_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
-                Ia3 = design_parameters{ 2 };
+                [ R3, Ia3 ] = self.unpack_reduced_absolute_division_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.                                                
                 synapse_parameters = synapse_manager.pack_reduced_absolute_division_parameters( delta, R3, Gm3, Ia3 );
@@ -6575,7 +8363,7 @@ classdef network_class
                 [ delta, ~, ~, R3, ~, ~, Gm3, ~, ~, ~ ] = self.unpack_reduced_relative_division_parameters( reduced_division_parameters, neuron_manager, undetected_option );
                 
                 % Design the design parameters.
-                Ia3 = design_parameters{ 1 };
+                Ia3 = self.unpack_reduced_relative_division_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_reduced_relative_division_parameters( delta, R3, Gm3, Ia3 );
@@ -6609,7 +8397,7 @@ classdef network_class
                 [ c1, c3, delta1, ~, R1, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_absolute_dai_parameters( dai_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c2 = design_parameters{ 1 };
+                c2 = self.unpack_absolute_dai_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.                
                 neuron_parameters = neuron_manager.pack_absolute_dai_parameters( c1, c2, c3, delta1, R1, neuron_manager.neurons, undetected_option );
@@ -6655,7 +8443,7 @@ classdef network_class
                 [ c3, delta1, delta2, ~, R2, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_relative_dai_parameters( dai_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c1 = design_parameters{ 1 };
+                c1 = self.unpack_relative_dai_synapse_design_parameters( design_parameters );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_relative_dai_parameters( c1, c3, delta1, delta2, R2 );
@@ -6689,7 +8477,7 @@ classdef network_class
                 [ c1, delta1, ~, R1, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_dai_parameters( reduced_dai_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c2 = design_parameters{ 1 };
+                c2 = self.unpack_reduced_absolute_dai_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.                                
                 neuron_parameters = neuron_manager.pack_reduced_absolute_dai_parameters( c1, c2, delta1, R1, neuron_manager.neurons, undetected_option );
@@ -6727,7 +8515,7 @@ classdef network_class
                 [ ~, delta1, delta2, ~, R2, ~, ~, Gm3, ~, ~, ~ ] = self.unpack_reduced_absolute_dai_parameters( reduced_dai_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
+                R3 = self.unpack_reduced_absolute_dai_synapse_design_parameters( design_parameters, neuron_manager, undetected_option );
                 
                 % Pack synapse parameters.                                                                
                 synapse_parameters = synapse_manager.pack_reduced_absolute_dai_parameters( delta1, delta2, R2, R3, Gm3 );
@@ -6769,7 +8557,7 @@ classdef network_class
                 [ c1, c3, c4, c6, delta1, ~, R1, ~, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_absolute_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c5 = design_parameters{ 1 };
+                c5 = self.unpack_absolute_multiplication_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.
                 neuron_parameters = neuron_manager.pack_absolute_multiplication_parameters( c1, c3, c4, c5, c6, delta1, R1, neuron_manager.neurons, undetected_option );
@@ -6790,10 +8578,11 @@ classdef network_class
         
         
         % Implement a function to convert multiplication parameters to synapse parameters.
-        function synapse_parameters = multiplication_parameters2synapse_parameters( self, multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = multiplication_parameters2synapse_parameters( self, multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6807,8 +8596,7 @@ classdef network_class
                 [ ~, ~, c4, c6, delta1, delta2, R1, ~, ~, ~, Gm3, ~, ~, ~, ~, ~ ] = self.unpack_absolute_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
-                Ia3 = design_parameters{ 2 };
+                [ R3, Ia3 ] = self.unpack_absolute_multiplication_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_absolute_multiplication_parameters( c4, c6, delta1, delta2, R1, R3, Gm3, Ia3 );
@@ -6819,8 +8607,7 @@ classdef network_class
                 [ ~, c6, delta1, delta2, ~, ~, R3, ~, ~, ~, Gm3, ~, ~, ~, ~, ~ ] = self.unpack_relative_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                c4 = design_parameters{ 1 };
-                Ia3 = design_parameters{ 2 };
+                [ c4, Ia3 ] = self.unpack_relative_multiplication_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_relative_multiplication_parameters( c4, c6, delta1, delta2, R3, Gm3, Ia3 );
@@ -6853,7 +8640,7 @@ classdef network_class
                 [ ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, Gm3, ~, ~, ~, ~, ~ ] = self.unpack_absolute_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
+                R3 = self.unpack_absolute_multiplication_app_current_design_parameters( design_parameters, neuron_manager, undetected_option );
                 
                 % Pack synapse parameters.                                                
                 applied_current_parameters = applied_current_manager.pack_absolute_multiplication_parameters( R3, Gm3 );
@@ -6895,8 +8682,7 @@ classdef network_class
                 [ c1, c3, delta1, ~, R1, ~, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
 
                 % Retrieve the design parameters.
-                c2 = design_parameters{ 1 };
-                c4 = design_parameters{ 2 };
+                [ c2, c4 ] = self.unpack_reduced_absolute_multiplication_neuron_design_parameters( design_parameters );
                 
                 % Pack neuron parameters.                
                 neuron_parameters = neuron_manager.pack_reduced_absolute_multiplication_parameters( c1, c2, c3, c4, delta1, R1, neuron_manager.neurons, undetected_option );
@@ -6917,10 +8703,11 @@ classdef network_class
         
         
         % Implement a function to convert reduced multiplication parameters to synapse parameters.
-        function synapse_parameters = reduced_multiplication_parameters2synapse_parameters( self, reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option )
+        function synapse_parameters = reduced_multiplication_parameters2synapse_parameters( self, reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end
             if nargin < 6, synapse_manager = self.synapse_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
             if nargin < 4, encoding_scheme = 'absolute'; end
@@ -6934,9 +8721,7 @@ classdef network_class
                 [ ~, ~, delta1, delta2, ~, ~, ~, ~, Gm3, Gm4, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
-                R4 = design_parameters{ 2 };
-                Ia3 = design_parameters{ 3 };
+                [ R3, R4, Ia3 ] = self.unpack_reduced_absolute_mult_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_reduced_absolute_multiplication_parameters( delta1, delta2, R3, R4, Gm3, Gm4, Ia3 );
@@ -6947,7 +8732,7 @@ classdef network_class
                 [ delta1, delta2, ~, ~, R3, R4, ~, ~, Gm3, Gm4, ~, ~, ~, ~ ] = self.unpack_reduced_relative_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                Ia3 = design_parameters{ 1 };
+                Ia3 = self.unpack_reduced_relative_mult_synapse_design_parameters( design_parameters, neuron_manager, applied_current_manager, undetected_option );
                 
                 % Pack synapse parameters.
                 synapse_parameters = synapse_manager.pack_reduced_relative_multiplication_parameters( delta1, delta2, R3, R4, Gm3, Gm4, Ia3 );
@@ -6980,7 +8765,7 @@ classdef network_class
                 [ ~, ~, ~, ~, ~, ~, ~, ~, Gm3, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
                 
                 % Retrieve the design parameters.
-                R3 = design_parameters{ 1 };
+                R3 = self.unpack_reduced_absolute_mult_app_current_design_parameters( design_parameters, neuron_manager, undetected_option );
                 
                 % Pack synapse parameters.                                                
                 applied_current_parameters = applied_current_manager.pack_reduced_absolute_multiplication_parameters( R3, Gm3 );
@@ -7008,11 +8793,12 @@ classdef network_class
         % ---------- Transmission Subnetwork Functions ----------
         
         % Implement a function to design a transmission subnetwork using existing neurons.
-        function [ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, set_flag, undetected_option )
+        function [ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
-            if nargin < 7, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
+            if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
+            if nargin < 8, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                                          % [str] Encoding Scheme (Must be either: 'absolute' or 'relative'.)
@@ -7022,27 +8808,31 @@ classdef network_class
             
             % Create an instance of the network object.
             network = self;
-            
+                        
             % Compute the subnetwork gains.
             c = self.compute_transmission_c( gain_parameters, encoding_scheme );
-            
+                        
             % Convert subnetwork parameters to neuron parameters.
             neuron_parameters = network.transmission_parameters2neuron_parameters( transmission_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the subnetwork neurons.
             [ Gnas, R2, neurons, neuron_manager, network ] = network.design_transmission_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
+            
+            
+            % WORKING HERE
+            
+                        
             % Determine how to pack the design parameters.
             if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
 
                 % Pack the design parameters.
-                design_parameters{ 1 } = R2;
-                design_parameters{ 2 } = Ia2;
+                design_parameters = self.pack_absolute_transmission_synapse_design_parameters( R2, Ia2, neuron_manager, applied_current_manager, undetected_option );
                 
             elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
                 
                 % Pack the design parameters.
-                design_parameters{ 1 } = Ia2;
+                design_parameters = self.pack_relative_transmission_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
                 
             else                                                    % Otherwise...
                 
@@ -7050,7 +8840,6 @@ classdef network_class
                 error( 'Unrecognized encoding scheme.' )
                 
             end
-            
             
             % Convert subnetwork parameters to synapse parameters.
             synapse_parameters = network.transmission_parameters2synapse_parameters( transmission_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
