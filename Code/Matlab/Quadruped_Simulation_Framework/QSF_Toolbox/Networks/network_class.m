@@ -3760,6 +3760,27 @@ classdef network_class
         end
         
         
+        % Implement a function to pack the gain parameters for an absolute transmission subnetwork.
+        function gain_parameters = pack_absolute_transmission_gain_parameters( self, c )
+        
+            % Set the default input arguments.
+            if nargin < 2, c = self.c_absolute_transmission_DEFAULT; end
+            
+           % Pack the gain parameters.
+           gain_parameters{ 1 } = c;
+            
+        end
+        
+        
+        % Implement a function to pack the gain parameters for a relative transmission subnetwork.
+        function gain_parameters = pack_relative_transmission_gain_parameters( ~ )
+            
+            % Pack the gain parameters.
+            gain_parameters = {  };
+            
+        end
+        
+        
         % Implement a function to pack the synapse design parameters for an absolute transmission subnetwork.
         function design_parameters = pack_absolute_transmission_synapse_design_parameters( self, R2, Ia2, neuron_manager, applied_current_manager, undetected_option )
             
@@ -5766,7 +5787,42 @@ classdef network_class
             end
             
         end
-           
+        
+        
+        % Implement a function to unpack the gain parameters for an absolute transmission subnetwork.
+        function c = unpack_absolute_transmission_gain_parameters( self, gain_parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, gain_parameters = {  }; end
+            
+            % Determine how to unpack the parameters.
+            if isempty( gain_parameters )                 	% If the parameters are empty...
+                 
+                % Set the parameters to default values.
+                c = self.c_absolute_transmission_DEFAULT;
+                
+            elseif length( gain_parameters ) == 1           % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                c = gain_parameters{ 1 };
+                
+            else                                         	% Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end
+            
+        end
+        
+            
+        % Implement a function to unpack the gain parameters for a relative transmission subnetwork.
+        function [  ] = unpack_relative_transmission_gain_parameters( ~ )
+        
+            
+            
+        end
+        
         
         % Implement a function to unpack the synapse design parameters for an absolute transmission subnetwork.
         function [ R2, Ia2 ] = unpack_absolute_transmission_synapse_design_parameters( self, design_parameters, neuron_manager, applied_current_manager, undetected_option )
@@ -7714,6 +7770,39 @@ classdef network_class
         
         % ---------- Transmission Subnetwork Functions ----------
         
+        % Implement a function to convert transmission parameters to gain parameters.
+        function gain_parameters = transmission_parameters2gain_parameters( self, transmission_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, transmission_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
+                
+                % Unpack the absolute transmission parameters.
+                [ c, ~, ~, ~, ~, ~ ] = self.unpack_absolute_transmission_parameters( transmission_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_transmission_gain_parameters( c );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_transmission_gain_parameters(  );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
+        
         % Implement a function to convert transmission parameters to neuron parameters.
         function neuron_parameters = transmission_parameters2neuron_parameters( self, transmission_parameters, encoding_scheme, neuron_manager, undetected_option )
             
@@ -8793,7 +8882,7 @@ classdef network_class
         % ---------- Transmission Subnetwork Functions ----------
         
         % Implement a function to design a transmission subnetwork using existing neurons.
-        function [ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ c, Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, self ] = design_transmission_subnetwork( self, neuron_IDs, transmission_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
@@ -8809,9 +8898,12 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
                         
+            % Convert the transmission parameters to gain parameters.
+            gain_parameters = self.transmission_parameters2gain_parameters( transmission_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
             c = self.compute_transmission_c( gain_parameters, encoding_scheme );
-                        
+            
             % Convert subnetwork parameters to neuron parameters.
             neuron_parameters = network.transmission_parameters2neuron_parameters( transmission_parameters, encoding_scheme, neuron_manager, undetected_option );
             
@@ -8819,8 +8911,8 @@ classdef network_class
             [ Gnas, R2, neurons, neuron_manager, network ] = network.design_transmission_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
             
             
-            
-            % WORKING HERE
+            % Design the subnetwork applied currents.
+            % Ia2 = ;
             
                         
             % Determine how to pack the design parameters.

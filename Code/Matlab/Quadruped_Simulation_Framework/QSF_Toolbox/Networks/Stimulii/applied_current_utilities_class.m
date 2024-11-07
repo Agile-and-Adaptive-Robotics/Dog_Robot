@@ -72,17 +72,158 @@ classdef applied_current_utilities_class
         
         %% Applied Current Magnitude Design Functions.        
         
+        % ---------- Transmission Subnetwork Functions ----------
+
+        % Implement a function to compute the output applied current magnitude of an absolute transmission subnetwork.
+        function Ias2 = compute_absolute_transmission_Ias2( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias2 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a relative transmission subnetwork.
+        function Ias2 = compute_relative_transmission_Ias2( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias2 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a transmission subnetwork.
+        function Ias2 = compute_transmission_Ias2( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias2 = self.compute_absolute_transmission_Ias2(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias2 = self.compute_relative_transmission_Ias2(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Addition Subnetwork Functions ----------
+        
+        % Implement a function to compute the output applied current magnitude of an absolute addition subnetwork.
+        function Ias_n = compute_absolute_addition_Iasn( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias_n = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a relative addition subnetwork.
+        function Ias_n = compute_relative_addition_Iasn( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias_n = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a addition subnetwork.
+        function Ias_n = compute_addition_Iasn( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias_n = self.compute_absolute_addition_Iasn(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias_n = self.compute_relative_addition_Iasn(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Subtraction Subnetwork Functions ----------
+
+        % Implement a function to compute the output applied current magnitude of an absolute subtraction subnetwork.
+        function Ias_n = compute_absolute_subtraction_Iasn( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias_n = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a relative subtraction subnetwork.
+        function Ias_n = compute_relative_subtraction_Iasn( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias_n = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a subtraction subnetwork.
+        function Ias_n = compute_subtraction_Iasn( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias_n = self.compute_absolute_subtraction_Iasn(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias_n = self.compute_relative_subtraction_Iasn(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to compute the magnitude of output absolute inversion subnetwork applied currents.
         function Ias2 = compute_absolute_inversion_Ias2( self, Gm2, R2 )
             
             % Define the default input arguments.
-            if nargin < 3, R2 = self.R_DEFAULT; end                                          % [V] Activation Domain.
-            if nargin < 2, Gm2 = self.Gm_DEFAULT; end                                        % [S] Membrane Conductance.
+            if nargin < 3, R2 = self.R_DEFAULT; end                                       	% [V] Activation Domain.
+            if nargin < 2, Gm2 = self.Gm_DEFAULT; end                                     	% [S] Membrane Conductance.
             
             % Compute the magnitude of the inversion subentwork applied currents.
-            Ias2 = Gm2.*R2;                                                                    % [A] Applied Current.
+            Ias2 = Gm2.*R2;                                                               	% [A] Applied Current.
             
         end
         
@@ -187,6 +328,194 @@ classdef applied_current_utilities_class
                 
                 % Compute the applied current using a relative encoding scheme.
                 Ias2 = self.compute_relative_inversion_Ias_output( Gm2, R2 );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Division Subnetwork Functions ----------
+
+        % Implement a function to compute the output applied current magnitude of an absolute division subnetwork.
+        function Ias3 = compute_absolute_division_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a relative division subnetwork.
+        function Ias3 = compute_relative_division_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a division subnetwork.
+        function Ias3 = compute_division_Ias3( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias3 = self.compute_absolute_division_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias3 = self.compute_relative_division_Ias3(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Division Subnetwork Functions ----------
+
+        % Implement a function to compute the output applied current magnitude of a reduced absolute division subnetwork.
+        function Ias3 = compute_reduced_absolute_division_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a reduced relative division subnetwork.
+        function Ias3 = compute_reduced_relative_division_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a division subnetwork.
+        function Ias3 = compute_reduced_division_Ias3( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias3 = self.compute_absolute_division_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias3 = self.compute_relative_division_Ias3(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+                
+        % ---------- Division After Inversion Subnetwork Functions ----------
+
+        % Implement a function to compute the output applied current magnitude of an absolute division after inversion subnetwork.
+        function Ias3 = compute_absolute_dai_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a relative division after inversion subnetwork.
+        function Ias3 = compute_relative_dai_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a division after inversion subnetwork.
+        function Ias3 = compute_dai_Ias3( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias3 = self.compute_absolute_dai_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias3 = self.compute_relative_dai_Ias3(  );
+            
+            else
+            
+                % Throw an error.
+                error( 'Invalid encoding scheme.  Must be either: ''absolute'' or ''relative''.' )
+                
+            end
+            
+        end
+        
+        
+        % ---------- Reduced Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the output applied current magnitude of a reduced absolute division after inversion subnetwork.
+        function Ias3 = compute_reduced_absolute_dai_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a reduced relative division after inversion subnetwork.
+        function Ias3 = compute_reduced_relative_dai_Ias3( ~ )
+            
+            % Set the applied current magnitude to zero.
+            Ias3 = 0;
+            
+        end
+        
+        
+        % Implement a function to compute the output applied current magnitude of a reduced division after inversion subnetwork.
+        function Ias3 = compute_reduced_dai_Ias3( self, encoding_scheme )
+            
+            % Set the default input arguments.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end
+            
+            % Determine how to compute the applied currents.
+            if strcmpi( encoding_scheme, 'absolute' )
+               
+                % Compute the applied current using an absolute encoding scheme.
+                Ias3 = self.compute_reduced_absolute_dai_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )
+                
+                % Compute the applied current using a relative encoding scheme.
+                Ias3 = self.compute_reduced_relative_dai_Ias3(  );
             
             else
             
