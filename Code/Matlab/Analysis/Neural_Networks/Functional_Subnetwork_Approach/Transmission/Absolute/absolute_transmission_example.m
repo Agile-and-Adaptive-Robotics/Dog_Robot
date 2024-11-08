@@ -63,7 +63,7 @@ Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
 network = network_class( network_dt, network_tf );
 
 % Create a transmission subnetwork.
-[ Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, network ] = network.create_transmission_subnetwork( transmission_parameters, encoding_scheme, network.neuron_manager, network.synapse_manager, true, false, 'error' );
+[ c, Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, network ] = network.create_transmission_subnetwork( transmission_parameters, encoding_scheme, network.neuron_manager, network.synapse_manager, network.applied_current_manager, true, false, 'error' );
 
 % Create the input applied current.
 [ ~, ~, ~, network.applied_current_manager ] = network.applied_current_manager.create_applied_current( input_current_ID, input_current_name, input_current_to_neuron_ID, ts, Ias1, true, network.applied_current_manager.applied_currents, true, false, network.applied_current_manager.array_utilities );
