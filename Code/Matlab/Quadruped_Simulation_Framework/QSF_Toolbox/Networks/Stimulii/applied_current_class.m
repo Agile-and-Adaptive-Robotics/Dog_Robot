@@ -477,6 +477,108 @@ classdef applied_current_class
         
         %% Compute Applied Current Functions.
         
+        % ---------- Transmission Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron 2 of a transmission subnetwork.
+        function [ Ias2, self ] = compute_transmission_Ias2( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias2 = applied_current_utilities.compute_absolute_transmission_Ias2(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias2 = applied_current_utilities.compute_relative_transmission_Ias2(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias2; end
+
+        end
+        
+        
+        % ---------- Addition Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron n of an addition subnetwork.
+        function [ Ias_n, self ] = compute_addition_Iasn( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias_n = applied_current_utilities.compute_absolute_addition_Iasn(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias_n = applied_current_utilities.compute_relative_addition_Iasn(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias_n; end
+
+        end
+        
+        
+        % ---------- Subtraction Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron n of a subtraction subnetwork.
+        function [ Ias_n, self ] = compute_subtraction_Iasn( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias_n = applied_current_utilities.compute_absolute_subtraction_Iasn(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias_n = applied_current_utilities.compute_relative_subtraction_Iasn(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias_n; end
+
+        end
+        
+        
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to compute the applied current magnitude for neuron 2 of an inversion subnetwork.
@@ -555,6 +657,142 @@ classdef applied_current_class
                 
             % Determine whether to update the applied current object.
             if set_flag, self.Ias = Ias2; end
+
+        end
+        
+        
+        % ---------- Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron 3 of a division subnetwork.
+        function [ Ias3, self ] = compute_division_Ias3( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_absolute_division_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_relative_division_Ias3(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias3; end
+
+        end
+        
+        
+        % ---------- Reduced Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron 3 of a reduced division subnetwork.
+        function [ Ias3, self ] = compute_reduced_division_Ias3( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_reduced_absolute_division_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_reduced_relative_division_Ias3(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias3; end
+
+        end
+        
+        
+        % ---------- Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron 3 of a division after inversion subnetwork.
+        function [ Ias3, self ] = compute_dai_Ias3( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_absolute_dai_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_relative_dai_Ias3(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias3; end
+
+        end
+        
+        
+        % ---------- Reduced Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the applied current magnitude for neuron 3 of a reduced division after inversion subnetwork.
+        function [ Ias3, self ] = compute_reduced_dai_Ias3( self, encoding_scheme, set_flag, applied_current_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, applied_current_utilities = self.applied_current_utilities; end          % [class] Applied Current Utilities Class.
+            if nargin < 3, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag (Determines whether to update the applied current manager.)
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
+            
+            % Determine how to compute the applied current magnitude.
+            if strcmpi( encoding_scheme, 'absolute' )                                               % If the encoding scheme is absolute...
+                            
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_reduced_absolute_dai_Ias3(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                                           % If the encoding scheme is relative...
+               
+                % Compute the applied current magnitudes.
+                Ias3 = applied_current_utilities.compute_reduced_relative_dai_Ias3(  );
+                
+            else                                                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Invalid encoding scheme %s.  Encoding scheme must be one of: ''absolute'', ''relative''', encoding_scheme )
+                
+            end
+                
+            % Determine whether to update the applied current object.
+            if set_flag, self.Ias = Ias3; end
 
         end
         

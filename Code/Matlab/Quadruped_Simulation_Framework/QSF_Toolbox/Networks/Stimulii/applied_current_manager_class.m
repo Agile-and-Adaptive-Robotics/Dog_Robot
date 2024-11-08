@@ -1681,41 +1681,83 @@ classdef applied_current_manager_class
         
         %% Compute Functions.
     
-        % ---------- Centering Subnetwork Functions ----------
+        % ---------- Transmission Subnetwork Functions ----------
         
-        % Implement a function to compute the magnitude of centering subnetwork applied currents.
-        function [ Ias, applied_currents, self ] = compute_centering_Ias( self, applied_current_IDs, Gm, R, applied_currents, set_flag, undetected_option )
+        % Implement a function to compute the magnitude of the transmission subnetwork output applied currents.
+        function Ias2 = compute_transmission_Ias2( self, encoding_scheme, applied_currents, array_utilities )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
-            if nargin < 6, set_flag = self.set_flag_DEFAULT; end                          	% [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 5, applied_currents = self.applied_currents; end                 	% [class] Array of Applied Current Class Objects.
-            if nargin < 4, R = self.R_DEFAULT; end                                       	% [V] Activation Domain.
-            if nargin < 3, Gm = self.Gm_DEFAULT; end                                        % [S] Membrane Conductance.
-            if nargin < 2, applied_current_IDs = 'all'; end                                	% [-] Applied Current IDs.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Validate the applied current IDs.
-            applied_current_IDs = self.validate_applied_current_IDs( applied_current_IDs, applied_currents );
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
             
-            % Determine how many applied currents to which we are going to apply the given method.
-            num_applied_currents_to_evaluate = length( applied_current_IDs );
+            % Compute the magnitude for the output applied current.                        
+            [ Ias2, ~ ] = applied_current.compute_transmission_Ias2( encoding_scheme, false, applied_current.applied_current_utilities );
             
-            % Preallocate an array to store the time vectors associated with the applied currents.
-            Ias = zeros( 1, num_applied_currents_to_evaluate );
+        end
+        
+        
+        % ---------- Addition Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the addition subnetwork output applied currents.
+        function Ias_n = compute_addition_Iasn( self, encoding_scheme, applied_currents, array_utilities )
             
-            % Evaluate the given applied current method for each neuron.
-            for k = 1:num_applied_currents_to_evaluate               % Iterate through each of the applied currents of interest...
-                
-                % Retrieve the index associated with this applied current ID.
-                applied_current_index = self.get_applied_current_index( applied_current_IDs( k ), applied_currents, undetected_option );
-                
-                % Compute the magnitude for this applied current.
-                [ Ias( k ), applied_currents( applied_current_index ) ] = applied_currents( applied_current_index ).compute_centering_Ias( Gm, R, true, applied_currents( applied_current_index ).applied_current_utilities );
-                
-            end
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Determine whether to update the applied current manager.
-            if set_flag, self.applied_currents = applied_currents; end
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias_n, ~ ] = applied_current.compute_addition_Iasn( encoding_scheme, false, applied_current.applied_current_utilities );
+            
+        end
+        
+        
+        % ---------- Subtraction Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the subtraction subnetwork output applied currents.
+        function Ias_n = compute_subtraction_Iasn( self, encoding_scheme, applied_currents, array_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias_n, ~ ] = applied_current.compute_subtraction_Iasn( encoding_scheme, false, applied_current.applied_current_utilities );
             
         end
         
@@ -1781,6 +1823,114 @@ classdef applied_current_manager_class
             
         end
                 
+        
+        % ---------- Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the division subnetwork output applied currents.
+        function Ias3 = compute_division_Ias3( self, encoding_scheme, applied_currents, array_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias3, ~ ] = applied_current.compute_division_Ias3( encoding_scheme, false, applied_current.applied_current_utilities );
+            
+        end
+        
+        
+        % ---------- Reduced Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the reduced division subnetwork output applied currents.
+        function Ias3 = compute_reduced_division_Ias3( self, encoding_scheme, applied_currents, array_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias3, ~ ] = applied_current.compute_reduced_division_Ias3( encoding_scheme, false, applied_current.applied_current_utilities );
+            
+        end
+        
+        
+        % ---------- Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the division after inversion subnetwork output applied currents.
+        function Ias3 = compute_dai_Ias3( self, encoding_scheme, applied_currents, array_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias3, ~ ] = applied_current.compute_dai_Ias3( encoding_scheme, false, applied_current.applied_current_utilities );
+            
+        end
+        
+        
+        % ---------- Reduced Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of the reduced division after inversion subnetwork output applied currents.
+        function Ias3 = compute_reduced_dai_Ias3( self, encoding_scheme, applied_currents, array_utilities )
+            
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Define the dummy applied current properties.
+            ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities );      % [#] Dummy Applied Current ID.
+            name = 'Dummy Current';                                                                 % [str] Dummy Applied Curret Name.
+            to_neuron_ID = 0;                                                                       % [#] Dummy Neuron ID to Which Current is Applied.
+            ts = 0;                                                                                 % [s] Dummy Current Time Vector.
+            Ias = 0;                                                                                % [A] Dummy Applied Current Magnitudes.
+            enabled_flag = false;                                                                   % [F] Dummy Enabled Flags.
+                        
+            % Create a dummy applied current to calculate the applied current magnitude.
+            [ ~, applied_current, ~, ~ ] = self.create_applied_current( ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, false, false, array_utilities );
+            
+            % Compute the magnitude for the output applied current.                        
+            [ Ias3, ~ ] = applied_current.compute_reduced_dai_Ias3( encoding_scheme, false, applied_current.applied_current_utilities );
+            
+        end
+        
         
         % ---------- Multiplication Subnetwork Functions ----------
         
@@ -1863,6 +2013,45 @@ classdef applied_current_manager_class
                 
                 % Compute the magnitude for this applied current.
                 [ Ias3( k ), applied_currents( applied_current_index ) ] = applied_currents( applied_current_index ).compute_reduced_multiplication_Ias3( these_parameters, encoding_scheme, true, applied_currents( applied_current_index ).applied_current_utilities );
+                
+            end
+            
+            % Determine whether to update the applied current manager.
+            if set_flag, self.applied_currents = applied_currents; end
+            
+        end
+        
+        
+        % ---------- Centering Subnetwork Functions ----------
+        
+        % Implement a function to compute the magnitude of centering subnetwork applied currents.
+        function [ Ias, applied_currents, self ] = compute_centering_Ias( self, applied_current_IDs, Gm, R, applied_currents, set_flag, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 6, set_flag = self.set_flag_DEFAULT; end                          	% [T/F] Set Flag. (Determines whether to updated the applied current manager.)
+            if nargin < 5, applied_currents = self.applied_currents; end                 	% [class] Array of Applied Current Class Objects.
+            if nargin < 4, R = self.R_DEFAULT; end                                       	% [V] Activation Domain.
+            if nargin < 3, Gm = self.Gm_DEFAULT; end                                        % [S] Membrane Conductance.
+            if nargin < 2, applied_current_IDs = 'all'; end                                	% [-] Applied Current IDs.
+            
+            % Validate the applied current IDs.
+            applied_current_IDs = self.validate_applied_current_IDs( applied_current_IDs, applied_currents );
+            
+            % Determine how many applied currents to which we are going to apply the given method.
+            num_applied_currents_to_evaluate = length( applied_current_IDs );
+            
+            % Preallocate an array to store the time vectors associated with the applied currents.
+            Ias = zeros( 1, num_applied_currents_to_evaluate );
+            
+            % Evaluate the given applied current method for each neuron.
+            for k = 1:num_applied_currents_to_evaluate               % Iterate through each of the applied currents of interest...
+                
+                % Retrieve the index associated with this applied current ID.
+                applied_current_index = self.get_applied_current_index( applied_current_IDs( k ), applied_currents, undetected_option );
+                
+                % Compute the magnitude for this applied current.
+                [ Ias( k ), applied_currents( applied_current_index ) ] = applied_currents( applied_current_index ).compute_centering_Ias( Gm, R, true, applied_currents( applied_current_index ).applied_current_utilities );
                 
             end
             
@@ -3520,29 +3709,19 @@ classdef applied_current_manager_class
         
         
         %% Subnetwork Applied Current Design Functions
-        
-        %{
-        
+                
         % ---------- Transmission Subnetwork Functions ----------
         
         % Implement a function to design the applied currents for a transmission subnetwork.
-        function [ Ias, applied_currents, self ] = design_transmission_applied_currents( self, neuron_IDs, encoding_scheme, applied_currents, set_flag, undetected_option )
+        function Ias2 = design_transmission_applied_current( self, encoding_scheme, applied_currents, array_utilities )
         
-            % Compute the number of addition neurons.
-            n_neurons = self.num_transmission_neurons_DEFAULT;
-            
             % Set the default input arguments.
-            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
-            if nargin < 5, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 4, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
-            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 2, neuron_IDs = 1:n_neurons; end                                                         % [#] Neuron IDs
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Retrieve the applied current ID associated with the neuron ID.
-            applied_current_IDs = self.to_neuron_ID2applied_current_ID( neuron_IDs, applied_currents, undetected_option );
-            
-            % Compute the applied current magnitudes of this subnetwork.
-            [ Ias, applied_currents, self ] = self.compute_transmission_Ias( applied_current_IDs, encoding_scheme, applied_currents, set_flag, undetected_option );
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias2 = self.compute_transmission_Ias2( encoding_scheme, applied_currents, array_utilities );
             
         end
         
@@ -3550,51 +3729,33 @@ classdef applied_current_manager_class
         % ---------- Addition Subnetwork Functions ----------
             
         % Implement a function to design the applied currents for a addition subnetwork.
-        function [ Ias, applied_currents, self ] = design_addition_applied_currents( self, neuron_IDs, encoding_scheme, applied_currents, set_flag, undetected_option )
-            
-            % Compute the number of addition neurons.
-            n_neurons = self.num_addition_neurons_DEFAULT;
-            
+        function Ias_n = design_addition_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
             % Set the default input arguments.
-            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
-            if nargin < 5, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 4, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
-            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 2, neuron_IDs = 1:n_neurons; end                                                         % [#] Neuron IDs
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Retrieve the applied current IDs associated with the provided neuron IDs.
-            applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias_n = self.compute_addition_Iasn( encoding_scheme, applied_currents, array_utilities );
             
-            % Compute the addition current magnitudes.
-            [ Ias, applied_currents, self ] = self.compute_addition_Ias( applied_current_IDs, encoding_scheme, applied_currents, set_flag, undetected_option );
-                        
         end
-
+        
         
         % ---------- Subtraction Subnetwork Functions ----------
 
         % Implement a function to design the applied currents for a subtraction subnetwork.
-        function [ Ias, applied_currents, self ] = design_subtraction_applied_currents( self, neuron_IDs, encoding_scheme, applied_currents, set_flag, undetected_option )
-            
-            % Compute the number of subtraction neurons.
-            n_neurons = self.num_subtraction_neurons_DEFAULT;
-            
+        function Ias_n = design_subtraction_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
             % Set the default input arguments.
-            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
-            if nargin < 5, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 4, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
-            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 2, neuron_IDs = 1:n_neurons; end                                                         % [#] Neuron IDs
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Retrieve the applied current IDs associated with the provided neuron IDs.
-            applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
-            
-            % Compute the applied current magnitudes for this subnetwork.
-            [ Ias, applied_currents, self ] = compute_subtraction_Ias( applied_current_IDs, encoding_scheme, applied_currents, set_flag, undetected_option );
+            % Compute the applied current magnitudes of this subnetwork.
+            Ias_n = self.compute_subtraction_Iasn( encoding_scheme, applied_currents, array_utilities );
             
         end
-        
-        %}
            
         
         % ---------- Inversion Subnetwork Functions ----------
@@ -3653,32 +3814,68 @@ classdef applied_current_manager_class
         end
         
         
-        %{
-        
         % ---------- Division Subnetwork Functions ----------
 
         % Implement a function to design the applied currents for a division subnetwork.
-        function [ Ias, applied_currents, self ] = design_division_applied_currents( self, neuron_IDs, encoding_scheme, applied_currents, set_flag, undetected_option )
-            
-            % Compute the number of division neurons.
-            n_neurons = self.num_division_neurons_DEFAULT;
-            
+        function Ias3 = design_division_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
             % Set the default input arguments.
-            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end          % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
-            if nargin < 5, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 4, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
-            if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end
-            if nargin < 2, neuron_IDs = 1:n_neurons; end                                                         % [#] Neuron IDs
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
             
-            % Retrieve the applied current IDs associated with the provided neuron IDs.
-            applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias3 = self.compute_division_Ias3( encoding_scheme, applied_currents, array_utilities );
             
-            % Compute the applied current magnitudes for this subnetwork.            
-            [ Ias, applied_currents, self ] = self.compute_division_Ias( applied_current_IDs, encoding_scheme, applied_currents, set_flag, undetected_option );
-
         end
         
-        %}
+        
+        % ---------- Reduced Division Subnetwork Functions ----------
+
+        % Implement a function to design the reduced applied currents for a reduced division subnetwork.
+        function Ias3 = design_reduced_division_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias3 = self.compute_reduced_division_Ias3( encoding_scheme, applied_currents, array_utilities );
+            
+        end
+        
+        
+        % ---------- Division After Inversion Subnetwork Functions ----------
+
+        % Implement a function to design the applied currents for a division after inversion subnetwork.
+        function Ias3 = design_dai_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias3 = self.compute_dai_Ias3( encoding_scheme, applied_currents, array_utilities );
+            
+        end
+        
+        
+        % ---------- Reduced Division After Inversion Subnetwork Functions ----------
+
+        % Implement a function to design the applied currents for a reduced division after inversion subnetwork.
+        function Ias3 = design_reduced_dai_applied_current( self, encoding_scheme, applied_currents, array_utilities )
+        
+            % Set the default input arguments.
+            if nargin < 4, array_utilities = self.array_utilities; end                              % [class] Array Utilities Class Object.
+            if nargin < 3, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
+            if nargin < 2, encoding_scheme = self.encoding_scheme_DEFAULT; end                      % [str] Encoding Scheme.
+            
+            % Compute the applied current magnitudes of this subnetwork.            
+            Ias3 = self.compute_dai_Ias3( encoding_scheme, applied_currents, array_utilities );
+            
+        end
         
         
         % ---------- Multiplication Subnetwork Functions ----------

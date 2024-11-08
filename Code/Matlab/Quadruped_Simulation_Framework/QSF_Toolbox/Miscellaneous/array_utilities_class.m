@@ -45,7 +45,7 @@ classdef array_utilities_class
         
         
         % Implement a function to determine whether a value exists in an array.
-        function [ b_match_found, match_logicals, match_indexes ] = is_value_in_array( ~, value, array )
+        function [ match_found_flag, match_logicals, match_indexes ] = is_value_in_array( ~, value, array )
             
             % Determine how to process the inputs.
             if ( ~isempty( value ) ) && ( ~isempty( array ) )                           % If neither the value nor the array are empty...
@@ -63,12 +63,12 @@ classdef array_utilities_class
                 match_indexes = indexes( match_logicals );
 
                 % Determine whether the value is contained in the array.
-                b_match_found = any( match_logicals );
+                match_found_flag = any( match_logicals );
             
             else                                                                            % Otherwise...
                 
                 % Set the match found flag to false.
-                b_match_found = false;
+                match_found_flag = false;
                 
                 % Set the match logicals and match indexes to be empty.
                 [ match_logicals, match_indexes ] = deal( [  ] );
@@ -79,7 +79,7 @@ classdef array_utilities_class
         
         
         % Implement a function to determine whether any of an array of values is contained in a given array.
-        function [ b_match_founds, match_logicals, match_indexes ] = are_values_in_array( self, values, array )
+        function [ match_found_flags, match_logicals, match_indexes ] = are_values_in_array( self, values, array )
             
             % Retrieve the number of values to check.
             num_values = length( values );
@@ -88,14 +88,14 @@ classdef array_utilities_class
             num_array_values = length( array );
             
             % Preallocate arrays to store the uniqueness flags, match logicals, and match indexes.
-            b_match_founds = false( num_values, 1 );
+            match_found_flags = false( num_values, 1 );
             [ match_logicals, match_indexes ] = deal( zeros( num_values, num_array_values ) );
             
             % Determine whether each value is in the array.
             for k = 1:num_values                % Iterate through each of the values...
                 
                 % Determine whether this value is in the array.
-                [ b_match_founds( k ), match_logicals( k, : ), match_indexes( k, : ) ] = self.is_value_in_array( values( k ), array );
+                [ match_found_flags( k ), match_logicals( k, : ), match_indexes( k, : ) ] = self.is_value_in_array( values( k ), array );
                 
             end
             
