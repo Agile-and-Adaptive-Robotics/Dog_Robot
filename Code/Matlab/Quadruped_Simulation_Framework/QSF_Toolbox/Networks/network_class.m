@@ -6402,7 +6402,7 @@ classdef network_class
         
         
         % Implement a function to unpack the parameters for a relative addition subnetwork.
-        function [ cs_nm1, Rs, Gms, Cms ] = unpack_relative_addition_parameters( self, addition_parameters, neuron_manager, undetected_option )
+        function [ cs_nm2, Rs, Gms, Cms ] = unpack_relative_addition_parameters( self, addition_parameters, neuron_manager, undetected_option )
         
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
@@ -6413,7 +6413,7 @@ classdef network_class
             if isempty( addition_parameters )                   % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                cs_nm1 = self.c_relative_addition_DEFAULT*ones( 1, neuron_manager.num_neurons - 1 );
+                cs_nm2 = self.c_relative_addition_DEFAULT*ones( 1, neuron_manager.num_neurons - 2 );
                 Rs = neuron_manager.neurons.get_neuron_property( 'all', 'R', true, neuron_manager.neurons, undetected_option );
                 Gms = neuron_manager.neurons.get_neuron_property( 'all', 'Gm', true, neuron_manager.neurons, undetected_option );
                 Cms = neuron_manager.neurons.get_neuron_property( 'all', 'Cm', true, neuron_manager.neurons, undetected_option );
@@ -6421,7 +6421,7 @@ classdef network_class
             elseif length( addition_parameters ) == 4       	% If there are a specific number of parameters...
                 
                 % Unpack the parameters.
-                cs_nm1 = addition_parameters{ 1 };
+                cs_nm2 = addition_parameters{ 1 };
                 Rs = addition_parameters{ 2 };
                 Gms = addition_parameters{ 3 };
                 Cms = addition_parameters{ 4 };
@@ -9011,7 +9011,40 @@ classdef network_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to convert addition parameters to gain parameters.
+        function gain_parameters = addition_parameters2gain_parameters( self, addition_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, addition_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the addition parameters.
+                [ cs, ~, ~, ~ ] = self.unpack_absolute_addition_parameters( addition_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_addition_gain_parameters( cs );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the addition parameters.
+                [ cs_nm2, ~, ~, ~ ] = self.unpack_relative_addition_parameters( addition_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_addition_gain_parameters( cs_nm2 );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert addition parameters to neuron parameters.
         function neuron_parameters = addition_parameters2neuron_parameters( self, addition_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9102,7 +9135,40 @@ classdef network_class
         % ---------- Subtraction Subnetwork Functions ----------
         
         % Implement a function to convert subtraction parameters to gain parameters.
+        function gain_parameters = subtraction_parameters2gain_parameters( self, subtraction_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, subtraction_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the subtraction parameters.                
+                [ cs, ~, ~, ~, ~ ] = self.unpack_absolute_subtraction_parameters( subtraction_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_subtraction_gain_parameters( cs );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the subtraction parameters.                
+                [ cs_nm2, ~, ~, ~, ~ ] = self.unpack_relative_subtraction_parameters( subtraction_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_subtraction_gain_parameters( cs_nm2 );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert subtraction parameters to neuron parameters.
         function neuron_parameters = subtraction_parameters2neuron_parameters( self, subtraction_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9193,7 +9259,40 @@ classdef network_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to convert inversion parameters to gain parameters.
+        function gain_parameters = inversion_parameters2gain_parameters( self, inversion_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, inversion_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the inversion parameters.                                
+                [ c1, c3, delta, R1, ~, ~, ~, ~ ] = self.unpack_absolute_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_inversion_gain_parameters( c1, c3, delta, R1, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the inversion parameters.                                
+                [ c3, delta, ~, R2, ~, ~, ~, ~ ] = self.unpack_relative_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_inversion_gain_parameters( c3, delta, R2, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert inversion parameters to neuron parameters.
         function neuron_parameters = inversion_parameters2neuron_parameters( self, inversion_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9317,7 +9416,40 @@ classdef network_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to convert reduced inversion parameters to gain parameters.
+        function gain_parameters = reduced_inversion_parameters2gain_parameters( self, reduced_inversion_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, reduced_inversion_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the reduced inversion parameters.                                                
+                [ c1, delta, R1, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_absolute_inversion_gain_parameters( c1, delta, R1, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the reduced inversion parameters.                                                
+                [ delta, ~, R2, ~, ~, ~, ~ ] = self.unpack_reduced_relative_inversion_parameters( reduced_inversion_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_relative_inversion_gain_parameters( delta, R2, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert reduced inversion parameters to neuron parameters.
         function neuron_parameters = reduced_inversion_parameters2neuron_parameters( self, reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9445,7 +9577,40 @@ classdef network_class
         % ---------- Division Subnetwork Functions ----------
         
         % Implement a function to convert division parameters to gain parameters.
+        function gain_parameters = division_parameters2gain_parameters( self, division_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, division_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the division parameters.                                                
+                [ c1, c3, delta, R1, R2, ~, ~, ~, ~, ~, ~ ] = self.unpack_absolute_division_parameters( division_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.                
+                gain_parameters = self.pack_absolute_division_gain_parameters( c1, c3, delta, R1, R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the division parameters.                                                                
+                [ c3, delta, ~, ~, R3, ~, ~, ~, ~, ~, ~ ] = self.unpack_relative_division_parameters( division_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_division_gain_parameters( c3, delta, R3, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert division parameters to neuron parameters.
         function neuron_parameters = division_parameters2neuron_parameters( self, division_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9528,7 +9693,40 @@ classdef network_class
         % ---------- Reduced Division Subnetwork Functions ----------
         
         % Implement a function to convert reduced division parameters to gain parameters.
+        function gain_parameters = reduced_division_parameters2gain_parameters( self, reduced_division_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, reduced_division_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the reduced division parameters.                                                
+                [ c1, delta, R1, R2, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_division_parameters( reduced_division_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.                
+                gain_parameters = self.pack_reduced_absolute_division_gain_parameters( c1, delta, R1, R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the reduced division parameters.                                                                                
+                [ delta, ~, ~, R3, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_relative_division_parameters( reduced_division_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_relative_division_gain_parameters( delta, R3, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert reduced division parameters to neuron parameters.
         function neuron_parameters = reduced_division_parameters2neuron_parameters( self, reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9615,7 +9813,40 @@ classdef network_class
         % ---------- Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to convert division after inversion parameters to gain parameters.
+        function gain_parameters = dai_parameters2gain_parameters( self, dai_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, dai_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
 
+                % Unpack the division after inversion parameters.                                                                
+                [ c1, c3, ~, delta2, R1, R2, ~, ~, ~, ~, ~, ~ ] = self.unpack_absolute_dai_parameters( dai_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_dai_gain_parameters( c1, c3, delta2, R1, R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the division after inversion parameters.                                                                                
+                [ c3, delta1, delta2, ~, R2, R3, ~, ~, ~, ~, ~, ~ ] = self.unpack_relative_dai_parameters( dai_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_relative_dai_gain_parameters( c3, delta1, delta2, R2, R3, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+        
         
         % Implement a function to convert division after inversion parameters to neuron parameters.
         function neuron_parameters = dai_parameters2neuron_parameters( self, dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9698,7 +9929,40 @@ classdef network_class
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to convert reduced division after inversion parameters to gain parameters.
-        
+        function gain_parameters = reduced_dai_parameters2gain_parameters( self, reduced_dai_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 4, neuron_manager = self.neuron_manager; end
+            if nargin < 3, encoding_scheme = 'absolute'; end
+            if nargin < 2, reduced_dai_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
+
+                % Unpack the reduced division after inversion parameters.                                                                
+                [ c1, ~, delta2, R1, R2, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_dai_parameters( reduced_dai_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_absolute_dai_gain_parameters( c1, delta2, R1, R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the reduced division after inversion parameters.                                                                                
+                [ delta1, delta2, ~, R2, R3, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_relative_dai_parameters( dai_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_relative_dai_gain_parameters( delta1, delta2, R2, R3, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+
         
         % Implement a function to convert reduced division after inversion parameters to neuron parameters.
         function neuron_parameters = reduced_dai_parameters2neuron_parameters( self, reduced_dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9781,7 +10045,44 @@ classdef network_class
         % ---------- Multiplication Subnetwork Functions ----------
         
         % Implement a function to convert multiplication parameters to gain parameters.
-        
+        function gain_parameters = multiplication_parameters2gain_parameters( self, multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, neuron_manager = self.neuron_manager; end
+            if nargin < 4, encoding_scheme = 'absolute'; end
+            if nargin < 3, design_parameters = {  }; end
+            if nargin < 2, multiplication_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
+
+                % Unpack the multiplication parameters.
+                [ c1, c3, c4, c6, delta1, delta2, R1, R2, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_absolute_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
+                
+                % Unpack the design parameters.
+                R3 = design_parameters{ 1 };
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_absolute_multiplication_gain_parameters( c1, c3, c4, c6, delta1, delta2, R1, R2, R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the multiplication parameters.                                                                                
+                [ c3, c6, delta1, delta2, ~, ~, R3, R4, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_relative_multiplication_parameters( multiplication_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.                
+                gain_parameters = self.pack_relative_multiplication_gain_parameters( c3, c6, delta1, delta2, R3, R4, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
+
         
         % Implement a function to convert multiplication parameters to neuron parameters.
         function neuron_parameters = multiplication_parameters2neuron_parameters( self, multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
@@ -9909,6 +10210,43 @@ classdef network_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
         
         % Implement a function to convert reduced multiplication parameters to gain parameters.
+        function gain_parameters = reduced_multiplication_parameters2gain_parameters( self, reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option )
+            
+            % Set the default input arguments.
+            if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 5, neuron_manager = self.neuron_manager; end
+            if nargin < 4, encoding_scheme = 'absolute'; end
+            if nargin < 3, design_parameters = {  }; end
+            if nargin < 2, reduced_multiplication_parameters = {  }; end
+            
+            % Determine how to perform the parameter conversion.
+            if strcmpi( encoding_scheme, 'absolute' )                       % If the encoding scheme is 'absolute'...
+
+                % Unpack the multiplication parameters.
+                [ c1, c3, delta1, delta2, R1, R2, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_absolute_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
+                
+                % Unpack the design parameters.
+                R3 = design_parameters{ 1 };
+                
+                % Pack the gain parameters.
+                gain_parameters = self.pack_reduced_absolute_multiplication_gain_parameters( c1, c3, delta1, delta2, R1, R2, R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
+                
+                % Unpack the multiplication parameters.                  
+                [ delta1, delta2, ~, ~, R3, R4, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.unpack_reduced_relative_multiplication_parameters( reduced_multiplication_parameters, neuron_manager, undetected_option );
+                
+                % Pack the gain parameters.                
+                gain_parameters = self.pack_reduced_relative_multiplication_gain_parameters( delta1, delta2, R3, R4, neuron_manager, undetected_option );
+                
+            else                                                            % Otherwise...
+                
+                % Throw an error.
+                error( 'Encoding scheme %s not recognized. Must be either ''absolute'' or ''relative.''\n', encoding_scheme )
+                
+            end
+            
+        end
         
         
         % Implement a function to convert reduced multiplication parameters to neuron parameters.
@@ -10115,7 +10453,7 @@ classdef network_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to design an addition subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, Rn, dEs, gs, Ia_n, neurons, synapses, neuron_manager, synapse_manager, self ] = design_addition_subnetwork( self, neuron_IDs, addition_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, Rn, dEs, gs, Ia_n, neurons, synapses, neuron_manager, synapse_manager, self ] = design_addition_subnetwork( self, neuron_IDs, addition_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                           	% [str] Undetected Option.
@@ -10158,11 +10496,26 @@ classdef network_class
             
             % -------------------- Synapse Design --------------------
             
-            % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_absolute_addition_synapse_design_parameters( Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_addition_synapse_design_parameters( cs( end ), Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.addition_parameters2synapse_parameters( addition_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.addition_parameters2synapse_parameters( addition_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the addition subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_addition_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10176,7 +10529,7 @@ classdef network_class
         % ---------- Subtraction Subnetwork Functions ----------
         
         % Implement a function to design a subtraction subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, Rn, dEs, gs, Ia_n, neurons, synapses, neuron_manager, synapse_manager, self ] = design_subtraction_subnetwork( self, neuron_IDs, subtraction_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, Rn, dEs, gs, Ia_n, neurons, synapses, neuron_manager, synapse_manager, self ] = design_subtraction_subnetwork( self, neuron_IDs, subtraction_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10193,8 +10546,11 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the subtraction parameters to gain parameters.
+            gain_parameters = self.subtraction_parameters2gain_parameters( subtraction_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the gains.
-            cs = self.network_utilities.compute_subtraction_cs( gain_parameters, encoding_scheme );
+            cs = self.compute_subtraction_cs( gain_parameters, encoding_scheme );
            
             
             % -------------------- Neuron Design --------------------
@@ -10214,11 +10570,26 @@ classdef network_class
             
             % -------------------- Synapse Design --------------------
             
-            % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            % Determine how to pack the design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_absolute_subtraction_synapse_design_parameters( Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_subtraction_synapse_design_parameters( cs( end ), Ia_n, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.            
-            synapse_parameters = network.subtraction_parameters2synapse_parameters( subtraction_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.subtraction_parameters2synapse_parameters( subtraction_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the subtraction subnetwork synapses.                                    
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_subtraction_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10266,7 +10637,7 @@ classdef network_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to design an inversion subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R2, dEs21, gs21, Ias2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_inversion_subnetwork( self, neuron_IDs, inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R2, dEs21, gs21, Ias2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_inversion_subnetwork( self, neuron_IDs, inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10284,8 +10655,14 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the inversion parameters to gain parameters.
+            gain_parameters = self.inversion_parameters2gain_parameters( inversion_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2, c3 ] = self.network_utilities.compute_inversion_cs( gain_parameters, encoding_scheme );
+            [ c1, c2, c3 ] = self.compute_inversion_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2, c3 ];
             
             
             % -------------------- Neuron Design --------------------
@@ -10300,10 +10677,25 @@ classdef network_class
             % -------------------- Applied Current Design --------------------
             
             % Pack the applied current design parameters.
-            % applied_current_design_parameters = 
-            
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                                
+                applied_current_design_parameters = self.pack_absolute_inversion_app_current_design_parameters( R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                applied_current_design_parameters = self.pack_relative_inversion_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
+                        
             % Convert subnetwork parameters to applied current parameters.            
-            applied_current_parameters = network.inversion_parameters2applied_current_parameters( inversion_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            applied_current_parameters = network.inversion_parameters2applied_current_parameters( inversion_parameters, applied_current_design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
             
             % Design the inversion subnetwork applied current.            
             [ Ias2, applied_currents, applied_current_manager, network ] = network.design_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
@@ -10312,10 +10704,25 @@ classdef network_class
             % -------------------- Synapse Design --------------------
             
             % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_absolute_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.inversion_parameters2synapse_parameters( inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.inversion_parameters2synapse_parameters( inversion_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the inversion subnetwork synapse.                                    
             [ dEs21, gs21, ~, synapses, synapse_manager, network ] = network.design_inversion_synapse( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10329,7 +10736,7 @@ classdef network_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to design an inversion subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R2, dEs21, gs21, Ias2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_reduced_inversion_subnetwork( self, neuron_IDs, reduced_inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R2, dEs21, gs21, Ias2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_reduced_inversion_subnetwork( self, neuron_IDs, reduced_inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10345,10 +10752,17 @@ classdef network_class
             % Create an instance of the network object.
             network = self;
             
+            
             % -------------------- Gain Design --------------------
             
+            % Convert the reduced inversion parameters to gain parameters.
+            gain_parameters = self.reduced_inversion_parameters2gain_parameters( reduced_inversion_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2 ] = self.network_utilities.compute_reduced_inversion_cs( gain_parameters, encoding_scheme );
+            [ c1, c2 ] = self.compute_reduced_inversion_cs( gain_parameters, encoding_scheme );
+            
+            % Store the gains in an array.
+            cs = [ c1, c2 ];
             
             
             % -------------------- Neuron Design --------------------
@@ -10363,10 +10777,25 @@ classdef network_class
             % -------------------- Applied Current Design --------------------
             
             % Pack the applied current design parameters.
-            % applied_current_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                                
+                applied_current_design_parameters = self.pack_reduced_absolute_inversion_app_current_design_parameters( R2, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                applied_current_design_parameters = self.pack_reduced_relative_inversion_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to applied current parameters.            
-            applied_current_parameters = network.reduced_inversion_parameters2applied_current_parameters( reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
+            applied_current_parameters = network.reduced_inversion_parameters2applied_current_parameters( reduced_inversion_parameters, applied_current_design_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, undetected_option );
             
             % Design the inversion subnetwork applied current.            
             [ Ias2, applied_currents, applied_current_manager, network ] = network.design_reduced_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
@@ -10374,11 +10803,26 @@ classdef network_class
             
             % -------------------- Synapse Design --------------------
             
-            % Pack the design parameters.
-            % synapse_design_parameters = 
+            % Pack the synapse design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_reduced_absolute_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_reduced_relative_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.                        
-            synapse_parameters = network.reduced_inversion_parameters2synapse_parameters( reduced_inversion_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.reduced_inversion_parameters2synapse_parameters( reduced_inversion_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the inversion subnetwork synapse.                                    
             [ dEs21, gs21, ~, synapses, synapse_manager, network ] = network.design_reduced_inversion_synapse( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10392,7 +10836,7 @@ classdef network_class
         % ---------- Division Subnetwork Functions ----------
         
         % Implement a function to design a division subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_division_subnetwork( self, neuron_IDs, division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_division_subnetwork( self, neuron_IDs, division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10410,8 +10854,14 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the division parameters to gain parameters.
+            gain_parameters = self.division_parameters2gain_parameters( division_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2, c3 ] = self.network_utilities.compute_division_cs( gain_parameters, encoding_scheme );
+            [ c1, c2, c3 ] = self.compute_division_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2, c3 ];
             
             
             % -------------------- Neuron Design --------------------
@@ -10431,11 +10881,26 @@ classdef network_class
             
             % -------------------- Synapse Design --------------------
             
-            % Pack the design parameters.
-            % synapse_design_parameters = 
+            % Pack the synapse design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_absolute_division_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_division_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.  
-            synapse_parameters = network.division_parameters2synapse_parameters( division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.division_parameters2synapse_parameters( division_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_division_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10449,7 +10914,7 @@ classdef network_class
         % ---------- Reduced Division Subnetwork Functions ----------
         
         % Implement a function to design a reduced division subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_reduced_division_subnetwork( self, neuron_IDs, reduced_division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_reduced_division_subnetwork( self, neuron_IDs, reduced_division_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                   	% [str] Undetected Option.
@@ -10467,17 +10932,38 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the reduced division parameters to gain parameters.
+            gain_parameters = self.reduced_division_parameters2gain_parameters( reduced_division_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2 ] = self.network_utilities.compute_reduced_division_cs( gain_parameters, encoding_scheme );
+            [ c1, c2 ] = self.compute_reduced_division_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2 ];
             
             
             % -------------------- Neuron Design --------------------
             
-            % Pack the design requirements.
-            % neuron_design_requirements = 
+            % Pack the neuron design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                neuron_design_parameters = self.pack_reduced_absolute_division_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                neuron_design_parameters = self.pack_reduced_relative_division_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_division_parameters2neuron_parameters( reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.reduced_division_parameters2neuron_parameters( reduced_division_parameters, neuron_design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_reduced_division_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
@@ -10491,11 +10977,26 @@ classdef network_class
             
             % -------------------- Synapse Design --------------------
             
-            % Pack the design requirements.
-            % synapse_design_requirements = 
+            % Pack the synapse design parameters.
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_reduced_absolute_division_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_reduced_relative_division_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_division_parameters2synapse_parameters( reduced_division_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.reduced_division_parameters2synapse_parameters( reduced_division_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_division_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10509,7 +11010,7 @@ classdef network_class
         % ---------- Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to design a division after inversion subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R3, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_dai_subnetwork( self, neuron_IDs, dai_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_dai_subnetwork( self, neuron_IDs, dai_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10528,17 +11029,38 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the division after inversion parameters to gain parameters.
+            gain_parameters = self.dai_parameters2gain_parameters( dai_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
             [ c1, c2, c3 ] = self.compute_dai_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2, c3 ];
             
             
             % -------------------- Neuron Design --------------------
             
             % Pack the neuron design parameters.
-            % neuron_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                neuron_design_parameters = self.pack_absolute_dai_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                neuron_design_parameters = self.pack_relative_dai_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end  
             
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.dai_parameters2neuron_parameters( dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.dai_parameters2neuron_parameters( dai_parameters, neuron_design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_dai_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
@@ -10553,10 +11075,25 @@ classdef network_class
             % -------------------- Synapse Design --------------------
             
             % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_absolute_dai_synapse_design_parameters(  );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_dai_synapse_design_parameters( c1 );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.
-            synapse_parameters = network.dai_parameters2synapse_parameters( dai_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.dai_parameters2synapse_parameters( dai_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_dai_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10570,7 +11107,7 @@ classdef network_class
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
         
         % Implement a function to design a reduced division after inversion subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, R3, dEs, gs, neurons, synapses, neuron_manager, synapse_manager, self ] = design_reduced_dai_subnetwork( self, neuron_IDs, reduced_dai_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, R3, dEs, gs, Ia3, neurons, synapses, neuron_manager, synapse_manager, self ] = design_reduced_dai_subnetwork( self, neuron_IDs, reduced_dai_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10588,17 +11125,38 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Convert the reduced division after inversion parameters to gain parameters.
+            gain_parameters = self.reduced_dai_parameters2gain_parameters( reduced_dai_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2 ] = self.network_utilities.compute_reduced_dai_cs( gain_parameters, encoding_scheme );
+            [ c1, c2 ] = self.compute_reduced_dai_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2 ];
             
             
             % -------------------- Neuron Design --------------------
             
             % Pack the neuron design parameters.
-            % neuron_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                neuron_design_parameters = self.pack_reduced_absolute_dai_neuron_design_parameters( c2 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                neuron_design_parameters = self.pack_reduced_relative_dai_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end  
 
             % Convert subnetwork parameters to neuron parameters.
-            neuron_parameters = network.reduced_dai_parameters2neuron_parameters( reduced_dai_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.reduced_dai_parameters2neuron_parameters( reduced_dai_parameters, neuron_design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the division subnetwork neurons.
             [ Gnas, R3, neurons, neuron_manager, network ] = network.design_reduced_dai_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
@@ -10613,10 +11171,25 @@ classdef network_class
             % -------------------- Synapse Design --------------------
             
             % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_reduced_absolute_dai_synapse_design_parameters( R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_reduced_relative_dai_synapse_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert the subnetwork parameters to synapse parameters.
-            synapse_parameters = network.reduced_dai_parameters2synapse_parameters( reduced_dai_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.reduced_dai_parameters2synapse_parameters( reduced_dai_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the division subnetwork synapses.                                 
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_dai_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10630,7 +11203,7 @@ classdef network_class
         % ---------- Multiplication Subnetwork Functions ----------
         
         % Implement a function to design a multiplication subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ Gnas, Rs, dEs, gs, Ias3, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_multiplication_subnetwork( self, neuron_IDs, multiplication_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, Rs, dEs, gs, Ias3, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_multiplication_subnetwork( self, neuron_IDs, multiplication_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10649,17 +11222,41 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Define the gain design parameters.
+            gain_design_parameters = { R3 };
+            
+            % Convert the multiplication parameters to gain parameters.
+            gain_parameters = self.multiplication_parameters2gain_parameters( multiplication_parameters, gain_design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2, c3, c4, c5, c6 ] = self.network_utilities.compute_multiplication_cs( gain_parameters, encoding_scheme );
+            [ c1, c2, c3, c4, c5, c6 ] = self.compute_multiplication_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2, c3, c4, c5, c6 ];
             
             
             % -------------------- Neuron Design --------------------
             
             % Pack the neuron design parameters.
-            % neuron_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                neuron_design_parameters = self.pack_absolute_multiplication_neuron_design_parameters( c5 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                neuron_design_parameters = self.pack_relative_multiplication_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end  
             
             % Convert subnetwork parameters to neuron parameters.            
-            neuron_parameters = network.multiplication_parameters2neuron_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.multiplication_parameters2neuron_parameters( multiplication_parameters, neuron_design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the multiplication subnetwork neurons.                                    
             [ Gnas, Rs, neurons, neuron_manager, network ] = network.design_multiplication_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
@@ -10668,10 +11265,25 @@ classdef network_class
             % -------------------- Applied Current Design --------------------
             
             % Pack the applied current design parameters.
-            % applied_current_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                                
+                applied_current_design_parameters = self.pack_absolute_multiplication_app_current_design_parameters( R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                applied_current_design_parameters = self.pack_relative_multiplication_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to applied current parameters.
-            applied_current_parameters = network.multiplication_parameters2applied_current_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            applied_current_parameters = network.multiplication_parameters2applied_current_parameters( multiplication_parameters, applied_current_design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
             
             % Design the multiplication subnetwork applied currents.                                    
             [ Ias3, applied_currents, applied_current_manager, network ] = network.design_multiplication_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
@@ -10680,10 +11292,25 @@ classdef network_class
             % -------------------- Synapse Design --------------------
             
             % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                synapse_design_parameters = self.pack_absolute_multiplication_synapse_design_parameters( R3, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_relative_multiplication_synapse_design_parameters( c4, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.            
-            synapse_parameters = network.multiplication_parameters2synapse_parameters( multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.multiplication_parameters2synapse_parameters( multiplication_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the multiplication subnetwork synapses.            
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_multiplication_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
@@ -10697,7 +11324,7 @@ classdef network_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
         
         % Implement a function to design a reduced multiplication subnetwork ( using the specific neurons, synapses, and applied currents ).
-        function [ Gnas, Rs, dEs, gs, Ias3, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_reduced_multiplication_subnetwork( self, neuron_IDs, reduced_multiplication_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
+        function [ cs, Gnas, Rs, dEs, gs, Ias3, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_reduced_multiplication_subnetwork( self, neuron_IDs, reduced_multiplication_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
@@ -10716,17 +11343,41 @@ classdef network_class
             
             % -------------------- Gain Design --------------------
             
+            % Define the gain design parameters.
+            gain_design_parameters = { R3 };
+            
+            % Convert the reduced multiplication parameters to gain parameters.
+            gain_parameters = self.reduced_multiplication_parameters2gain_parameters( reduced_multiplication_parameters, gain_design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            
             % Compute the subnetwork gains.
-            [ c1, c2, c3, c4 ] = self.network_utilities.compute_reduced_multiplication_cs( gain_parameters, encoding_scheme );
+            [ c1, c2, c3, c4 ] = self.compute_reduced_multiplication_cs( gain_parameters, encoding_scheme );
+            
+            % Store the subnetwork gains in an array.
+            cs = [ c1, c2, c3, c4 ];
             
             
             % -------------------- Neuron Design --------------------
             
             % Pack the neuron design parameters.
-            % neuron_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.
+                neuron_design_parameters = self.pack_reduced_absolute_multiplication_neuron_design_parameters( c2, c4 );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                neuron_design_parameters = self.pack_reduced_relative_multiplication_neuron_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end  
             
             % Convert subnetwork parameters to neuron parameters.            
-            neuron_parameters = network.reduced_multiplication_parameters2neuron_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, undetected_option );
+            neuron_parameters = network.reduced_multiplication_parameters2neuron_parameters( reduced_multiplication_parameters, neuron_design_parameters, encoding_scheme, neuron_manager, undetected_option );
             
             % Design the multiplication subnetwork neurons.                                                
             [ Gnas, Rs, neurons, neuron_manager, network ] = network.design_reduced_multiplication_neurons( neuron_IDs, neuron_parameters, encoding_scheme, neuron_manager, true, undetected_option );
@@ -10735,10 +11386,25 @@ classdef network_class
             % -------------------- Applied Current Design --------------------
             
             % Pack the applied current design parameters.
-            % applied_current_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                                
+                applied_current_design_parameters = self.pack_reduced_absolute_mult_app_current_design_parameters( R3, neuron_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                applied_current_design_parameters = self.pack_reduced_relative_mult_app_current_design_parameters(  );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to applied current parameters.            
-            applied_current_parameters = network.reduced_multiplication_parameters2applied_current_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
+            applied_current_parameters = network.reduced_multiplication_parameters2applied_current_parameters( reduced_multiplication_parameters, applied_current_design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
             
             % Design the multiplication subnetwork applied currents.                                    
             [ Ias3, applied_currents, applied_current_manager, network ] = network.design_reduced_multiplication_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
@@ -10747,10 +11413,25 @@ classdef network_class
             % -------------------- Synapse Design --------------------
             
             % Pack the synapse design parameters.
-            % synapse_design_parameters = 
+            if strcmpi( encoding_scheme, 'absolute' )               % If the encoding scheme is 'absolute'...
+
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_reduced_absolute_multiplication_synapse_design_parameters( R3, R4, Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
+                
+                % Pack the design parameters.                
+                synapse_design_parameters = self.pack_reduced_relative_multiplication_synapse_design_parameters( Ia3, neuron_manager, applied_current_manager, undetected_option );
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unrecognized encoding scheme.' )
+                
+            end 
             
             % Convert subnetwork parameters to synapse parameters.            
-            synapse_parameters = network.reduced_multiplication_parameters2synapse_parameters( reduced_multiplication_parameters, design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
+            synapse_parameters = network.reduced_multiplication_parameters2synapse_parameters( reduced_multiplication_parameters, synapse_design_parameters, encoding_scheme, neuron_manager, synapse_manager, undetected_option );
             
             % Design the multiplication subnetwork synapses.            
             [ dEs, gs, ~, synapses, synapse_manager, network ] = network.design_reduced_multiplication_synapses( neuron_IDs, synapse_parameters, encoding_scheme, synapse_manager, true, undetected_option );
