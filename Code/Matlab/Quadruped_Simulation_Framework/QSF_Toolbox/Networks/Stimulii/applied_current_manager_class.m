@@ -2415,7 +2415,7 @@ classdef applied_current_manager_class
             if ~iscell( names ), names = { names }; end
             
             % Determine whether the applied current properties are relevant.
-            valid_flag = ( n_applied_currents == length( IDs ) ) && ( n_applied_currents == length( names ) &&  n_applied_currents == length( to_neuron_IDs ) ) && ( n_applied_currents == length( ts ) ) && ( n_applied_currents == length( Ias ) ) && ( n_applied_currents == length( enabled_flags ) );
+            valid_flag = ( n_applied_currents == length( IDs ) ) && ( n_applied_currents == length( names ) &&  n_applied_currents == length( to_neuron_IDs ) ) && ( n_applied_currents == size( ts, 2 ) ) && ( n_applied_currents == size( Ias, 2 ) ) && ( n_applied_currents == length( enabled_flags ) );
             
         end
         
@@ -2916,16 +2916,16 @@ classdef applied_current_manager_class
         function [ ID_new, applied_current_new, applied_currents, self ] = create_applied_current( self, ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, set_flag, as_cell_flag, array_utilities )
             
             % Set the default input arguments.
-            if nargin < 11, array_utilities = self.array_utilities; end                                                      % [class] Array Utilities Class.
-            if nargin < 10, as_cell_flag = self.as_cell_flag_DEFAULT; end
-            if nargin < 9, set_flag = self.set_flag_DEFAULT; end                                    % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
-            if nargin < 8, applied_currents = self.applied_currents; end                            % [class] Array of Applied Current Class Objects.
-            if nargin < 7, enabled_flag = self.enabled_flag_DEFAULT; end
-            if nargin < 6, Ias = self.Ias_DEFAULT; end
-            if nargin < 5, ts = self.ts_DEFAULT; end
-            if nargin < 4, to_neuron_ID = self.to_neuron_ID_DEFAULT; end
-            if nargin < 3, name = ''; end
-            if nargin < 2, ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities ); end
+            if nargin < 11, array_utilities = self.array_utilities; end                                                     % [class] Array Utilities Class.
+            if nargin < 10, as_cell_flag = self.as_cell_flag_DEFAULT; end                                                   % [T/F] As Cell Flag.
+            if nargin < 9, set_flag = self.set_flag_DEFAULT; end                                                            % [T/F] Set Flag. (Determines whether to updated the applied current manager.)
+            if nargin < 8, applied_currents = self.applied_currents; end                                                    % [class] Array of Applied Current Class Objects.
+            if nargin < 7, enabled_flag = self.enabled_flag_DEFAULT; end                                                    % [T/F] Enabled Flag.
+            if nargin < 6, Ias = self.Ias_DEFAULT; end                                                                      % [A] Applied Current Manitudes.
+            if nargin < 5, ts = self.ts_DEFAULT; end                                                                        % [s] Applied Current Times.
+            if nargin < 4, to_neuron_ID = self.to_neuron_ID_DEFAULT; end                                                    % [#] Neuron ID to which Current is Applied.
+            if nargin < 3, name = ''; end                                                                                   % [str] Applied Current Name.
+            if nargin < 2, ID = self.generate_unique_applied_current_ID( applied_currents, array_utilities ); end           % [#] Applied Current ID.
             
             % Process the applied current creation properties.
             [ ~, ID, name, to_neuron_ID, ts, Ias, enabled_flag ] = self.process_applied_current_creation_inputs( 1, ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, array_utilities );

@@ -248,6 +248,7 @@ classdef neuron_manager_class
         undetected_option_DEFAULT = 'error';                                	% [str] Default Undetected Option ('Error', 'Warning', 'Ignore'). Determines what to do when neuron IDs are not detected.
         set_flag_DEFAULT = true;                                               	% [T/F] Default Flag to determine whether to update the neuron manager after operations.
         as_cell_flag_DEFAULT = false;                                       	% [T/F] Default Flag to determine whether parameters are stored in cells.
+        as_matrix_flag_DEFAULT = true;
         
         % Define the default saving and loading properties.
         file_name_DEFAULT = 'Neuron_Manager.mat';                               % [str] Default File Name.

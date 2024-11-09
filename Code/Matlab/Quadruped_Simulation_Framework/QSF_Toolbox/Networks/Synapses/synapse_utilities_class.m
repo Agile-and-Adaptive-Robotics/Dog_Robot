@@ -207,7 +207,7 @@ classdef synapse_utilities_class
                 % Set the valid flag to true;
                 valid_flag = true;
                 
-            else                                                                        % Otherwise...                        % Otherwise....
+            else                      	% Otherwise...
                 
                 % Set the valid flag to false.
                 valid_flag = false;

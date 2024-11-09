@@ -2406,10 +2406,11 @@ classdef synapse_class
         % ---------- Transmission Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 21 of a transmission subnetwork.
-        function [ gs21, self ] = compute_transmission_gs21( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs21, self ] = compute_transmission_gs21( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                      % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                      % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                  % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                 % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                	% [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                               % [-] Input Parameters Cell.
@@ -2447,10 +2448,11 @@ classdef synapse_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to compute the maximum synaptic conductance for the synapses of an addition subnetwork.
-        function [ gs_nk, self ] = compute_addition_gs( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs_nk, self ] = compute_addition_gs( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                      % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                   % [-] Input Parameters Cell.
@@ -2488,10 +2490,11 @@ classdef synapse_class
         % ---------- Subtraction Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for the synapses of a subtraction subnetwork.
-        function [ gs_nk, self ] = compute_subtraction_gs( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs_nk, self ] = compute_subtraction_gs( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                              % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                              % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                           % [-] Input Parameters Cell.
@@ -2529,10 +2532,11 @@ classdef synapse_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to compute the maximum synaptic conductance for synapse 21 of an inversion subnetwork.
-        function [ gs21, self ] = compute_inversion_gs21( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs21, self ] = compute_inversion_gs21( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                      % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                      % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                 	% [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                 % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                  % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                               % [-] Input Parameters Cell.
@@ -2570,10 +2574,11 @@ classdef synapse_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 21 of a reduced inversion subnetwork.
-        function [ gs21, self ] = compute_reduced_inversion_gs21( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs21, self ] = compute_reduced_inversion_gs21( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                              % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                              % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                          % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                         % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                          % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                       % [-] Input Parameters Cell.
@@ -2611,10 +2616,11 @@ classdef synapse_class
         % ---------- Division Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 31 of a division subnetwork.
-        function [ gs31, self ] = compute_division_gs31( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs31, self ] = compute_division_gs31( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                            	% [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                              % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                           % [-] Input Parameters Cell.
@@ -2650,10 +2656,11 @@ classdef synapse_class
 
 
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a division subnetwork.
-        function [ gs32, self ] = compute_division_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_division_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                              % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                              % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                           % [-] Input Parameter Cell.
@@ -2691,10 +2698,11 @@ classdef synapse_class
         % ---------- Reduced Division Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 31 of a reduced division subnetwork.
-        function [ gs31, self ] = compute_reduced_division_gs31( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs31, self ] = compute_reduced_division_gs31( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                   	% [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                   % [-] Input Parameters Cell.
@@ -2730,10 +2738,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a reduced division subnetwork.
-        function [ gs32, self ] = compute_reduced_division_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_reduced_division_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                                     	% [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                                   % [-] Input Parameter Cell.
@@ -2771,10 +2780,11 @@ classdef synapse_class
         % ---------- Division After Inversion Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 31 of a division after inversion subnetwork.
-        function [ gs31, self ] = compute_dai_gs31( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs31, self ] = compute_dai_gs31( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                      % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                   % [-] Input Parameters Cell.
@@ -2810,10 +2820,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a division after inversion subnetwork.
-        function [ gs32, self ] = compute_dai_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_dai_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                      % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                   % [-] Input Parameters Cell.
@@ -2851,10 +2862,11 @@ classdef synapse_class
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 31 of a reduced division after inversion subnetwork.
-        function [ gs31, self ] = compute_reduced_dai_gs31( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs31, self ] = compute_reduced_dai_gs31( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                              % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                              % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                           % [-] Input Parameters Cell.
@@ -2890,10 +2902,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a reduced division after inversion subnetwork.
-        function [ gs32, self ] = compute_reduced_dai_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_reduced_dai_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                              % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                              % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                           % [-] Input Parameters Cell.
@@ -2931,10 +2944,11 @@ classdef synapse_class
         % ---------- Multiplication Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 41 of a multiplication subnetwork.
-        function [ gs41, self ] = compute_multiplication_gs41( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs41, self ] = compute_multiplication_gs41( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                      % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                      % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                                  % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                                 % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                                  % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                               % [-] Input Parameters Cell.
@@ -2970,10 +2984,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a multiplication subnetwork.
-        function [ gs32, self ] = compute_multiplication_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_multiplication_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                          % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                      % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                     % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                      % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                   % [-] Input Parameters Cell.
@@ -3009,10 +3024,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 43 of a multiplication subnetwork.
-        function [ gs43, self ] = compute_multiplication_gs43( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs43, self ] = compute_multiplication_gs43( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                      % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                      % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                                  % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                                 % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                                  % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                               % [-] Input Parameters Cell.
@@ -3050,10 +3066,11 @@ classdef synapse_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
 
         % Implement a function to compute the maximum synaptic conductance for synapse 41 of a reduced multiplication subnetwork.
-        function [ gs41, self ] = compute_reduced_multiplication_gs41( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs41, self ] = compute_reduced_multiplication_gs41( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                              % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                              % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                                          % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                                         % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                                          % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                                       % [-] Input Parameters Cell.
@@ -3089,10 +3106,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 32 of a reduced multiplication subnetwork.
-        function [ gs32, self ] = compute_reduced_multiplication_gs32( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs32, self ] = compute_reduced_multiplication_gs32( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                  % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                              % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                             % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                            	% [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                           % [-] Input Parameters Cell.
@@ -3128,10 +3146,11 @@ classdef synapse_class
 
         
         % Implement a function to compute the maximum synaptic conductance for synapse 43 of a reduced multiplication subnetwork.
-        function [ gs43, self ] = compute_reduced_multiplication_gs43( self, parameters, encoding_scheme, set_flag, synapse_utilities )
+        function [ gs43, self ] = compute_reduced_multiplication_gs43( self, parameters, encoding_scheme, set_flag, validation_flag, synapse_utilities )
             
             % Set the default input arguments.
-            if nargin < 5, synapse_utilities = self.synapse_utilities; end                                                                              % [class] Synapse Utilities.
+            if nargin < 6, synapse_utilities = self.synapse_utilities; end                                                                              % [class] Synapse Utilities.
+            if nargin < 5, validation_flag = self.validation_flag_DEFAULT; end                                                                          % [T/F] Validation Flag.
             if nargin < 4, set_flag = true; end                                                                                                         % [T/F] Set Flag.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                                          % [str] Encoding Scheme.
             if nargin < 2, parameters = {  }; end                                                                                                       % [-] Input Parameters Cell.

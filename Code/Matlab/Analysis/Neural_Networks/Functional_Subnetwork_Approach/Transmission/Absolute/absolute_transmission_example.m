@@ -13,6 +13,9 @@ load_directory = '.\Load';                         	% [str] Load Directory.
 % Define the level of verbosity.
 verbose_flag = true;                             	% [T/F] Printing Flag.
 
+% Define the undetected option.
+undetected_option = 'error';                        % [str] Undetected Option.
+
 % Define the network integration step size.
 network_dt = 1.3e-4;                                % [s] Simulation Timestep.
 
@@ -48,7 +51,7 @@ input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Inp
 n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
 
 % Construct the simulation times associated with the input currents.
-ts = 0:network_dt:network_tf;                       % [s] Simulation Times.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
 
 % Define the current magnitudes.
 Ias1_mag = R1*Gm1;                                  % [A] Applied Current Magnitude.
@@ -63,7 +66,7 @@ Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
 network = network_class( network_dt, network_tf );
 
 % Create a transmission subnetwork.
-[ c, Gnas, R2, dEs21, gs21, neurons, synapses, neuron_manager, synapse_manager, network ] = network.create_transmission_subnetwork( transmission_parameters, encoding_scheme, network.neuron_manager, network.synapse_manager, network.applied_current_manager, true, false, 'error' );
+[ c, Gnas, R2, dEs21, gs21, Ia2, neurons, synapses, neuron_manager, synapse_manager, network ] = network.create_transmission_subnetwork( transmission_parameters, encoding_scheme, network.neuron_manager, network.synapse_manager, network.applied_current_manager, true, true, false, undetected_option );
 
 % Create the input applied current.
 [ ~, ~, ~, network.applied_current_manager ] = network.applied_current_manager.create_applied_current( input_current_ID, input_current_name, input_current_to_neuron_ID, ts, Ias1, true, network.applied_current_manager.applied_currents, true, false, network.applied_current_manager.array_utilities );
@@ -71,8 +74,20 @@ network = network_class( network_dt, network_tf );
 
 %% Compute Absolute Transmission Numerical Stability Analysis Parameters.
 
+% Define the property retrieval settings.
+as_matrix_flag = true;
+
+% Retrieve properties from the existing network.
+Cms = network.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
+Gms = network.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
+Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
+gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );
+dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );
+Us = zeros( network.neuron_manager.num_neurons, 1 );
+dt0 = 1e-6;
+
 % Compute the maximum RK4 step size and condition number.
-[ A, dt_max, condition_number ] = network.RK4_stability_analysis( cell2mat( network.neuron_manager.get_neuron_property( 'all', 'Cm' ) ), cell2mat( network.neuron_manager.get_neuron_property( 'all', 'Gm' ) ), cell2mat( network.neuron_manager.get_neuron_property( 'all', 'R' ) ), network.get_gsynmaxs( 'all' ), network.get_dEsyns( 'all' ), zeros( network.neuron_manager.num_neurons, 1 ), 1e-6 );
+[ As, dts, condition_numbers ] = network.RK4_stability_analysis( Cms, Gms, Rs, gs, dEs, Us, dt0, network.neuron_manager, network.synapse_manager, undetected_option, network.network_utilities );
 
 % Print out the stability information.
 fprintf( '\nSTABILITY SUMMARY:\n' )

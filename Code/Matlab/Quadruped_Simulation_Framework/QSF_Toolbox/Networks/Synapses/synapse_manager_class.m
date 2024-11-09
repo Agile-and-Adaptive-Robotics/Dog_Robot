@@ -9294,10 +9294,11 @@ classdef synapse_manager_class
         % ---------- Transmission Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 21 of a transmission subnetwork.
-        function [ gs21, synapses, self ] = compute_transmission_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs21, synapses, self ] = compute_transmission_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9314,8 +9315,8 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
 
             % Compute and set the required parameter for this synapse.
-            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_transmission_gs21( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
-           
+            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_transmission_gs21( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
+                       
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
             
@@ -9325,10 +9326,11 @@ classdef synapse_manager_class
         % ---------- Addition Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance of addition subnetwork synapses.
-        function [ gs_nk, synapses, self ] = compute_addition_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs_nk, synapses, self ] = compute_addition_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9357,7 +9359,7 @@ classdef synapse_manager_class
                 these_parameters = self.get_addition_gs_parameters( k, parameters, encoding_scheme );
                 
                 % Compute the required parameter for this synapse.
-                [ gs_nk( k ), synapses( synapse_index ) ] = synapses( synapse_index ).compute_addition_gs( these_parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+                [ gs_nk( k ), synapses( synapse_index ) ] = synapses( synapse_index ).compute_addition_gs( these_parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
                                 
             end
             
@@ -9370,10 +9372,11 @@ classdef synapse_manager_class
         % ---------- Subtraction Subnetwork Functions ----------
         
         % Implement a function to compute and set the maximum synaptic conductance of subtraction subnetwork synapses.
-        function [ gs_nk, synapses, self ] = compute_subtraction_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs_nk, synapses, self ] = compute_subtraction_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9402,7 +9405,7 @@ classdef synapse_manager_class
                 these_parameters = self.get_subtraction_gs_parameters( k, parameters, encoding_scheme );
                 
                 % Compute and set the required parameter for this synapse.
-                [ gs_nk( k ), synapses( synapse_index ) ] = synapses( synapse_index ).compute_subtraction_gs( these_parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+                [ gs_nk( k ), synapses( synapse_index ) ] = synapses( synapse_index ).compute_subtraction_gs( these_parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
                 
             end
             
@@ -9415,10 +9418,11 @@ classdef synapse_manager_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to compute and set the maximum synaptic conductance of inversion subnetwork synapses.
-        function [ gs21, synapses, self ] = compute_inversion_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs21, synapses, self ] = compute_inversion_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9435,7 +9439,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
 
             % Compute and set the required parameter for this synapse.
-            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_inversion_gs21( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_inversion_gs21( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
                             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9446,10 +9450,11 @@ classdef synapse_manager_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance of reduced inversion subnetwork synapses.
-        function [ gs21, synapses, self ] = compute_reduced_inversion_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs21, synapses, self ] = compute_reduced_inversion_gs21( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9466,7 +9471,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
 
             % Compute and set the required parameter for this synapse.
-            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_inversion_gs21( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs21, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_inversion_gs21( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
                             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9477,10 +9482,11 @@ classdef synapse_manager_class
         % ---------- Division Subnetwork Functions ----------
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 31 of a division subnetwork.
-        function [ gs31, synapses, self ] = compute_division_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs31, synapses, self ] = compute_division_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9497,7 +9503,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs31( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs31( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9506,10 +9512,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a division subnetwork.
-        function [ gs32, synapses, self ] = compute_division_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_division_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9526,7 +9533,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( end ), synapses, undetected_option );
             
             % Compute and set the required parameter for this synapse.
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9535,10 +9542,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the maximum synaptic conductance for the synapses of a division subnetwork.
-        function [ gs, synapses, self ] = compute_division_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_division_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
         
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9555,13 +9563,13 @@ classdef synapse_manager_class
             parameters_gs31 = self.convert_division_gs_parameters2gs31_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 31.
-            [ gs31, synapses, synapse_manager ] = self.compute_division_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, undetected_option );
+            [ gs31, synapses, synapse_manager ] = self.compute_division_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, validation_flag, undetected_option );
 
             % Convert the generic design parameters into gs32 design parameters.
             parameters_gs32 = self.convert_division_gs_parameters2gs32_parameters( parameters, gs31, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductnace for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_division_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_division_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs31, gs32 ];
@@ -9575,10 +9583,11 @@ classdef synapse_manager_class
         % ---------- Reduced Division Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 31 of a reduced division subnetwork.
-        function [ gs31, synapses, self ] = compute_reduced_division_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs31, synapses, self ] = compute_reduced_division_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9595,7 +9604,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for this synapse.
-            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_division_gs31( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_division_gs31( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9604,10 +9613,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a reduced division subnetwork.
-        function [ gs32, synapses, self ] = compute_reduced_division_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_reduced_division_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9624,7 +9634,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 2 ), synapses, undetected_option );
             
             % Compute and set the required parameter for this synapse.
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_division_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9633,10 +9643,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the maximum synaptic conductance for the synapses of a reduced division subnetwork.
-        function [ gs, synapses, self ] = compute_reduced_division_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_reduced_division_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
         
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9653,13 +9664,13 @@ classdef synapse_manager_class
             parameters_gs31 = self.convert_reduced_convert_division_gs_parameters2gs31_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 31.
-            [ gs31, synapses, synapse_manager ] = self.compute_reduced_division_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, undetected_option );
+            [ gs31, synapses, synapse_manager ] = self.compute_reduced_division_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, validation_flag, undetected_option );
 
             % Convert the generic design  parameters into gs32 design parameters.
             parameters_gs32 = self.convert_reduced_division_gs_parameters2gs32_parameters( parameters, gs31, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductnace for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_division_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_division_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs31, gs32 ];
@@ -9673,10 +9684,11 @@ classdef synapse_manager_class
         % ---------- Division After Inversion Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 31 of a division after inversion subnetwork.
-        function [ gs31, synapses, self ] = compute_dai_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs31, synapses, self ] = compute_dai_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9693,7 +9705,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.                        
-            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_dai_gs31( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_dai_gs31( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9702,10 +9714,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a division after inversion subnetwork.
-        function [ gs32, synapses, self ] = compute_dai_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_dai_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9722,7 +9735,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 2 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.                        
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_dai_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_dai_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9731,10 +9744,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the maximum synaptic conductances for a division after inversion subnetwork.
-        function [ gs, synapses, self ] = compute_dai_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_dai_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
            
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9751,13 +9765,13 @@ classdef synapse_manager_class
             parameters_gs31 = self.convert_dai_gs_parameters2gs31_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 31.
-            [ gs31, synapses, synapse_manager ] = self.compute_dai_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, undetected_option );
+            [ gs31, synapses, synapse_manager ] = self.compute_dai_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, validation_flag, undetected_option );
 
             % Convert the generic design  parameters into gs32 design parameters.
             parameters_gs32 = self.convert_dai_gs_parameters2gs32_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductnace for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_dai_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_dai_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs31, gs32 ];
@@ -9771,10 +9785,11 @@ classdef synapse_manager_class
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 31 of a reduced division after inversion subnetwork.
-        function [ gs31, synapses, self ] = compute_reduced_dai_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs31, synapses, self ] = compute_reduced_dai_gs31( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9791,7 +9806,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.                        
-            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_dai_gs31( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs31, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_dai_gs31( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9800,10 +9815,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a reduced division after inversion subnetwork.
-        function [ gs32, synapses, self ] = compute_reduced_dai_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_reduced_dai_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9820,7 +9836,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 2 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.                        
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_dai_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_dai_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9829,10 +9845,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the maximum synaptic conductances for a reduced division after inversion subnetwork.
-        function [ gs, synapses, self ] = compute_reduced_dai_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_reduced_dai_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
            
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9849,13 +9866,13 @@ classdef synapse_manager_class
             parameters_gs31 = self.convert_reduced_dai_gs_parameters2gs31_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 31.
-            [ gs31, synapses, synapse_manager ] = self.compute_reduced_dai_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, undetected_option );
+            [ gs31, synapses, synapse_manager ] = self.compute_reduced_dai_gs31( synapse_IDs, parameters_gs31, encoding_scheme, synapses, true, validation_flag, undetected_option );
 
             % Convert the generic design  parameters into gs32 design parameters.
             parameters_gs32 = self.convert_reduced_dai_gs_parameters2gs32_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductnace for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_dai_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_dai_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs31, gs32 ];
@@ -9869,10 +9886,11 @@ classdef synapse_manager_class
         % ---------- Multiplication Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 41 of a multiplication subnetwork.
-        function [ gs41, synapses, self ] = compute_multiplication_gs41( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs41, synapses, self ] = compute_multiplication_gs41( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9889,7 +9907,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs41, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs41( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs41, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs41( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9898,10 +9916,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a multiplication subnetwork.
-        function [ gs32, synapses, self ] = compute_multiplication_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_multiplication_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9918,7 +9937,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 2 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9927,10 +9946,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 43 of a multiplication subnetwork.
-        function [ gs43, synapses, self ] = compute_multiplication_gs43( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs43, synapses, self ] = compute_multiplication_gs43( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9947,7 +9967,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 3 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs43, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs43( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs43, synapses( synapse_index ) ] = synapses( synapse_index ).compute_multiplication_gs43( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -9956,10 +9976,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the amximum synaptic conductance for the synapses of a multiplication subnetwork.
-        function [ gs, synapses, self ] = compute_multiplication_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_multiplication_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
         
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -9976,19 +9997,19 @@ classdef synapse_manager_class
             parameters_gs41 = self.convert_multiplication_gs_parameters2gs41_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 41.
-            [ gs41, synapses, synapse_manager ] = self.compute_multiplication_gs41( synapse_IDs, parameters_gs41, encoding_scheme, synapses, true, undetected_option );
+            [ gs41, synapses, synapse_manager ] = self.compute_multiplication_gs41( synapse_IDs, parameters_gs41, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Convert the generic design parameters into gs32 design parameters.
             parameters_gs32 = self.convert_multiplication_gs_parameters2gs32_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Convert the generic design parameters into gs43 design parameters.
             parameters_gs43 = self.convert_multiplication_gs_parameters2gs43_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 43.
-            [ gs43, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs43( synapse_IDs, parameters_gs43, encoding_scheme, synapses, true, undetected_option );
+            [ gs43, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs43( synapse_IDs, parameters_gs43, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs41, gs32, gs43 ];
@@ -10002,10 +10023,11 @@ classdef synapse_manager_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
 
         % Implement a function to compute and set the maximum synaptic conductance for synapse 41 of a reduced multiplication subnetwork.
-        function [ gs41, synapses, self ] = compute_reduced_multiplication_gs41( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs41, synapses, self ] = compute_reduced_multiplication_gs41( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -10022,7 +10044,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs41, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs41( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs41, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs41( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -10031,10 +10053,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 32 of a reduced multiplication subnetwork.
-        function [ gs32, synapses, self ] = compute_reduced_multiplication_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs32, synapses, self ] = compute_reduced_multiplication_gs32( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -10051,7 +10074,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 2 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs32( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs32, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs32( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -10060,10 +10083,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute and set the maximum synaptic conductance for synapse 43 of a reduced multiplication subnetwork.
-        function [ gs43, synapses, self ] = compute_reduced_multiplication_gs43( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs43, synapses, self ] = compute_reduced_multiplication_gs43( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -10080,7 +10104,7 @@ classdef synapse_manager_class
             synapse_index = self.get_synapse_index( synapse_IDs( 3 ), synapses, undetected_option );
             
             % Compute and set the required parameter for the numerator synapse.
-            [ gs43, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs43( parameters, encoding_scheme, true, synapses( synapse_index ).synapse_utilities );            
+            [ gs43, synapses( synapse_index ) ] = synapses( synapse_index ).compute_reduced_multiplication_gs43( parameters, encoding_scheme, true, validation_flag, synapses( synapse_index ).synapse_utilities );            
             
             % Determine whether to update the synapse manager object.
             if set_flag, self.synapses = synapses; end
@@ -10089,10 +10113,11 @@ classdef synapse_manager_class
         
         
         % Implement a function to compute the amximum synaptic conductance for the synapses of a reduced multiplication subnetwork.
-        function [ gs, synapses, self ] = compute_reduced_multiplication_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ gs, synapses, self ] = compute_reduced_multiplication_gs( self, synapse_IDs, parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
         
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -10109,19 +10134,19 @@ classdef synapse_manager_class
             parameters_gs41 = self.convert_reduced_multiplication_gs_parameters2gs41_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 41.
-            [ gs41, synapses, synapse_manager ] = self.compute_reduced_multiplication_gs41( synapse_IDs, parameters_gs41, encoding_scheme, synapses, true, undetected_option );
+            [ gs41, synapses, synapse_manager ] = self.compute_reduced_multiplication_gs41( synapse_IDs, parameters_gs41, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Convert the generic design parameters into gs32 design parameters.
             parameters_gs32 = self.convert_reduced_multiplication_gs_parameters2gs32_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 32.
-            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, undetected_option );
+            [ gs32, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs32( synapse_IDs, parameters_gs32, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Convert the generic design parameters into gs43 design parameters.
             parameters_gs43 = self.convert_reduced_multiplication_gs_parameters2gs43_parameters( parameters, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance for synapse 43.
-            [ gs43, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs43( synapse_IDs, parameters_gs43, encoding_scheme, synapses, true, undetected_option );
+            [ gs43, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs43( synapse_IDs, parameters_gs43, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Store the synaptic conductances.
             gs = [ gs41, gs32, gs43 ];
@@ -10747,7 +10772,7 @@ classdef synapse_manager_class
             if name_flag, name = sprintf( 'Transmission %0.0f%0.0f', from_neuron_ID, to_neuron_ID ); end
             
             % Create the transmission subnetwork synapse.    
-            [ ID_new, synapse_new, synapses, synapse_manager ] = self.create_synapse( synapse_ID, name, dEs, gs, from_neuron_ID, to_neuron_ID, delta, enabled_flag, synapses, true, false, array_utilities );
+            [ ID_new, synapse_new, synapses, synapse_manager ] = self.create_synapse( synapse_ID, name{ 1 }, dEs, gs, from_neuron_ID, to_neuron_ID, delta, enabled_flag, synapses, true, false, array_utilities );
                
             % Determine how to format the synapse IDs and objects.
             [ ID_new, synapse_new ] = self.process_synapse_creation_outputs( ID_new, synapse_new, as_cell_flag, array_utilities );
@@ -12710,10 +12735,11 @@ classdef synapse_manager_class
         % ---------- Transmission Subnetwork Functions ----------
         
         % Implement a function to design the synapses for a transmission subnetwork.
-        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_transmission_synapse( self, neuron_IDs, transmission_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_transmission_synapse( self, neuron_IDs, transmission_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -12733,7 +12759,7 @@ classdef synapse_manager_class
             transmission_gs_parameters = self.convert_transmission_parameters2gs_parameters( synapse_ID, transmission_parameters, dEs21, encoding_scheme, synapses, undetected_option );
 
             % Compute the synaptic conductance.
-            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_transmission_gs21( synapse_IDs, transmission_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_transmission_gs21( synapse_ID, transmission_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12744,10 +12770,11 @@ classdef synapse_manager_class
         % ---------- Addition Subnetwork Functions ----------
         
         % Implement a function to design the synapses for an addition subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_addition_synapses( self, neuron_IDs, addition_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_addition_synapses( self, neuron_IDs, addition_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -12779,7 +12806,7 @@ classdef synapse_manager_class
             addition_gs_parameters = self.convert_addition_parameters2gs_parameters( synapse_IDs, addition_parameters, dEs, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance.
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_addition_gs( synapse_IDs, addition_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_addition_gs( synapse_IDs, addition_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
 
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12790,10 +12817,11 @@ classdef synapse_manager_class
         % ---------- Subtraction Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a subtraction subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_subtraction_synapses( self, neuron_IDs, subtraction_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_subtraction_synapses( self, neuron_IDs, subtraction_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                              	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -12825,7 +12853,7 @@ classdef synapse_manager_class
             subtraction_gs_parameters = self.convert_subtraction_parameters2gs_parameters( synapse_IDs, subtraction_parameters, dEs, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductance.
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_subtraction_gs( synapse_IDs, subtraction_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_subtraction_gs( synapse_IDs, subtraction_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12836,15 +12864,16 @@ classdef synapse_manager_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to design the synapses for an inversion subnetwork.
-        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_inversion_synapse( self, neuron_IDs, inversion_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_inversion_synapse( self, neuron_IDs, inversion_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, inversion_parameters = {  }; end                                               % [cell] Parameters Cell.
-            if nargin < 2, neuron_IDs = 1:self.n_inversion_neurons_DEFAULT; end               % [#] Neuron IDs.
+            if nargin < 3, inversion_parameters = {  }; end                                     % [cell] Parameters Cell.
+            if nargin < 2, neuron_IDs = 1:self.n_inversion_neurons_DEFAULT; end                 % [#] Neuron IDs.
             
             % Get the synapse ID that connects the first neuron to the second neuron.
             synapse_ID = self.from_to_neuron_IDs2synapse_IDs( neuron_IDs( 1 ), neuron_IDs( 2 ), synapses, undetected_option );
@@ -12859,7 +12888,7 @@ classdef synapse_manager_class
             inversion_gs_parameters = self.convert_inversion_parameters2gs_parameters( synapse_ID, inversion_parameters, dEs21, encoding_scheme, synapses, undetected_option );
                         
             % Compute the synaptic conductance.
-            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_inversion_gs21( synapse_IDs, inversion_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_inversion_gs21( synapse_IDs, inversion_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12870,15 +12899,16 @@ classdef synapse_manager_class
         % ---------- Reduced Inversion Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a reduced inversion subnetwork.
-        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_reduced_inversion_synapse( self, neuron_IDs, reduced_inversion_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs21, gs21, synapse_ID, synapses, self ] = design_reduced_inversion_synapse( self, neuron_IDs, reduced_inversion_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
             if nargin < 3, reduced_inversion_parameters = {  }; end                            	% [cell] Parameters Cell.
-            if nargin < 2, neuron_IDs = 1:self.n_inversion_neurons_DEFAULT; end               % [#] Neuron IDs.
+            if nargin < 2, neuron_IDs = 1:self.n_inversion_neurons_DEFAULT; end                 % [#] Neuron IDs.
             
             % Get the synapse ID that connects the first neuron to the second neuron.
             synapse_ID = self.from_to_neuron_IDs2synapse_IDs( neuron_IDs( 1 ), neuron_IDs( 2 ), synapses, undetected_option );
@@ -12893,7 +12923,7 @@ classdef synapse_manager_class
             reduced_inversion_gs_parameters = self.convert_reduced_inversion_parameters2gs_parameters( synapse_ID, reduced_inversion_parameters, dEs21, encoding_scheme, synapses, undetected_option );
                         
             % Compute the synaptic conductance.
-            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_reduced_inversion_gs21( synapse_IDs, reduced_inversion_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_reduced_inversion_gs21( synapse_IDs, reduced_inversion_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12904,10 +12934,11 @@ classdef synapse_manager_class
         % ---------- Division Subnetwork Functions ----------
         
         % Implement a function to design the synapses for a division subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_division_synapses( self, neuron_IDs, division_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_division_synapses( self, neuron_IDs, division_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
@@ -12929,7 +12960,7 @@ classdef synapse_manager_class
             division_gs_parameters = self.convert_division_parameters2gs_parameters( synapse_IDs, division_parameters, dEs31, dEs32, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductances.
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_division_gs( synapse_IDs, division_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_division_gs( synapse_IDs, division_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12940,14 +12971,15 @@ classdef synapse_manager_class
         % ---------- Division After Inversion Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a division after inversion subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_dai_synapses( self, neuron_IDs, dai_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_dai_synapses( self, neuron_IDs, dai_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, dai_parameters = {  }; end                                               % [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
+            if nargin < 3, dai_parameters = {  }; end                                          	% [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
             if nargin < 2, neuron_IDs = 1:self.num_division_neurons_DEFAULT; end                % [#] Neuron IDs.
             
             % Get the synapse IDs that connect the first two neurons to the third neuron.
@@ -12965,7 +12997,7 @@ classdef synapse_manager_class
             dai_gs_parameters = self.convert_dai_parameters2gs_parameters( synapse_IDs, dai_parameters, dEs31, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductances.            
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_dai_gs( synapse_IDs, dai_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_dai_gs( synapse_IDs, dai_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -12976,14 +13008,15 @@ classdef synapse_manager_class
         % ---------- Reduced Division Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a reduced division subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_division_synapses( self, neuron_IDs, reduced_division_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_division_synapses( self, neuron_IDs, reduced_division_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, reduced_division_parameters = {  }; end                                               % [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
+            if nargin < 3, reduced_division_parameters = {  }; end                             	% [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
             if nargin < 2, neuron_IDs = 1:self.num_division_neurons_DEFAULT; end                % [#] Neuron IDs.
             
             % Get the synapse IDs that connect the first two neurons to the third neuron.
@@ -13001,7 +13034,7 @@ classdef synapse_manager_class
             reduced_division_gs_parameters = self.convert_reduced_division_parameters2gs_parameters( synapse_IDs, reduced_division_parameters, dEs31, dEs32, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductances.            
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_division_gs( synapse_IDs, reduced_division_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_division_gs( synapse_IDs, reduced_division_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -13012,14 +13045,15 @@ classdef synapse_manager_class
         % ---------- Reduced Division After Invesion Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a reduced division after inversion subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_dai_synapses( self, neuron_IDs, reduced_dai_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_dai_synapses( self, neuron_IDs, reduced_dai_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                             	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, reduced_dai_parameters = {  }; end                                               % [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
+            if nargin < 3, reduced_dai_parameters = {  }; end                                 	% [cell] Parameters Cell. { delta2, R3, Gm3, Ia3 }
             if nargin < 2, neuron_IDs = 1:self.num_division_neurons_DEFAULT; end                % [#] Neuron IDs.
             
             % Get the synapse IDs that connect the first two neurons to the third neuron.
@@ -13037,7 +13071,7 @@ classdef synapse_manager_class
             reduced_dai_gs_parameters = self.convert_reduced_dai_parameters2gs_parameters( synapse_IDs, reduced_dai_parameters, dEs31, encoding_scheme, synapses, undetected_option );
             
             % Compute the maximum synaptic conductances.                        
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_dai_gs( synapse_IDs, reduced_dai_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_dai_gs( synapse_IDs, reduced_dai_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -13048,14 +13082,15 @@ classdef synapse_manager_class
         % ---------- Multiplication Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a multiplication subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_multiplication_synapses( self, neuron_IDs, multiplication_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_multiplication_synapses( self, neuron_IDs, multiplication_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, multiplication_parameters = {  }; end                                               % [cell] Parameters Cell.
+            if nargin < 3, multiplication_parameters = {  }; end                               	% [cell] Parameters Cell.
             if nargin < 2, neuron_IDs = 1:self.num_multiplication_neurons_DEFAULT; end          % [#] Neuron IDs.
             
             % Get the synapse IDs that comprise this multiplication subnetwork.
@@ -13071,7 +13106,7 @@ classdef synapse_manager_class
             multiplication_gs_parameters = self.convert_multiplication_parameters2gs_parameters( synapse_IDs, multiplication_parameters, dEs41, dEs32, encoding_scheme, synapses, undetected_option );
         
             % Compute the maximum synaptic conductance.
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs( synapse_IDs, multiplication_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_multiplication_gs( synapse_IDs, multiplication_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
@@ -13082,14 +13117,15 @@ classdef synapse_manager_class
         % ---------- Reduced Multiplication Subnetwork Functions ----------
 
         % Implement a function to design the synapses for a reduced multiplication subnetwork.
-        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_multiplication_synapses( self, neuron_IDs, reduced_multiplication_parameters, encoding_scheme, synapses, set_flag, undetected_option )
+        function [ dEs, gs, synapse_IDs, synapses, self ] = design_reduced_multiplication_synapses( self, neuron_IDs, reduced_multiplication_parameters, encoding_scheme, synapses, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
-            if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end              % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
+            if nargin < 7, validation_flag = self.validation_flag_DEFAULT; end                  % [T/F] Validation Flag.
             if nargin < 6, set_flag = self.set_flag_DEFAULT; end                               	% [T/F] Set Flag (Determines whether output self object is updated.)
             if nargin < 5, synapses = self.synapses; end                                        % [class] Array of Synapse Class Objects.
             if nargin < 4, encoding_scheme = self.encoding_scheme_DEFAULT; end                  % [str] Encoding Scheme (Either 'absolute' or 'relative'.)
-            if nargin < 3, reduced_multiplication_parameters = {  }; end                                               % [cell] Parameters Cell.
+            if nargin < 3, reduced_multiplication_parameters = {  }; end                       	% [cell] Parameters Cell.
             if nargin < 2, neuron_IDs = 1:self.num_multiplication_neurons_DEFAULT; end          % [#] Neuron IDs.
             
             % Get the synapse IDs that comprise this multiplication subnetwork.
@@ -13105,7 +13141,7 @@ classdef synapse_manager_class
             reduced_multiplication_gs_parameters = self.convert_reduced_multiplication_parameters2gs_parameters( synapse_IDs, reduced_multiplication_parameters, dEs41, dEs32, encoding_scheme, synapses, undetected_option );
         
             % Compute the maximum synaptic conductance.
-            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs( synapse_IDs, reduced_multiplication_gs_parameters, encoding_scheme, synapses, true, undetected_option );
+            [ gs, synapses, synapse_manager ] = synapse_manager.compute_reduced_multiplication_gs( synapse_IDs, reduced_multiplication_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
                         
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end
