@@ -22,6 +22,9 @@ network_dt = 1.3e-4;                                % [s] Simulation Timestep.
 % Define the network simulation duration.
 network_tf = 3;                                     % [s] Simulation Duration.
 
+% Define the integration method.
+integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+
 
 %% Define Absolute Transmission Subnetwork Parameters.
 
@@ -91,19 +94,25 @@ dt0 = 1e-6;
 
 % Print out the stability information.
 fprintf( '\nSTABILITY SUMMARY:\n' )
-fprintf( 'Linearized System Matrix: A =\n\n' ), disp( A )
-fprintf( 'Max RK4 Step Size: \tdt_max = %0.3e [s]\n', dt_max )
+fprintf( 'Linearized System Matrix: A =\n\n' ), disp( As )
+fprintf( 'Max RK4 Step Size: \tdt_max = %0.3e [s]\n', dts )
 fprintf( 'Proposed Step Size: \tdt = %0.3e [s]\n', network_dt )
-fprintf( 'Condition Number: \tcond( A ) = %0.3e [-]\n', condition_number )
+fprintf( 'Condition Number: \tcond( A ) = %0.3e [-]\n', condition_numbers )
 
 
 %% Simulate the Absolute Transmission Subnetwork.
+
+% Set additional simulation properties.
+filter_disabled_flag = true;
+set_flag = true;
+process_option = 'None';
+undetected_option = 'Ignore';
 
 % Start the timer.
 tic
 
 % Simulate the network.
-[ network, ts, Us, hs, dUs, dhs, G_syns, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neuron_IDs ] = network.compute_set_simulation(  );
+[ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
 
 % End the timer.
 toc

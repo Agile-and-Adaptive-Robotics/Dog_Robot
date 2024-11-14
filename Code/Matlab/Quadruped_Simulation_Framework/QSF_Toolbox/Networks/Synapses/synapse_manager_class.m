@@ -1040,6 +1040,9 @@ classdef synapse_manager_class
             if nargin < 3, array_utilities = self.array_utilities; end                                                                                                                              % [class] Array Utilities Class.
             if nargin < 2, synapses = self.synapses; end                                                                                                                                            % [class] Array of Synapse Class Objects.
             
+            % Compute the number of synapses.
+            n_synapses = length( synapses );
+            
             % Set the one-to-one flag.
             one_to_one_flag = true;
             

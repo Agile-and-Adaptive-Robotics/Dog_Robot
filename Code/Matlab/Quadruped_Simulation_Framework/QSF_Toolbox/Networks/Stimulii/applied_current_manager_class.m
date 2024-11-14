@@ -912,8 +912,7 @@ classdef applied_current_manager_class
             applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( to_neuron_IDs, applied_currents, undetected_option );
             
             % Retrieve the applied currents.
-            [ ts, Ias ] = self.get_Ias( applied_current_IDs, dt, tf, applied_currents, filter_disabled_flag, process_option, undetected_option );
-
+            [ ts, Ias ] = self.get_Ias( applied_current_IDs, dt, tf, applied_currents, filter_disabled_flag, undetected_option );
         end
         
         

@@ -417,7 +417,7 @@ classdef network_class
             assert( all( unique( neuron_IDs ) == neuron_IDs ), 'Neuron IDs must be unique.' )
             
             % Retrieve the synapse IDs relevant to the given neuron IDs.
-            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, 'ignore' );
+            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, synapse_manager.synapses, 'ignore' );
             
             % Retrieve the synapse indexes associated with the given synapse IDs.
             synapse_indexes = synapse_manager.get_synapse_indexes( synapse_IDs );
@@ -485,7 +485,7 @@ classdef network_class
             assert( all( unique( neuron_IDs ) == neuron_IDs ), 'Neuron IDs must be unique.' )
             
             % Retrieve the synapse IDs relevant to the given neuron IDs.
-            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, 'ignore' );
+            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, synapse_manager.synapses, 'ignore' );
             
             % Retrieve the synapse indexes associated with the given synapse IDs.
             synapse_indexes = synapse_manager.get_synapse_indexes( synapse_IDs );
@@ -553,7 +553,7 @@ classdef network_class
             assert( all( unique( neuron_IDs ) == neuron_IDs ), 'Neuron IDs must be unique.' )
             
             % Retrieve the synapse IDs relevant to the given neuron IDs.
-            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, 'ignore' );
+            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, synapse_manager.synapses, 'ignore' );
             
             % Retrieve the synapse indexes associated with the given synapse IDs.
             synapse_indexes = synapse_manager.get_synapse_indexes( synapse_IDs );
@@ -621,7 +621,7 @@ classdef network_class
             assert( all( unique( neuron_IDs ) == neuron_IDs ), 'Neuron IDs must be unique.' )
             
             % Retrieve the synapse IDs relevant to the given neuron IDs.
-            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, 'ignore' );
+            synapse_IDs = synapse_manager.neuron_IDs2synapse_IDs( neuron_IDs, synapse_manager.synapses, 'ignore' );
             
             % Retrieve the synapse indexes associated with the given synapse IDs.
             synapse_indexes = synapse_manager.get_synapse_indexes( synapse_IDs );
@@ -17847,7 +17847,7 @@ classdef network_class
             if ~valid_flag, error( 'Invalid network.  Neuron IDs must be unique.' ), end
             
             % Ensure that the synapse IDs are unique.
-            [ valid_flag, ~ ] = synapse_manager.unique_existing_synapse_IDs( synapses );
+            [ valid_flag, ~ ] = synapse_manager.unique_existing_synapse_IDs( synapse_manager.synapses );
             
             % Throw an error if the synapse IDs were not unique.
             if ~valid_flag, error( 'Invalid network.  Synapse IDs must be unique.' ), end
@@ -17865,7 +17865,7 @@ classdef network_class
             if ~valid_flag, error( 'Invalid network.  There must be only one synapse per pair of neurons.' ), end
             
             % Ensure that only one applied current applies to each neuron.
-            valid_flag = applied_current_manager.one_to_one_applied_currents( applied_currents, array_utilities );
+            valid_flag = applied_current_manager.one_to_one_applied_currents( applied_current_manager.applied_currents, applied_current_manager.array_utilities );
             
             % Throw an error if there are multiple applied currents per neuron.
             if ~valid_flag, error( 'Invalid network.  There must be only one applied current per neuron.' ), end
@@ -19019,7 +19019,7 @@ classdef network_class
             if nargin < 2, dt = self.dt; end                                                                            % [s] Simulation Time Step.
             
             % Ensure that the network is constructed properly.
-            error( self.validate_network( neuron_manager, synapse_manager, applied_current_manager ), 'Invalid network detected.' )
+            assert( self.validate_network( neuron_manager, synapse_manager, applied_current_manager ), 'Invalid network detected.' )
 
             % Retrieve the IDs associated with the enabled neurons.
             neuron_IDs = neuron_manager.get_enabled_neuron_IDs( neuron_manager.neurons );
@@ -19103,37 +19103,40 @@ classdef network_class
             if nargin < 2, dt = self.dt; end                                                                            % [s] Simulation Time Step.
             
             % Ensure that the network is constructed properly.
-            error( self.validate_network( neuron_manager, synapse_manager, applied_current_manager ), 'Invalid network detected.' )
+            assert( self.validate_network( neuron_manager, synapse_manager, applied_current_manager ), 'Invalid network detected.' )
             
             % Retrieve the IDs associated with the enabled neurons.
             neuron_IDs = neuron_manager.get_enabled_neuron_IDs( neuron_manager.neurons );
             
+            % Set the as matrix flag.
+            as_matrix_flag = true;
+            
             % Retrieve the neuron properties.
-            Us = neuron_manager.get_neuron_property( neuron_IDs, 'U', true, neuron_manager.neurons, undetected_option )';
-            hs = neuron_manager.get_neuron_property( neuron_IDs, 'h', true, neuron_manager.neurons, undetected_option )';
-            Gms = neuron_manager.get_neuron_property( neuron_IDs, 'Gm', true, neuron_manager.neurons, undetected_option )';
-            Cms = neuron_manager.get_neuron_property( neuron_IDs, 'Cm', true, neuron_manager.neurons, undetected_option )';
-            Rs = neuron_manager.get_neuron_property( neuron_IDs, 'R', true, neuron_manager.neurons, undetected_option )'; Rs = repmat( Rs', [ length( Rs ), 1 ] );
-            Ams = neuron_manager.get_neuron_property( neuron_IDs, 'Am', true, neuron_manager.neurons, undetected_option )';
-            Sms = neuron_manager.get_neuron_property( neuron_IDs, 'Sm', true, neuron_manager.neurons, undetected_option )';
-            dEms = neuron_manager.get_neuron_property( neuron_IDs, 'dEm', true, neuron_manager.neurons, undetected_option )';
-            Ahs = neuron_manager.get_neuron_property( neuron_IDs, 'Ah', true, neuron_manager.neurons, undetected_option )';
-            Shs = neuron_manager.get_neuron_property( neuron_IDs, 'Sh', true, neuron_manager.neurons, undetected_option )';
-            dEhs = neuron_manager.get_neuron_property( neuron_IDs, 'dEh', true, neuron_manager.neurons, undetected_option )';
-            tauh_maxs = neuron_manager.get_neuron_property( neuron_IDs, 'tauh_max', true, neuron_manager.neurons, undetected_option )';
-            Gnas = neuron_manager.get_neuron_property( neuron_IDs, 'Gna', true, neuron_manager.neurons, undetected_option )';
-            dEnas = neuron_manager.get_neuron_property( neuron_IDs, 'dEna', true, neuron_manager.neurons, undetected_option )';
-            I_tonics = neuron_manager.get_neuron_property( neuron_IDs, 'I_tonic', true, neuron_manager.neurons, undetected_option )';
+            Us = neuron_manager.get_neuron_property( neuron_IDs, 'U', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            hs = neuron_manager.get_neuron_property( neuron_IDs, 'h', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Gms = neuron_manager.get_neuron_property( neuron_IDs, 'Gm', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Cms = neuron_manager.get_neuron_property( neuron_IDs, 'Cm', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Rs = neuron_manager.get_neuron_property( neuron_IDs, 'R', as_matrix_flag, neuron_manager.neurons, undetected_option )'; Rs = repmat( Rs', [ length( Rs ), 1 ] );
+            Ams = neuron_manager.get_neuron_property( neuron_IDs, 'Am', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Sms = neuron_manager.get_neuron_property( neuron_IDs, 'Sm', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            dEms = neuron_manager.get_neuron_property( neuron_IDs, 'dEm', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Ahs = neuron_manager.get_neuron_property( neuron_IDs, 'Ah', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Shs = neuron_manager.get_neuron_property( neuron_IDs, 'Sh', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            dEhs = neuron_manager.get_neuron_property( neuron_IDs, 'dEh', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            tauh_maxs = neuron_manager.get_neuron_property( neuron_IDs, 'tauh_max', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            Gnas = neuron_manager.get_neuron_property( neuron_IDs, 'Gna', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            dEnas = neuron_manager.get_neuron_property( neuron_IDs, 'dEna', as_matrix_flag, neuron_manager.neurons, undetected_option )';
+            I_tonics = neuron_manager.get_neuron_property( neuron_IDs, 'Itonic', as_matrix_flag, neuron_manager.neurons, undetected_option )';
 
             % Retrieve the synapse properties.
             gs = self.get_gs( neuron_IDs, neuron_manager, synapse_manager );
             dEs = self.get_dEs( neuron_IDs, neuron_manager, synapse_manager );
             
             % Retrieve the applied currents.
-            [ ~, Ias ] = applied_current_manager.to_neuron_IDs2Ias( neuron_IDs, dt, tf, applied_currents, filter_disabled_flag, process_option, undetected_option ); Ias = Ias';
+            [ ~, Ias ] = applied_current_manager.to_neuron_IDs2Ias( neuron_IDs, dt, tf, applied_current_manager.applied_currents, filter_disabled_flag, process_option, undetected_option ); Ias = Ias';
 
             % Retrieve the applied voltages.            
-            [ ~, Vas ] = applied_voltage_manager.to_neuron_IDs2Vas( neuron_IDs, dt, tf, applied_voltages, filter_disabled_flag, undetected_option ); Vas = Vas';
+            [ ~, Vas ] = applied_voltage_manager.to_neuron_IDs2Vas( neuron_IDs, dt, tf, applied_voltage_manager.applied_voltages, filter_disabled_flag, undetected_option ); Vas = Vas';
             
             % Simulate the network.
             [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs ] = network_utilities.simulate( Us, hs, Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, I_tonics, Ias, Vas, tf, dt, method );

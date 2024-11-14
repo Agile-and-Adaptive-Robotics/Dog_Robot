@@ -793,6 +793,9 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 2, neurons = self.neurons; end              % [class] Array of Neuron Class Objects.
             
+            % Compute the number of neurons.
+            n_neurons = length( neurons );
+            
             % Preallocate an array to store the neuron IDs.
             neuron_IDs = zeros( 1, n_neurons );
             
