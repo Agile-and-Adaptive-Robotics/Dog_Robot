@@ -17,14 +17,13 @@ verbose_flag = true;                             	% [T/F] Printing Flag.
 undetected_option = 'error';                        % [str] Undetected Option.
 
 % Define the network integration step size.
-% network_dt = 1.3e-4;                            	% [s] Simulation Timestep.
-% network_dt = 1.3e-3;                            	% [s] Simulation Timestep.
-network_dt = 1.0e-3;                                % [s] Simulation Timestep.
+network_dt = 1e-3;                                  % [s] Simulation Timestep.
+% network_dt = 1e-4;                            	% [s] Simulation Timestep.
 
 % Define the network simulation duration.
-% network_tf = 3;                                 	% [s] Simulation Duration.
-% network_tf = 1;                                 	% [s] Simulation Duration.
 network_tf = 0.5;                                 	% [s] Simulation Duration.
+% network_tf = 1;                                 	% [s] Simulation Duration.
+% network_tf = 3;                                 	% [s] Simulation Duration.
 
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
@@ -85,13 +84,13 @@ network = network_class( network_dt, network_tf );
 as_matrix_flag = true;
 
 % Retrieve properties from the existing network.
-Cms = network.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
-Gms = network.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
-Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network.neuron_manager.neurons, undetected_option );
-gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );
-dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );
-Us = zeros( network.neuron_manager.num_neurons, 1 );
-dt0 = 1e-6;
+Cms = network.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );         % [F] Membrane Capacitance.
+Gms = network.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network.neuron_manager.neurons, undetected_option );         % [S] Membrane Conductance.
+Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network.neuron_manager.neurons, undetected_option );           % [V] Maximum Membrane Voltage.
+gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );                                                              % [S] Synaptic Conductance.
+dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );                                                            % [V] Synaptic Reversal Potential.
+Us = zeros( network.neuron_manager.num_neurons, 1 );                                                                                        % [V] Membrane Voltage.
+dt0 = 1e-6;                                                                                                                                 % [s] Time Step.
 
 % Compute the maximum RK4 step size and condition number.
 [ As, dts, condition_numbers ] = network.RK4_stability_analysis( Cms, Gms, Rs, gs, dEs, Us, dt0, network.neuron_manager, network.synapse_manager, undetected_option, network.network_utilities );
