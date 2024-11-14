@@ -17,10 +17,14 @@ verbose_flag = true;                             	% [T/F] Printing Flag.
 undetected_option = 'error';                        % [str] Undetected Option.
 
 % Define the network integration step size.
-network_dt = 1.3e-4;                                % [s] Simulation Timestep.
+% network_dt = 1.3e-4;                            	% [s] Simulation Timestep.
+% network_dt = 1.3e-3;                            	% [s] Simulation Timestep.
+network_dt = 1.0e-3;                                % [s] Simulation Timestep.
 
 % Define the network simulation duration.
-network_tf = 3;                                     % [s] Simulation Duration.
+% network_tf = 3;                                 	% [s] Simulation Duration.
+% network_tf = 1;                                 	% [s] Simulation Duration.
+network_tf = 0.5;                                 	% [s] Simulation Duration.
 
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
@@ -103,10 +107,10 @@ fprintf( 'Condition Number: \tcond( A ) = %0.3e [-]\n', condition_numbers )
 %% Simulate the Absolute Transmission Subnetwork.
 
 % Set additional simulation properties.
-filter_disabled_flag = true;
-set_flag = true;
-process_option = 'None';
-undetected_option = 'Ignore';
+filter_disabled_flag = true;                % [T/F] Filter Disabled Flag.
+set_flag = true;                            % [T/F] Set Flag.
+process_option = 'None';                    % [str] Process Option.
+undetected_option = 'Ignore';               % [str] Undetected Option.
 
 % Start the timer.
 tic
@@ -122,6 +126,9 @@ toc
 
 % Compute the decoded output.
 Us_decoded = Us*( 10^3 );
+
+% Retrieve the neuron IDs.
+neuron_IDs = network.neuron_manager.get_all_neuron_IDs( network.neuron_manager.neurons );
 
 % Plot the network currents over time.
 fig_network_currents = network.network_utilities.plot_network_currents( ts, I_leaks, I_syns, I_nas, I_apps, I_totals, neuron_IDs );

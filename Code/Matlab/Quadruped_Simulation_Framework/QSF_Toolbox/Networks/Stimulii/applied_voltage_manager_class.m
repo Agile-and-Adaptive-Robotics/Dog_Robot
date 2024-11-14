@@ -402,10 +402,14 @@ classdef applied_voltage_manager_class
             % Compute the number of time steps.
             num_timesteps = floor( round( tf/dt, 8 ) ) + 1;
             
-            % Preallocate a variable to store the applied voltage properties.
-            ts = cell( num_timesteps, num_applied_voltages_to_get );
-            Vas = cell( num_timesteps, num_applied_voltages_to_get );
+            % % Preallocate a variable to store the applied voltage properties.
+            % ts = cell( num_timesteps, num_applied_voltages_to_get );
+            % Vas = cell( num_timesteps, num_applied_voltages_to_get );
             
+            % Preallocate a variable to store the applied voltage properties.
+            ts = zeros( num_timesteps, num_applied_voltages_to_get );
+            Vas = zeros( num_timesteps, num_applied_voltages_to_get );
+
             % Retrieve the given neuron property for each applied voltage.
             for k = 1:num_applied_voltages_to_get                           % Iterate through each of the voltages to retrieve...
                 
@@ -418,12 +422,19 @@ classdef applied_voltage_manager_class
                     % Retrieve the applied voltages.
                     [ ts( :, k ), Vas( :, k ) ] = applied_voltages( applied_voltage_index ).sample_Vas( dt, tf, applied_voltages( applied_voltage_index ).ts, applied_voltages( applied_voltage_index ).Vas );
                     
+                    % % Retrieve the applied voltages.
+                    % [ ts{ k }, Vas{ k } ] = applied_voltages( applied_voltage_index ).sample_Vas( dt, tf, applied_voltages( applied_voltage_index ).ts, applied_voltages( applied_voltage_index ).Vas );
+                    
                 elseif ( applied_voltage_index == -1 ) || ( ~applied_voltages( applied_voltage_index ).enabled_flag )                                                % If the applied voltage ID is negative one...
                     
-                    % Set the applied voltage to zero.
-                    ts( :, k ) = num2cell( zeros( num_timesteps, 1 ) );
-                    Vas( :, k ) = num2cell( zeros( num_timesteps, 1 ) );
+                    % % Set the applied voltage to zero.
+                    % ts( :, k ) = num2cell( zeros( num_timesteps, 1 ) );
+                    % Vas( :, k ) = num2cell( zeros( num_timesteps, 1 ) );
                     
+                    % Set the applied voltage to NaN.
+                    ts( :, k ) = NaN( num_timesteps, 1 );
+                    Vas( :, k ) = NaN( num_timesteps, 1 );
+
                 else                                                                                    % Otherwise...
                     
                     % Throw an error.

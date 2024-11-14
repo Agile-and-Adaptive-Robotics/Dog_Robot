@@ -2407,7 +2407,7 @@ classdef network_utilities_class
         
         
         % Implement a function to perform an integration step.
-        function [ Us, hs, dUs, dhs, Gs, Ils, Iss, Inas, Itotals, minfs, hinfs, tauhs ] = integration_step( self, Us, hs, Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias, Vas_cell, dt, method, neuron_utilities, numerical_method_utilities )
+        function [ Us, hs, dUs, dhs, Gs, Ils, Iss, Inas, Itotals, minfs, hinfs, tauhs ] = integration_step( self, Us, hs, Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias, Vas, dt, method, neuron_utilities, numerical_method_utilities )
         
             %{
             Input(s):
@@ -2491,9 +2491,10 @@ classdef network_utilities_class
             % Determine whether there are applied voltages to consider.
             for k = 1:num_states                                                        % Iterate through each of the states...
                
-                if ~isempty(  Vas_cell{ k } )
-                    
-                    Us( k ) = Vas_cell{ k };
+                % if ~isempty( Vas_cell{ k } )
+                if ( ~isempty( Vas( k ) ) ) && ( ~isnan( Vas( k ) ) )
+
+                    Us( k ) = Vas{ k };
                     hs( k ) = neuron_utilities.compute_mhinf( Us( k ), Ahs( k ), Shs( k ), dEhs( k ) );
                     
                     dUs( k ) = 0;
@@ -2507,7 +2508,7 @@ classdef network_utilities_class
             
         
         % Implement a function to simulate the network.
-        function [ ts, Us, hs, dUs, dhs, Gs, Ils, Iss, Inas, Ias, Itotals, minfs, hinfs, tauhs ] = simulate( self, Us0, hs0, Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias, Vas_cell, tf, dt, method, neuron_utilities, numerical_method_utilities )
+        function [ ts, Us, hs, dUs, dhs, Gs, Ils, Iss, Inas, Ias, Itotals, minfs, hinfs, tauhs ] = simulate( self, Us0, hs0, Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias, Vas, tf, dt, method, neuron_utilities, numerical_method_utilities )
             
             % This function simulates a neural network described by Gms, Cms, Rs, gsyn_maxs, dEsyns with an initial condition of U0, h0 for tf seconds with a step size of dt and an applied current of Iapp.
             
@@ -2579,7 +2580,7 @@ classdef network_utilities_class
             for k = 1:( n_timesteps - 1 )               % Iterate through each timestep...
                 
                 % Perform a single integration step.
-                [ Us( :, k + 1 ), hs( :, k + 1 ), dUs( :, k ), dhs( :, k ), Gs( :, :, k ), Ils( :, k ), Iss( :, k ), Inas( :, k ), Itotals( :, k ), minfs( :, k ), hinfs( :, k ), tauhs( :, k ) ] = self.integration_step( Us( :, k ), hs( :, k ), Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias( :, k ), Vas_cell( :, k), dt, method, neuron_utilities, numerical_method_utilities );
+                [ Us( :, k + 1 ), hs( :, k + 1 ), dUs( :, k ), dhs( :, k ), Gs( :, :, k ), Ils( :, k ), Iss( :, k ), Inas( :, k ), Itotals( :, k ), minfs( :, k ), hinfs( :, k ), tauhs( :, k ) ] = self.integration_step( Us( :, k ), hs( :, k ), Gms, Cms, Rs, gs, dEs, Ams, Sms, dEms, Ahs, Shs, dEhs, tauh_maxs, Gnas, dEnas, Itonics, Ias( :, k ), Vas( :, k ), dt, method, neuron_utilities, numerical_method_utilities );
                 
             end
             

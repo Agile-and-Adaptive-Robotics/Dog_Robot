@@ -906,7 +906,7 @@ classdef network_class
                     if ( synapse_ID >= 0) && ( synapse_manager.synapses( synapse_index ).enabled_flag )              	% If the synapse ID is greater than zero...
                         
                         % Set the maximum synaptic conductance of this synapse.
-                        synapse_manager = synapse_manager.set_synapse_property( synapse_ID, Gs( k1, k2 ), 'Gs' );
+                        synapse_manager.synapses = synapse_manager.set_synapse_property( synapse_ID, Gs( k1, k2 ), 'Gs' );
                         
                     elseif ( synapse_ID == -1 ) || ( ~synapse_manager.synapses( synapse_index ).enabled_flag )         	% If the synapse ID is negative one...
                         
@@ -19089,16 +19089,16 @@ classdef network_class
         function [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, self ] = compute_simulation( self, dt, tf, method, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network_utilities )
             
             % Set the default simulation duration.
-            if nargin < 13, network_utilities = self.network_utilities; end                                              % [class] Network Utilities Class.
-            if nargin < 12, undetected_option = self.undetected_option_DEFAULT; end                                      % [str] Undetected Option.
-            if nargin < 11, process_option = self.process_option_DEFAULT; end                                            % [str] Process Option.
-            if nargin < 10, set_flag = self.set_flag_DEFAULT; end                                                        % [T/F] Set Flag.
+            if nargin < 13, network_utilities = self.network_utilities; end                                             % [class] Network Utilities Class.
+            if nargin < 12, undetected_option = self.undetected_option_DEFAULT; end                                     % [str] Undetected Option.
+            if nargin < 11, process_option = self.process_option_DEFAULT; end                                           % [str] Process Option.
+            if nargin < 10, set_flag = self.set_flag_DEFAULT; end                                                       % [T/F] Set Flag.
             if nargin < 9, filter_disabled_flag = self.filter_disabled_flag_DEFAULT; end                                % [T/F] Filter Disabled Flag.
-            if nargin < 8, applied_voltage_manager = self.applied_voltage_manager; end
+            if nargin < 8, applied_voltage_manager = self.applied_voltage_manager; end                                  % [class] Applied Voltage Manager Class.
             if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
             if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
             if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
-            if nargin < 4, method = 'RK4'; end
+            if nargin < 4, method = 'RK4'; end                                                                          % [str] Integration Method.
             if nargin < 3, tf = self.tf; end                                                                            % [s] Simulation Duration.
             if nargin < 2, dt = self.dt; end                                                                            % [s] Simulation Time Step.
             
@@ -19147,12 +19147,12 @@ classdef network_class
             % Set the neuron properties.
             [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, Us( :, end ), 'U', neuron_manager.neurons, true );
             [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, hs( :, end ), 'h', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_leaks( :, end ), 'I_leak', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_syns( :, end ), 'I_syn', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_nas( :, end ), 'I_na', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_totals( :, end ), 'I_total', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, m_infs( :, end ), 'm_inf', neuron_manager.neurons, true );
-            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, h_infs( :, end ), 'h_inf', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_leaks( :, end ), 'Ileak', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_syns( :, end ), 'Isyn', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_nas( :, end ), 'Ina', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, I_totals( :, end ), 'Itotal', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, m_infs( :, end ), 'minf', neuron_manager.neurons, true );
+            [ ~, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, h_infs( :, end ), 'hinf', neuron_manager.neurons, true );
             [ neurons, neuron_manager ] = neuron_manager.set_neuron_property( neuron_IDs, tauhs( :, end ), 'tauh', neuron_manager.neurons, true );
             
             % Update the network's neuron manager.
