@@ -2033,8 +2033,11 @@ classdef neuron_class
             
             elseif strcmpi( encoding_scheme, 'relative' )                           % If the encoding scheme is set to relative...
             
-                % Throw an error.
-                error( 'R2 is a free parameter for relative transmission subnetworks.' )
+                % Retrieve the maximum membrane voltage.
+                R2 = parameters{ 1 };
+
+                % % Throw an error.
+                % error( 'R2 is a free parameter for relative transmission subnetworks.' )
 
             else                                                                    % Otherwise...
 
@@ -2624,7 +2627,7 @@ classdef neuron_class
             if nargin < 2, verbose_flag = self.verbose_flag_DEFAULT; end
             
             % Print the network information.
-            self.neuron_utilities.print( self.ID, self.name, self.U, self.h, self.Cm, self.Gm, self.Er, self.R, self.Am, self.Sm, self.dEm, self.Ah, self.Sh, self.dEh, self.dEna, self.tauh_max, self.tauh, self.Gna, self.Ileak, self.Isyn, self.Ina, self.Itonic, self.Iapp, self.Itotal, self.enabled_flag, verbose_flag )
+            self.neuron_utilities.print( self.ID, self.name, self.U, self.h, self.Cm, self.Gm, self.Er, self.R, self.Am, self.Sm, self.dEm, self.Ah, self.Sh, self.dEh, self.dEna, self.tauh_max, self.tauh, self.Gna, self.minf, self.hinf, self.Ileak, self.Isyn, self.Ina, self.Itonic, self.Iapp, self.Itotal, self.enabled_flag, verbose_flag )
             
         end
         

@@ -257,6 +257,28 @@ classdef numerical_method_utilities_class
         end
         
         
+        % Implement a function to print numerical stability information.
+        function print_numerical_stability_info( ~, As, dts, network_dt, condition_numbers )
+        
+            % Retrieve the maximum step size.
+            [ dt_max, index ] = max( dts );
+            
+            % Retrieve the maximum condition number.
+            condition_number_max = max( condition_numbers );
+            
+            % Retrieve the linearized system matrix associated with the maximum step size.
+            A = As( :, :, index );
+            
+            % Print out the stability information.
+            fprintf( '------------- Numerical Stability Information -------------\n' )
+            fprintf( 'Linearized System Matrix: \tA \t\t\t=\n\n' ), disp( A )
+            fprintf( 'Max RK4 Step Size: \t\t\tdt_max \t\t= \t%0.3e \t[s]\n', dt_max )
+            fprintf( 'Proposed Step Size: \t\tdt \t\t\t= \t%0.3e \t[s]\n', network_dt )
+            fprintf( 'Condition Number: \t\t\tcond( A ) \t= \t%0.3e \t[-]\n', condition_number_max )
+            fprintf( '------------------------------------------------------------\n\n' )
+            
+        end
+        
     end
 end
 

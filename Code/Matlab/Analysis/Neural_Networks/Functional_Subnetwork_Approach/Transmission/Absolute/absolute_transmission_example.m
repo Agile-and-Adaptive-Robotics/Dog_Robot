@@ -95,18 +95,16 @@ Gms = network.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, n
 Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network.neuron_manager.neurons, undetected_option );           % [V] Maximum Membrane Voltage.
 gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );                                                              % [S] Synaptic Conductance.
 dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );                                                            % [V] Synaptic Reversal Potential.
-Us = zeros( network.neuron_manager.num_neurons, 1 );                                                                                        % [V] Membrane Voltage.
-dt0 = 1e-6;                                                                                                                                 % [s] Time Step.
+Us = zeros( 1, network.neuron_manager.num_neurons );                                                                                        % [V] Membrane Voltage.
+
+% Define the stability analysis timestep seed.
+dt0 = 1e-6;                                                                                                                                 % [s] Stability Analysis Time Step Seed.
 
 % Compute the maximum RK4 step size and condition number.
 [ As, dts, condition_numbers ] = network.RK4_stability_analysis( Cms, Gms, Rs, gs, dEs, Us, dt0, network.neuron_manager, network.synapse_manager, undetected_option, network.network_utilities );
 
 % Print out the stability information.
-fprintf( '\nSTABILITY SUMMARY:\n' )
-fprintf( 'Linearized System Matrix: A =\n\n' ), disp( As )
-fprintf( 'Max RK4 Step Size: \tdt_max = %0.3e [s]\n', dts )
-fprintf( 'Proposed Step Size: \tdt = %0.3e [s]\n', network_dt )
-fprintf( 'Condition Number: \tcond( A ) = %0.3e [-]\n', condition_numbers )
+network.numerical_method_utilities.print_numerical_stability_info( As, dts, network_dt, condition_numbers );
 
 
 %% Simulate the Absolute Transmission Subnetwork.

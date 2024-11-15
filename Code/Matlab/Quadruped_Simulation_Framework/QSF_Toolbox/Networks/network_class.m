@@ -6368,7 +6368,7 @@ classdef network_class
             elseif length( design_parameters ) == 1           % If there are a specific number of parameters...
                 
                 % Unpack the parameters.
-                Ia2 = design_parameters{ 2 };
+                Ia2 = design_parameters{ 1 };
                 
             else                                                    % Otherwise...
                 
@@ -8965,8 +8965,11 @@ classdef network_class
 
             elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
                 
+                % Unpack the transmission parameters.
+                [ ~, R2, ~, ~, ~, ~ ] = self.unpack_relative_transmission_parameters( transmission_parameters, neuron_manager, undetected_option );
+                
                 % Pack neuron parameters.
-                neuron_parameters = {  };
+                neuron_parameters = neuron_manager.pack_relative_transmission_parameters( R2, neuron_manager.neurons, undetected_option );
                 
             else                                                            % Otherwise...
                 
@@ -13943,7 +13946,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14040,7 +14043,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14098,7 +14101,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14195,7 +14198,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14253,7 +14256,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14354,7 +14357,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14428,7 +14431,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14541,7 +14544,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14614,7 +14617,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14725,7 +14728,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14786,7 +14789,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14885,7 +14888,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -14946,7 +14949,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15045,7 +15048,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15106,7 +15109,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15205,7 +15208,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15266,7 +15269,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15367,7 +15370,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15441,7 +15444,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15554,7 +15557,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.
@@ -15628,7 +15631,7 @@ classdef network_class
             gs = self.gs_DEFAULT*ones( 1, n_synapses );
             from_neuron_IDs = self.from_neuron_ID_DEFAULT*ones( 1, n_synapses );
             to_neuron_IDs = self.to_neuron_ID_DEFAULT*ones( 1, n_synapses );
-            deltas = self.detla_DEFAULT*ones( 1, n_synapses );
+            deltas = self.delta_DEFAULT*ones( 1, n_synapses );
             synapse_enabled_flags = self.synapse_enabled_flag_DEFAULT*ones( 1, n_synapses );
             
             % Pack the synapse input parameters.

@@ -3262,7 +3262,7 @@ classdef synapse_class
             if nargin < 2, verbose_flag = self.verbose_flag_DEFAULT; end
             
             % Print out the information for this neuron.
-            self.synapse_utilies.print( self.ID, self.name, self.dEs, self.gs, self.Gs, self.from_neuron_ID, self.to_neuron_ID, self.delta, self.enabled_flag, verbose_flag );
+            self.synapse_utilities.print( self.ID, self.name, self.dEs, self.gs, self.Gs, self.from_neuron_ID, self.to_neuron_ID, self.delta, self.enabled_flag, verbose_flag );
             
         end
         

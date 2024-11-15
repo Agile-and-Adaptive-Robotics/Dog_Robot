@@ -2687,7 +2687,7 @@ classdef neuron_manager_class
                     
                     % Retrieve the parameters.
                     c = self.c_absolute_transmission_DEFAULT;                                                         	% [-] Absolute Transmission Gain.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     transmission_R2_parameters = { c, R1 };
@@ -2706,11 +2706,24 @@ classdef neuron_manager_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                                               % If this operation uses a relative encoding scheme...
                 
-                % Determine whether parameters cell is valid given that this operation is using a relative encoding scheme.
-                if ~isempty( transmission_R2_parameters )                                                               % If the parameters cell is not empty...
+                % Determine how to create the parameters cell given that this operation is using a relative encoding scheme.
+                if isempty( transmission_R2_parameters )                                                                % If no parameters were provided...
                     
-                    % Throw an error.
-                    error( 'Invalid parameters detected.' )
+                    % Retrieve the parameters.
+                    R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );         	% [V] Activation Domain.
+                    
+                    % Store the required parameters in a cell.
+                    transmission_R2_parameters = { R2 };
+                    
+                else                                                                                                    % Otherwise...
+                    
+                    % Determine whether the parameters cell has a valid number of entries.
+                    if length( transmission_R2_parameters ) ~= 1                                                        % If there is anything other than a single parameter entry...
+                        
+                        % Throw an error.
+                        error( 'Invalid parameters detected.' )
+                        
+                    end
                     
                 end
                 
@@ -2741,21 +2754,15 @@ classdef neuron_manager_class
                     
                     % Set the default parameter values.
                     c = self.c_aboslute_transmission_DEFAULT;                                                                  	% [-] Transmission Subnetwork Gain.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );         	% [V] Maximum Member Voltage.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );       	% [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );      	% [S] Membrane Conductance 2.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );     	% [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );      	% [F] Membrane Capacitance 2.
-
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );         	% [V] Maximum Member Voltage.
+                    
                     % Store the required parameters in a cell.
                     transmission_parameters = { c, R1 };
-                    % transmission_parameters = { c, R1, Gm1, Gm2, Cm1, Cm2 };
 
                 else                                                                                                            % Otherwise...
                     
                     % Determine whether the parameters cell has a valid number of entries.
                     if length( transmission_parameters ) ~= 2                                                                   % If there is anything other than the required number of parameter entries...
-                    % if length( transmission_parameters ) ~= 6                                                                	% If there is anything other than the required number of parameter entries...
                         
                         % Throw an error.
                         error( 'Invalid parameters detected.' )
@@ -2766,11 +2773,24 @@ classdef neuron_manager_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                                                       % If this operation uses a relative encoding scheme...
                 
-                % Determine whether parameters cell is valid given that this operation is using a relative encoding scheme.
-                if ~isempty( transmission_parameters )                                                                          % If the parameters cell is not empty...
+                % Determine how to create the parameters cell given that this operation is using an absolute encoding scheme.
+                if isempty( transmission_parameters )                                                                           % If no parameters were provided...
                     
-                    % Throw an error.
-                    error( 'Invalid parameters detected.' )
+                    % Set the default parameter values.
+                    R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );         	% [V] Maximum Member Voltage.
+                    
+                    % Store the required parameters in a cell.
+                    transmission_parameters = { R2 };
+
+                else                                                                                                            % Otherwise...
+                    
+                    % Determine whether the parameters cell has a valid number of entries.
+                    if length( transmission_parameters ) ~= 1                                                                   % If there is anything other than the required number of parameter entries...
+                        
+                        % Throw an error.
+                        error( 'Invalid parameters detected.' )
+                        
+                    end
                     
                 end
                 
@@ -3087,11 +3107,11 @@ classdef neuron_manager_class
                     c1 = self.c1_absolute_inversion_DEFAULT;                                                                    % [-] Subnetwork Gain 1.
                     c3 = self.c3_absolute_inversion_DEFAULT;                                                                    % [-] Subnetwork Gain 3.
                     % delta = self.delta_absolute_inversion_DEFAULT;                                                           	% [V] Bifurcation Parameter.
-                    % R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
 
                     % Store the required parameters in a cell.
                     inversion_parameters = { c1, c3 };
@@ -3204,11 +3224,11 @@ classdef neuron_manager_class
                     c1 = self.c1_reduced_absolute_inversion_DEFAULT;                                                          	% [-] Subnetwork Gain 1.
                     c2 = self.c2_reduced_absolute_inversion_DEFAULT;                                                            % [-] Subnetwork Gain 2.
                     % delta = self.delta_reduced_absolute_inversion_DEFAULT;                                                   	% [V] Bifurcation Parameter.
-                    % R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 1.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 1.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     
                     % Store the required parameters in a cell.
                     reduced_inversion_parameters = { c1, c2 };
@@ -3267,7 +3287,7 @@ classdef neuron_manager_class
                     % Set the default input and output voltage offsets.
                     c1 = self.c1_absolute_division_DEFAULT;                                                             % [-] Absolute Division Gain 1.
                     c3 = self.c3_absolute_division_DEFAULT;                                                             % [-] Absolute Division Gain 3.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );   	% [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );   	% [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     division_R3_parameters = { c1, c3, R1 };
@@ -3323,13 +3343,13 @@ classdef neuron_manager_class
                     c1 = self.c1_absolute_division_DEFAULT;                                                                     % [-] Subnetwork Gain 1.
                     c3 = self.c3_absolute_division_DEFAULT;                                                                     % [-] Subnetwork Gain 3.
                     % delta = self.delta_absolute_division_DEFAULT;                                                            	% [V] Bifurcation Parameter.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
                     % Store the required parameters in a cell.
@@ -3391,7 +3411,7 @@ classdef neuron_manager_class
                     c2 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                     c3 = self.c3_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 3.
                     delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [-] Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     dai_R3_parameters = { c1, c2, c3, delta1, R1 };
@@ -3449,13 +3469,13 @@ classdef neuron_manager_class
                     c3 = self.c3_dai_DEFAULT;                                                                                   % [-] Subnetwork Gain 3.
                     delta1 = self.delta_dai_DEFAULT;                                                                            % [V] Bifurcation Parameter 1.
                     % delta2 = self.delta_dai_DEFAULT;                                                                          % [V] Bifurcation Parameter 2.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
                     % Store the required parameters in a cell.
@@ -3515,7 +3535,7 @@ classdef neuron_manager_class
                     % Set the default input and output voltage offsets.
                     c1 = self.c1_reduced_absolute_division_DEFAULT;                                                     % [-] Reduced Absolute Division Gain 1.
                     c2 = self.c2_reduced_absolute_division_DEFAULT;                                                     % [-] Reduced Absolute Division Gain 2.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     reduced_division_R3_parameters = { c1, c2, R1 };
@@ -3571,13 +3591,13 @@ classdef neuron_manager_class
                     c1 = self.c1_absolute_reduced_division_DEFAULT;                                                          	% [-] Subnetwork Gain 1.
                     c2 = self.c2_absolute_reduced_division_DEFAULT;                                                             % [-] Subnetwork Gain 2.
                     % delta = self.delta_absolute_reduced_division_DEFAULT;                                                    	% [V] Bifurcation Parameter.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );         	% [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );         	% [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
                     
                     % Store the required parameters in a cell.
@@ -3638,7 +3658,7 @@ classdef neuron_manager_class
                     c1 = self.c1_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 1.
                     c2 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                     delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [V] Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     reduced_dai_R3_parameters = { c1, c2, delta1, R1 };
@@ -3695,13 +3715,13 @@ classdef neuron_manager_class
                     c2 = self.c2_reduced_dai_DEFAULT;                                                                           % [-] Subnetwork Gain 2.
                     delta1 = self.delta_reduced_dai_DEFAULT;                                                                    % [V] Bifurcation Parameter 1.
                     % delta2 = self.delta_reduced_dai_DEFAULT;                                                                 	% [V] Bifurcation Parameter 2.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
                     % Store the required parameters in a cell.
@@ -3816,7 +3836,7 @@ classdef neuron_manager_class
                     c5 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                     c6 = self.c3_absolute_dai_DEFAULT;                                                                 	% [-] Absolute Division After Inversion Gain 3.
                     delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [V] Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     multiplication_R4_parameters = { c4, c5, c6, delta1, R1 };
@@ -3875,7 +3895,7 @@ classdef neuron_manager_class
                     c5 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                     c6 = self.c3_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 3.
                     delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [-] Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     multiplication_Rs_parameters = { c1, c3, c4, c5, c6, delta1, R1 };
@@ -3935,14 +3955,14 @@ classdef neuron_manager_class
                     c6 = self.c3_absolute_dai_DEFAULT;                                                                          % [-] Subnetwork Gain 6.
                     delta1 = self.delta_absolute_inversion_DEFAULT;                                                             % [V] Bifurcation Parameter 1.
                     % delta2 = self.delta_absolute_division_DEFAULT;                                                           	% [V] Bifurcation Parameter 2.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
                     % Gm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 4.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
                     % Cm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 4.
 
@@ -4167,7 +4187,7 @@ classdef neuron_manager_class
                     c3 = self.c1_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 1.
                     c4 = self.c2_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 2.
                     delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                             % [V] Reduced Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     reduced_multiplication_R4_parameters = { c3, c4, delta1, R1 };
@@ -4225,7 +4245,7 @@ classdef neuron_manager_class
                     c3 = self.c1_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 1.
                     c4 = self.c2_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 2.
                     delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                             % [V] Reduced Absolute Inversion Offset.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                     
                     % Store the required parameters in a cell.
                     reduced_multiplication_Rs_parameters = { c1, c2, c3, c4, delta1, R1 };
@@ -4284,14 +4304,14 @@ classdef neuron_manager_class
                     c4 = self.c2_reduced_absolute_division_DEFAULT;                                                             % [-] Subnetwork Gain 4.
                     delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                                     % [V] Bifurcation Parameter 1.
                     % delta2 = self.delta_reduced_absolute_division_DEFAULT;                                                    % [V] Bifurcation Parameter 2.
-                    R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                    % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                    % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                    % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                    R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                    % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                    % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                    % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                     % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
                     % Gm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 4.
-                    % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                    % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                    % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                    % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                     % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
                     % Cm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 4.
                     
@@ -4348,7 +4368,7 @@ classdef neuron_manager_class
             
                 % Set the parameters to default values.
                 c = self.c_absolute_transmission_DEFAULT;
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( transmission_R2_parameters ) == 2                                                        % If there are a specific number of parameters...
                 
@@ -4368,7 +4388,6 @@ classdef neuron_manager_class
         
         % Implement a function to unpack the parameters for designing an absolute transmission subnetwork.
         function [ c, R1 ] = unpack_absolute_transmission_parameters( self, transmission_parameters, neurons, undetected_option )
-        % function [ c, R1, Gm1, Gm2, Cm1, Cm2 ] = unpack_absolute_transmission_parameters( self, transmission_parameters, neurons, undetected_option )
 
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end                                    	% [-] Undetected Option.
@@ -4380,11 +4399,11 @@ classdef neuron_manager_class
                 
                 % Set the parameters to default values.
                 c = self.c_absolute_transmission_DEFAULT;
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );        % [V] Activation Domain.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option ); 	% [S] Membrane Conductance (Neuron 1).
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );   	% [S] Membrane Conductance (Neuron 2).
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );   	% [F] Membrane Capacitance (Neuron 1).
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );   	% [F] Membrane Capacitance (Neuron 2).
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );        % [V] Activation Domain.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option ); 	% [S] Membrane Conductance (Neuron 1).
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );   	% [S] Membrane Conductance (Neuron 2).
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );   	% [F] Membrane Capacitance (Neuron 1).
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );   	% [F] Membrane Capacitance (Neuron 2).
                 
             elseif length( transmission_parameters ) == 2                                                               % If there are a specific number of parameters...
                 
@@ -4395,6 +4414,35 @@ classdef neuron_manager_class
                 % Gm2 = transmission_parameters{ 4 };                                                                  	% [S] Membrane Conductance (Neuron 2).
                 % Cm1 = transmission_parameters{ 5 };                                                                 	% [F] Membrane Capacitance (Neuron 1).
                 % Cm2 = transmission_parameters{ 6 };                                                                  	% [F] Membrane Capacitance (Neuron 2).
+            
+            else                                                                                                        % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
+        % Implement a function to unpack the parameters for designing a relative transmission subnetwork.
+        function R2 = unpack_relative_transmission_parameters( self, transmission_parameters, neurons, undetected_option )
+
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end                                    	% [-] Undetected Option.
+            if nargin < 3, neurons = self.neurons; end                                                              	% [class] Array of Neuron Class Objects.
+            if nargin < 2, transmission_parameters = {  }; end                                                          % [-] Transmission Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( transmission_parameters )                                                                       % If the parameters are empty...
+                
+                % Set the parameters to default values.
+                R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );        % [V] Activation Domain.
+                
+            elseif length( transmission_parameters ) == 1                                                               % If there are a specific number of parameters...
+                
+                % Unpack the parameters.
+                R2 = transmission_parameters{ 1 };                                                                      % [V] Maximum Membrane Voltage (Neuron 1).
             
             else                                                                                                        % Otherwise...
                
@@ -4596,11 +4644,11 @@ classdef neuron_manager_class
                 c1 = self.c1_absolute_inversion_DEFAULT;                                                               	% [-] Subnetwork Gain 1.
                 c3 = self.c3_absolute_inversion_DEFAULT;                                                              	% [-] Subnetwork Gain 3.
                 % delta = self.delta_absolute_inversion_DEFAULT;                                                        % [V] Bifurcation Parameter.
-                % R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );      % [V] Maximum Membrane Voltage 1.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );    % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );    % [S] Membrane Conductance 2.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );    % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );    % [F] Membrane Capacitance 2.
+                % R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );      % [V] Maximum Membrane Voltage 1.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );    % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );    % [S] Membrane Conductance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );    % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );    % [F] Membrane Capacitance 2.
                 
             elseif length( inversion_parameters ) == 2                                                                  % If there are a specific number of parameters...
             % elseif length( inversion_parameters ) == 8                                                                % If there are a specific number of parameters...
@@ -4672,11 +4720,11 @@ classdef neuron_manager_class
                 c1 = self.c1_reduced_absolute_inversion_DEFAULT;                                                          	% [-] Subnetwork Gain 1.
                 c2 = self.c2_reduced_absolute_inversion_DEFAULT;                                                            % [-] Subnetwork Gain 2.
                 % delta = self.delta_reduced_absolute_inversion_DEFAULT;                                                    % [V] Bifurcation Parameter.
-                % R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 1.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 1.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 
             elseif length( inversion_parameters ) == 2                                                                      % If there are a specific number of parameters...
             % elseif length( inversion_parameters ) == 7                                                                    % If there are a specific number of parameters...
@@ -4717,7 +4765,7 @@ classdef neuron_manager_class
                 % Set the parameters to default values.
                 c1 = self.c1_absolute_division_DEFAULT;                                                             % [-] Absolute Division Gain 1.
                 c3 = self.c3_absolute_division_DEFAULT;                                                             % [-] Absolute Division Gain 3.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( division_R3_parameters ) == 3                                                            % If there are a specific number of parameters...
                 
@@ -4752,13 +4800,13 @@ classdef neuron_manager_class
                 c1 = self.c1_absolute_division_DEFAULT;                                                                     % [-] Subnetwork Gain 1.
                 c3 = self.c3_absolute_division_DEFAULT;                                                                     % [-] Subnetwork Gain 3.
                 % delta = self.delta_absolute_division_DEFAULT;                                                             % [V] Bifurcation Parameter.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
             elseif length( division_parameters ) == 3                                                                       % If there are a specific number of parameters...
@@ -4803,7 +4851,7 @@ classdef neuron_manager_class
                 % Set the parameters to default values.
                 c1 = self.c1_reduced_absolute_division_DEFAULT;                                                     % [-] Reduced Absolute Division Gain 1.
                 c2 = self.c2_reduced_absolute_division_DEFAULT;                                                     % [-] Reduced Absolute Division Gain 2.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );  	% [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );  	% [V] Activation Domain.
 
             elseif length( division_R3_parameters ) == 3                                                            % If there are a specific number of parameters...
                 
@@ -4838,13 +4886,13 @@ classdef neuron_manager_class
                 c1 = self.c1_absolute_reduced_division_DEFAULT;                                                          	% [-] Subnetwork Gain 1.
                 c2 = self.c2_absolute_reduced_division_DEFAULT;                                                             % [-] Subnetwork Gain 2.
                 % delta = self.delta_absolute_reduced_division_DEFAULT;                                                    	% [V] Bifurcation Parameter.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
             elseif length( division_parameters ) == 3                                                                       % If there are a specific number of parameters...
@@ -4891,7 +4939,7 @@ classdef neuron_manager_class
                 c2 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                 c3 = self.c3_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 3.
                 delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [-] Absolute Inversion Offset.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( dai_R3_parameters ) == 5                                                                 % If there are a specific number of parameters...
                 
@@ -4930,13 +4978,13 @@ classdef neuron_manager_class
                 c3 = self.c3_dai_DEFAULT;                                                                                   % [-] Subnetwork Gain 3.
                 delta1 = self.delta_dai_DEFAULT;                                                                            % [V] Bifurcation Parameter 1.
                 % delta2 = self.delta_dai_DEFAULT;                                                                          % [V] Bifurcation Parameter 2.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
             elseif length( dai_parameters ) == 5                                                                            % If there are a specific number of parameters...
@@ -4985,7 +5033,7 @@ classdef neuron_manager_class
                 c1 = self.c1_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division Gain 1.
                 c2 = self.c2_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division Gain 2.
                 delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [V] Bifurcation Parameter 1.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( dai_R3_parameters ) == 4                                                                 % If there are a specific number of parameters...
             % elseif length( dai_R3_parameters ) == 3                                                               % If there are a specific number of parameters...
@@ -5023,13 +5071,13 @@ classdef neuron_manager_class
                 c2 = selr.c2_reduced_dai_DEFAULT;                                                                           % [-] Subnetwork Gain 2.
                 delta1 = self.delta_reduced_dai_DEFAULT;                                                                    % [V] Bifurcation Parameter 1.
                 % delta2 = self.delta_reduced_dai_DEFAULT;                                                                  % [V] Bifurcation Parameter 2.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
 
             elseif length( dai_parameters ) == 4                                                                          	% If there are a specific number of parameters...
@@ -5106,7 +5154,7 @@ classdef neuron_manager_class
                 c5 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                 c6 = self.c3_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 3.
                 delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [V] Absolute Inversion Offset.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
 
             elseif length( multiplication_R4_parameters ) == 5                                                      % If there are a specific number of parameters...
 
@@ -5145,7 +5193,7 @@ classdef neuron_manager_class
                 c5 = self.c2_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 2.
                 c6 = self.c3_absolute_dai_DEFAULT;                                                                  % [-] Absolute Division After Inversion Gain 3.
                 delta1 = self.delta_absolute_inversion_DEFAULT;                                                     % [-] Absolute Inversion Offset.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( multiplication_Rs_parameters ) == 7                                                      % If there are a specific number of parameters...
 
@@ -5188,14 +5236,14 @@ classdef neuron_manager_class
                 c6 = self.c3_absolute_dai_DEFAULT;                                                                          % [-] Subnetwork Gain 6.
                 delta1 = self.delta_absolute_inversion_DEFAULT;                                                             % [V] Bifurcation Parameter 1.
                 % delta2 = self.delta_absolute_division_DEFAULT;                                                          	% [V] Bifurcation Parameter 2.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
                 % Gm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 4.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
                 % Cm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 4.
 
@@ -5277,7 +5325,7 @@ classdef neuron_manager_class
                 c3 = self.c1_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 1.
                 c4 = self.c2_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 2.
                 delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                             % [V] Reduced Absolute Inversion Offset.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
 
             elseif length( multiplication_R4_parameters ) == 4                                                      % If there are a specific number of parameters...
 
@@ -5314,7 +5362,7 @@ classdef neuron_manager_class
                 c3 = self.c1_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 1.
                 c4 = self.c2_reduced_absolute_dai_DEFAULT;                                                          % [-] Reduced Absolute Division After Inversion Gain 2.
                 delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                             % [V] Reduced Absolute Inversion Offset.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );    % [V] Activation Domain.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );    % [V] Activation Domain.
                 
             elseif length( multiplication_Rs_parameters ) == 6                                                      % If there are a specific number of parameters...
 
@@ -5355,14 +5403,14 @@ classdef neuron_manager_class
                 c4 = self.c2_reduced_absolute_division_DEFAULT;                                                             % [-] Subnetwork Gain 4.
                 delta1 = self.delta_reduced_absolute_inversion_DEFAULT;                                                     % [V] Bifurcation Parameter 1.
                 % delta2 = self.delta_reduced_absolute_division_DEFAULT;                                                   	% [V] Bifurcation Parameter 2.
-                R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
-                % R2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
-                % Gm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
-                % Gm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
+                R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option );            % [V] Maximum Membrane Voltage 1.
+                % R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage 2.
+                % Gm1 = self.get_neuron_property( neurons( 1 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 1.
+                % Gm2 = self.get_neuron_property( neurons( 2 ).ID, 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 2.
                 % Gm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 3.
                 % Gm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Gm', true, neurons, undetected_option );        % [S] Membrane Conductance 4.
-                % Cm1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
-                % Cm2 = self.get_neuron_property( neurons.neuron_IDs( 2 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
+                % Cm1 = self.get_neuron_property( neurons( 1 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 1.
+                % Cm2 = self.get_neuron_property( neurons( 2 ).ID, 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 2.
                 % Cm3 = self.get_neuron_property( neurons.neuron_IDs( 3 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 3.
                 % Cm4 = self.get_neuron_property( neurons.neuron_IDs( 4 ), 'Cm', true, neurons, undetected_option );        % [F] Membrane Capacitance 4.
 
@@ -5407,7 +5455,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, neurons = self.neurons; end
-            if nargin < 3, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 3, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 2, c = self.c_absolute_transmission_DEFAULT; end
             
             % Preallocate a cell array to store the parameters.
@@ -5422,25 +5470,36 @@ classdef neuron_manager_class
         
         % Implement a function to pack the parameters of an absolute transmission subnetwork.
         function transmission_parameters = pack_absolute_transmission_parameters( self, c, R1, neurons, undetected_option )
-        % function transmission_parameters = pack_absolute_transmission_parameters( self, c, R1, Gm1, Gm2, Cm1, Cm2, neurons, undetected_option )
 
             % Set the default input arguments.
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, neurons = self.neurons; end
-            if nargin < 3, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 3, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 2, c = self.c_absolute_transmission_DEFAULT; end
             
             % Preallocate a cell array to store the parameters.
             transmission_parameters = cell( 1, 2 );
-            % transmission_parameters = cell( 1, 6 );
 
             % Pack the parameters.
             transmission_parameters{ 1 } = c;
             transmission_parameters{ 2 } = R1;
-            % transmission_parameters{ 3 } = Gm1;
-            % transmission_parameters{ 4 } = Gm2;
-            % transmission_parameters{ 5 } = Cm1;
-            % transmission_parameters{ 6 } = Cm2;
+            
+        end
+        
+        
+        % Implement a function to pack the parameters of a relative transmission subnetwork.
+        function transmission_parameters = pack_relative_transmission_parameters( self, R2, neurons, undetected_option )
+
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
+            if nargin < 3, neurons = self.neurons; end
+            if nargin < 2, R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option ); end
+            
+            % Preallocate a cell array to store the parameters.
+            transmission_parameters = cell( 1, 1 );
+
+            % Pack the parameters.
+            transmission_parameters{ 1 } = R2;
             
         end
         
@@ -5633,7 +5692,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neurons = self.neurons; end
-            if nargin < 4, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 4, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 3, c3 = self.c3_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
             
@@ -5655,7 +5714,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neurons = self.neurons; end
-            if nargin < 4, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 4, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 3, c3 = self.c3_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
             
@@ -5687,7 +5746,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neurons = self.neurons; end
-            if nargin < 4, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 4, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 3, c2 = self.c2_reduced_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_division_DEFAULT; end
             
@@ -5709,7 +5768,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neurons = self.neurons; end
-            if nargin < 4, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 4, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 3, c2 = self.c2_reduced_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_division_DEFAULT; end
 
@@ -5741,7 +5800,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neurons = self.neurons; end
-            if nargin < 6, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 6, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 5, delta1 = self.delta_absolute_division_DEFAULT; end
             if nargin < 4, c3 = self.c3_absolute_division_DEFAULT; end
             if nargin < 3, c2 = self.c2_absolute_division_DEFAULT; end
@@ -5767,7 +5826,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neurons = self.neurons; end
-            if nargin < 6, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 6, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 5, delta1 = self.delta1_absolute_division_DEFAULT; end
             if nargin < 4, c3 = self.c3_absolute_dai_DEFAULT; end
             if nargin < 3, c2 = self.c2_absolute_dai_DEFAULT; end
@@ -5804,7 +5863,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neurons = self.neurons; end
-            if nargin < 5, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 5, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 4, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c2 = self.c2_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
@@ -5829,7 +5888,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neurons = self.neurons; end
-            if nargin < 5, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 5, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 4, delta1 = self.delta1_absolute_division_DEFAULT; end
             if nargin < 3, c2 = self.c2_reduced_absolute_dai_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_dai_DEFAULT; end
@@ -5880,7 +5939,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neurons = self.neurons; end
-            if nargin < 6, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 6, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 5, delta1 = self.delta_absolute_division_DEFAULT; end
             if nargin < 4, c6 = self.c3_absolute_dai_DEFAULT; end
             if nargin < 3, c5 = self.c2_absolute_dai_DEFAULT; end
@@ -5905,7 +5964,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 9, neurons = self.neurons; end
-            if nargin < 8, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 8, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 7, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 6, c6 = self.c3_absolute_dai_DEFAULT; end
             if nargin < 5, c5 = self.c2_absolute_dai_DEFAULT; end
@@ -5935,7 +5994,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 9, neurons = self.neurons; end
-            if nargin < 8, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 8, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 7, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 6, c6 = self.c3_absolute_dai_DEFAULT; end
             if nargin < 5, c5 = self.c2_absolute_dai_DEFAULT; end
@@ -5994,7 +6053,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neurons = self.neurons; end
-            if nargin < 5, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 5, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 4, delta1 = self.delta_absolute_division_DEFAULT; end
             if nargin < 3, c4 = self.c2_reduced_absolute_division_DEFAULT; end
             if nargin < 2, c3 = self.c1_reduced_absolute_division_DEFAULT; end
@@ -6017,7 +6076,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 8, neurons = self.neurons; end
-            if nargin < 7, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 7, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 6, delta1 = self.delta_absolute_division_DEFAULT; end
             if nargin < 5, c4 = self.c2_reduced_absolute_division_DEFAULT; end
             if nargin < 4, c3 = self.c1_reduced_absolute_division_DEFAULT; end
@@ -6045,7 +6104,7 @@ classdef neuron_manager_class
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 8, neurons = self.neurons; end
-            if nargin < 7, R1 = self.get_neuron_property( neurons.neuron_IDs( 1 ), 'R', true, neurons, undetected_option ); end
+            if nargin < 7, R1 = self.get_neuron_property( neurons( 1 ).ID, 'R', true, neurons, undetected_option ); end
             if nargin < 6, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 5, c4 = self.c4_reduced_absolute_dai_DEFAULT; end
             if nargin < 4, c3 = self.c3_reduced_absolute_dai_DEFAULT; end
@@ -6101,8 +6160,11 @@ classdef neuron_manager_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                                                   % If this operation uses a relative encoding scheme...
                 
+                % Unpack the relative transmission parameters.
+                R2 = self.unpack_relative_transmission_parameters( transmission_parameters, neurons, undetected_option );
+                
                 % Pack the relative transmission R2 parameters.
-                transmission_R2_parameters = {  };
+                transmission_R2_parameters = { R2 };
                 
             else                                                                                                            % Otherwise...
                 
