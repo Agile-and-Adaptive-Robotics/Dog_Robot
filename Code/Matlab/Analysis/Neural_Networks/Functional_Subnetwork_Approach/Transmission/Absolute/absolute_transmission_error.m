@@ -18,7 +18,7 @@ simulate_flag = true;                           	% [T/F] Simulation Flag. (Deter
 verbose_flag = true;                             	% [T/F] Printing Flag. (Determines whether to print out information.)
 
 % Define the undetected option.
-undetected_option = 'error';                        % [str] Undetected Option.
+undetected_option = 'Error';                        % [str] Undetected Option.
 
 % Define the network simulation timestep.
 network_dt = 1e-3;                                 	% [s] Simulation Timestep.
@@ -173,10 +173,10 @@ process_option = 'None';                    % [str] Process Option.
 undetected_option = 'Ignore';               % [str] Undetected Option.
 
 % Determine whether to simulate the network.
-if simulate_flag               % If we want to simulate the network...
+if simulate_flag                            % If we want to simulate the network...
     
     % Define the number of applied currents to use.
-    n_applied_currents = 20;                                    % [#] Number of Applied Currents.
+    n_applied_currents = 20;             	% [#] Number of Applied Currents.
     
     % Create the applied currents.
     applied_currents = linspace( 0, network.neuron_manager.neurons( 1 ).R*network.neuron_manager.neurons( 1 ).Gm, n_applied_currents );
@@ -185,7 +185,7 @@ if simulate_flag               % If we want to simulate the network...
     Us_achieved_numerical = zeros( n_applied_currents, num_neurons );
     
     % Simulate the network for each of the applied current combinations.
-    for k = 1:n_applied_currents                          % Iterate through each of the currents applied to the input neuron...
+    for k = 1:n_applied_currents         	% Iterate through each of the currents applied to the input neuron...
             
             % Create applied currents.
             [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
