@@ -4157,6 +4157,24 @@ classdef applied_current_manager_class
         %% Print Functions.
         
         % Implement a function to print the properties of the constituent applied currents.
+        function print( self, applied_currents, verbose_flag )
+        
+            % Set the default input arguments.
+            if nargin < 3, verbose_flag = false; end
+            if nargin < 2, applied_currents = self.applied_currents; end
+            
+            % Retrieve the number of applied currents.
+            n_applied_currents = length( applied_currents );
+            
+            % Print out the properties associated with each applied currents.
+            for k = 1:n_applied_currents             % Iterate through each of the applied currents...
+            
+                % Print out the properties for this applied currents.
+                applied_currents( k ).print( verbose_flag );
+            
+            end
+            
+        end
         
                 
         %% Save & Load Functions.

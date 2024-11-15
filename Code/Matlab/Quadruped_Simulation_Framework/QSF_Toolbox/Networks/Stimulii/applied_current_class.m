@@ -1126,6 +1126,15 @@ classdef applied_current_class
         %% Print Functions.
         
         % Implement a function to print the properties associated with this applied current.
+        function print( self, verbose_flag )
+           
+            % Set the default input arguments.
+            if nargin < 2, verbose_flag = self.verbose_flag_DEFAULT; end
+            
+            % Print out the information for this neuron.
+            self.applied_current_utilities.print( self.ID, self.name, self.to_neuron_ID, self.ts, self.Ias, self.num_timesteps, self.dt, self.tf, self.enabled_flag, verbose_flag );
+            
+        end
         
         
         %% Save & Load Functions.

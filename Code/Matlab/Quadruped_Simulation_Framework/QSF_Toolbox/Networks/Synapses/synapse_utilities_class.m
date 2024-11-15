@@ -3928,25 +3928,24 @@ classdef synapse_utilities_class
             % Print out a header for this synapse.
             fprintf( '---------- SYNAPSE %0.0f: %s ----------\n', ID, name )
             
-            
             % Determine which information to print about this synapse.
             if verbose_flag            % If we want to print all of the information...
                 
-                fprintf( 'Synaptic Reversal Potential:      dEs        	= %0.2f \t[mV]\n', dEs )
-                fprintf( 'Maximum Synaptic Conductance:     gs          = %0.2f \t[muS]\n', gs )
-                fprintf( 'Synaptic Conductance:             Gs          = %0.2f \t[muS]\n', Gs )
+                fprintf( 'Synaptic Reversal Potential:      dEs        	= %0.2f \t[mV]\n', dEs*( 10^3 ) )
+                fprintf( 'Maximum Synaptic Conductance:     gs          = %0.2f \t[muS]\n', gs*( 10^6 ) )
+                fprintf( 'Synaptic Conductance:             Gs          = %0.2f \t[muS]\n', Gs*( 10^6 ) )
                 
                 fprintf( 'From Neuron ID:                   FNID        = %0.0f \t[#]\n', from_neuron_ID )
                 fprintf( 'To Neuron ID:                     TNID        = %0.0f \t[#]\n', to_neuron_ID )
                 
-                fprintf( 'Delta:                            delta       = %0.2f \t[mV]\n', delta )
+                fprintf( 'Delta:                            delta       = %0.2f \t[mV]\n', delta*( 10^3 ) )
                 
                 fprintf( 'Enabled Flag:                     enabled     = %0.0f \t[T/F]\n', enabled_flag )
             
             else                        % Otherwise...
                 
-                fprintf( 'Synaptic Reversal Potential:      dEs        	= %0.2f \t[mV]\n', dEs )
-                fprintf( 'Maximum Synaptic Conductance:     gs          = %0.2f \t[muS]\n', gs )
+                fprintf( 'Synaptic Reversal Potential:      dEs        	= %0.2f \t[mV]\n', dEs*( 10^3 ) )
+                fprintf( 'Maximum Synaptic Conductance:     gs          = %0.2f \t[muS]\n', gs*( 10^6 ) )
                 
                 fprintf( 'From Neuron ID:                   FNID        = %0.0f \t[#]\n', from_neuron_ID )
                 fprintf( 'To Neuron ID:                     TNID        = %0.0f \t[#]\n', to_neuron_ID )

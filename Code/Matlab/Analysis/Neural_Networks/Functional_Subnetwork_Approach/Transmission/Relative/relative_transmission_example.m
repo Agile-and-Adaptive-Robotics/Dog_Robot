@@ -11,51 +11,59 @@ save_directory = '.\Save';                              % [str] Save Directory.
 load_directory = '.\Load';                              % [str] Load Directory.
 
 % Define the level of verbosity.
-b_verbose = true;                                   % [T/F] Printing Flag.
+verbose_flag = true;                                   % [T/F] Printing Flag.
+
+% Define the undetected option.
+undetected_option = 'error';                        % [str] Undetected Option.
 
 % Define the network integration step size.
-network_dt = 1.3e-4;                                % [s] Simulation Timestep.
+network_dt = 1e-3;                                  % [s] Simulation Timestep.
+% network_dt = 1e-4;                            	% [s] Simulation Timestep.
 
 % Define the network simulation duration.
-network_tf = 3;                                     % [s] Simulation Duration.
+network_tf = 0.5;                                 	% [s] Simulation Duration.
+% network_tf = 1;                                 	% [s] Simulation Duration.
+% network_tf = 3;                                 	% [s] Simulation Duration.
+
+% Define the integration method.
+integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
 
 
 %% Define Relative Transmission Subnetwork Parameters.
 
-% Define the maximum membrane voltages.
+% Define the transmission subnetwork design parameters.
 R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
 R2 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 2).
+Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
+Gm2 = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
+Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
 
-% Define the membrane conductances.
-Gm1 = 1e-6;                                       	% [S] Membrane Conductance (Neuron 1)
-Gm2 = 1e-6;                                      	% [S] Membrane Conductance (Neuron 2) 
+% Store the transmission subnetwork design parameters in a cell.
+transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
 
-% Define the membrane capacitance.
-Cm1 = 5e-9;                                     	% [F] Membrane Capacitance (Neuron 1)
-Cm2 = 5e-9;                                      	% [F] Membrane Capacitance (Neuron 2)
-
-% Define the sodium channel conductance.
-Gna1 = 0;                                           % [S] Sodium Channel Conductance (Neuron 1).
-Gna2 = 0;                                           % [S] Sodium Channel Conductance (Neuron 2).
-
-% Define the synaptic conductances.
-dEs21 = 194e-3;                                   	% [V] Synaptic Reversal Potential (Synapse 21).
-
-% Define the applied currents.
-Ia1 = R1*Gm1;                                      	% [A] Applied Current (Neuron 1)
-Ia2 = 0;                                            % [A] Applied Current (Neuron 2).
-
-% Define the current state.
-current_state1 = 1.0;                               % [-] Current State (Neuron 1). (Specified as a ratio of the total applied current that is active.)
-
-% Define the network design parameters.
-c = 1;                                              % [-] Design Constant.
+% Define the encoding scheme.
+encoding_scheme = 'relative';
 
 
-%% Compute Derived Relative Transmission Subnetwork Constraints.
+%% Define the Relative Transmission Subnetwork Input Current Parameters.
 
-% Compute the synaptic conductances.
-gs21 = ( R2*Gm2 - Ia2 )/( dEs21 - R2 );             % [S] Synaptic Conductance (Synapse 21).
+% Define the current identification properties.
+input_current_ID = 1;                               % [#] Input Current ID.
+input_current_name = 'Applied Current 1';           % [str] Input Current Name.
+input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Input Current is Applied.
+
+% Compute the number of simulation timesteps.
+n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+
+% Construct the simulation times associated with the input currents.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+
+% Define the current magnitudes.
+Ias1_mag = R1*Gm1;                                  % [A] Applied Current Magnitude.
+
+% Define the magnitudes of the applied current input.
+Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
 
 
 %% Print Relative Transmission Subnetwork Parameters.

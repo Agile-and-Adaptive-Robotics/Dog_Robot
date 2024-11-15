@@ -805,7 +805,61 @@ classdef applied_current_utilities_class
         %% Print Functions.
         
         % Implement a function to print applied current properties.
+        function print( ~, ID, name, to_neuron_ID, ts, Ias, num_timesteps, dt, tf, enabled_flag, verbose_flag )
+            
+            % Set the default input arguments.
+            if nargin < 11, verbose_flag = false; end
+            
+            % Print out a header for this synapse.
+            fprintf( '---------- Applied Current %0.0f: %s ----------\n', self.ID, self.name )
+            
+            % Determine which information to print about this synapse.
+            if verbose_flag            % If we want to print all of the information...
+                                
+                fprintf( 'To Neuron ID:                     TNID        = %0.0f \t[#]\n', to_neuron_ID )
+                
+                fprintf( 'Time Vector:                      ts          = [s] ' ), disp( ts )
+                fprintf( 'Applied Current Magnitudes:       Ias         = [nA] ' ), disp( Ias*( 10^9 ) )
+                
+                fprintf( '# of Timesteps:                   n           = %0.0f \t[#]\n', num_timesteps )
+                fprintf( 'Timestep:                         dt          = %0.2f \t[s]\n', dt )
+                fprintf( 'Simulation Duration:            	tf          = %0.2f \t[s]\n', tf )
+                
+                fprintf( 'Enabled Flag:                     enabled     = %0.0f \t[T/F]\n', enabled_flag )
+            
+            else                        % Otherwise...
+                
+                fprintf( 'To Neuron ID:                     TNID        = %0.0f \t[#]\n', to_neuron_ID )
+                
+                fprintf( 'Time Vector:                      ts          = [s] ' ), disp( ts )
+                fprintf( 'Applied Current Magnitudes:       Ias         = [nA] ' ), disp( Ias*( 10^9 ) )
+                
+                fprintf( '# of Timesteps:                   n           = %0.0f \t[#]\n', num_timesteps )
+                fprintf( 'Timestep:                         dt          = %0.2f \t[s]\n', dt )
+                fprintf( 'Simulation Duration:            	tf          = %0.2f \t[s]\n', tf )
+                                                                
+            end
+            
+            % Print out a footer.
+            fprintf( '----------------------------------------\n' )
+            
+            
+            
+            ID                                              % [#] Applied Current ID.
+            name                                            % [str] Applied Current Name.
+            to_neuron_ID                                    % [#] To Neuron ID.
+
+            ts                                              % [s] Time Vector.
+            Ias                                             % [A] Applied Current Vector.
+
+            num_timesteps                                   % [#] Number of Timesteps.
+            dt                                              % [s] Time Step Duration.
+            tf                                              % [s] Simulation Duration.
+
+            enabled_flag                                    % [T/F] Enabled Flag.
         
+            
+        end
         
 
     end

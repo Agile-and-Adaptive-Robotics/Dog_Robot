@@ -9782,7 +9782,7 @@ classdef neuron_manager_class
             for k = 1:n_neurons             % Iterate through each of the neurons...
             
                 % Print out the properties for this neurons.
-                neurons( k ).print( neurons( k ).U, neurons( k ).h, neurons( k ).Cm, neurons( k ).Gm, neurons( k ).Er, neurons( k ).R, neurons( k ).Am, neurons( k ).Sm, neurons( k ).dEm, neurons( k ).Ah, neurons( k ).Sh, neurons( k ).dEh, neurons( k ).dEna, neurons( k ).tauh_max, neurons( k ).Gna, neurons( k ).Ileak, neurons( k ).Isyn, neurons( k ).Ina, neurons( k ).Itonic, neurons( k ).Iapp, neurons( k ).Itotal, neurons( k ).enabled_flag, verbose_flag );
+                neurons( k ).print( verbose_flag );
             
             end
             

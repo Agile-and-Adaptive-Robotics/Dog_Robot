@@ -1402,10 +1402,10 @@ classdef neuron_utilities_class
         %% Print Functions.
         
         % Implement a function to print the properties of this neuron.
-        function print( ~, U, h, Cm, Gm, Er, R, Am, Sm, dEm, Ah, Sh, dEh, dEna, tauh_max, Gna, Ileak, Isyn, Ina, Itonic, Iapp, Itotal, enabled_flag, verbose_flag )
+        function print( ~, ID, name, U, h, Cm, Gm, Er, R, Am, Sm, dEm, Ah, Sh, dEh, dEna, tauh_max, tauh, Gna, Ileak, Isyn, Ina, Itonic, Iapp, Itotal, enabled_flag, verbose_flag )
         
             % Define the default input arguments.
-            if nargin < 24, verbose_flag = false; end
+            if nargin < 27, verbose_flag = false; end
             
             % Print out a header for this neuron.
             fprintf( '---------- NEURON %0.0f: %s ----------\n', ID, name )

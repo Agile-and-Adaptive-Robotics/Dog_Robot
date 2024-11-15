@@ -13302,7 +13302,7 @@ classdef synapse_manager_class
             for k = 1:n_synapses             % Iterate through each of the synapses...
             
                 % Print out the properties for this synapses.
-                synapses( k ).print( synapses( k ).ID, synapses( k ).name, synapses( k ).dEs, synapses( k ).gs, synapses( k ).Gs, synapses( k ).from_neuron_ID, synapses( k ).to_neuron_ID, synapses( k ).delta, synapses( k ).enabled_flag, verbose_flag );
+                synapses( k ).print( verbose_flag );
             
             end
             

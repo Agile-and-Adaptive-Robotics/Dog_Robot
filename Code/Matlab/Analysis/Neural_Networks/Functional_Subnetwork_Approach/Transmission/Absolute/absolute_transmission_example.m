@@ -78,6 +78,12 @@ network = network_class( network_dt, network_tf );
 [ ~, ~, ~, network.applied_current_manager ] = network.applied_current_manager.create_applied_current( input_current_ID, input_current_name, input_current_to_neuron_ID, ts, Ias1, true, network.applied_current_manager.applied_currents, true, false, network.applied_current_manager.array_utilities );
 
 
+%% Print Absolute Transmission Subnetwork Information.
+
+% Print transmission subnetwork information.
+network.print( network.neuron_manager, network.synapse_manager, network.applied_current_manager, verbose_flag );
+
+
 %% Compute Absolute Transmission Numerical Stability Analysis Parameters.
 
 % Define the property retrieval settings.
