@@ -7,102 +7,124 @@ clear, close( 'all' ), clc
 %% Initialize Project Options.
 
 % Define the save and load directories.
-save_directory = '.\Save';                         	% [str] Save Directory.
-load_directory = '.\Load';                        	% [str] Load Directory.
+save_directory = '.\Save';                                  % [str] Save Directory.
+load_directory = '.\Load';                                  % [str] Load Directory.
 
 % Define the network simulation time step.
-network_dt = 1e-3;                                 	% [s] Simulation Time Step.
-% network_dt = 1e-4;                             	% [s] Simulation Timestep.
+network_dt = 1e-3;                                          % [s] Simulation Time Step.
 
 % Define the network simulation duration.
-network_tf = 0.5;                                 	% [s] Simulation Duration.
-% network_tf = 1;                                 	% [s] Simulation Duration.
-% network_tf = 3;                                 	% [s] Simulation Duration.
-
-% Define the integration method.
-integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+network_tf = 3;                                             % [s] Simulation Duration.
 
 
-%% Define Simulation Time Parameters.
+%% Define Absolute Transmission Subnetwork Parameters.
 
-% Compute the number of simulation timesteps.
-n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+% Define the maximum membrane voltages.
+R1_absolute = 20e-3;                                    	% [V] Maximum Membrane Voltage (Neuron 1).
 
-% Construct the simulation times associated with the input currents.
-ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+% Define the membrane conductances.
+Gm1_absolute = 1e-6;                                       	% [S] Membrane Conductance (Neuron 1)
+Gm2_absolute = 1e-6;                                      	% [S] Membrane Conductance (Neuron 2) 
 
+% Define the membrane capacitance.
+Cm1_absolute = 5e-9;                                     	% [F] Membrane Capacitance (Neuron 1)
+Cm2_absolute = 5e-9;                                      	% [F] Membrane Capacitance (Neuron 2)
 
-%% Define Transmission Subnetwork Parameters.
+% Define the sodium channel conductance.
+Gna1_absolute = 0;                                         	% [S] Sodium Channel Conductance (Neuron 1).
+Gna2_absolute = 0;                                       	% [S] Sodium Channel Conductance (Neuron 2).
 
-% Define the absolute transmission subnetwork design parameters.
-c_absolute = 1.0;                                           % [-] Absolute Transmission Subnetwork Gain.
-R1_absolute = 20e-3;                                        % [V] Maximum Membrane Voltage (Neuron 1).
-Gm1_absolute = 1e-6;                                        % [S] Membrane Conductance (Neuron 1).
-Gm2_absolute = 1e-6;                                        % [S] Membrane Conductance (Neuron 2).
-Cm1_absolute = 5e-9;                                        % [F] Membrane Capacitance (Neuron 1).
-Cm2_absolute = 5e-9;                                        % [F] Membrane Capacitance (Neuron 2).
+% Define the synaptic conductances.
+dEs21_absolute = 194e-3;                                   	% [V] Synaptic Reversal Potential (Synapse 21).
 
-% Define the relative transmission subnetwork design parameters.
-R1_relative = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
-R2_relative = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 2).
-Gm1_relative = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
-Gm2_relative = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
-Cm1_relative = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
-Cm2_relative = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+% Define the applied currents.
+Ia1_absolute = R1_absolute*Gm1_absolute;                 	% [A] Applied Current (Neuron 1)
+Ia2_absolute = 0;                                         	% [A] Applied Current (Neuron 2).
 
-% Store the transmission subnetwork design parameters in a cell.
-absolute_transmission_parameters = { c_absolute, R1_absolute, Gm1_absolute, Gm2_absolute, Cm1_absolute, Cm2_absolute };
-relative_transmission_parameters = { R1_relative, R2_relative, Gm1_relative, Gm2_relative, Cm1_relative, Cm2_relative };
+% Define the current state.
+current_state1_absolute = 1.0;                             	% [-] Current State (Neuron 1). (Specified as a ratio of the total applied current that is active.)
 
-
-%% Define the Absolute Transmission Subnetwork Input Current Parameters.
-
-% Define the applied current ID.
-input_current_ID_absolute = 1;                                  % [#] Absolute Input Current ID.
-input_current_ID_relative = 1;                                  % [#] Relative Input Current ID.
-
-% Define the applied current name.
-input_current_name_absolute = 'Applied Current 1 (Absolute)';   % [str] Absolute Input Current Name.
-input_current_name_relative = 'Applied Current 1 (Relative)';  	% [str] Relative Input Current Name.
-
-% Define the IDs of the neurons to which the currents are applied.
-input_current_to_neuron_ID_absolute = 1;                        % [#] Absolute Neuron ID to Which Input Current is Applied.
-input_current_to_neuron_ID_relative = 1;                        % [#] Relative Neuron ID to Which Input Current is Applied.
-
-% Define the current magnitudes.
-Ias1_mag_absolute = R1_absolute*Gm1_absolute;                  	% [A] Applied Current Magnitude.
-Ias1_mag_relative = R1_relative*Gm1_relative;                 	% [A] Applied Current Magnitude.
-
-% Define the magnitudes of the applied current input.
-Ias1_absolute = Ias1_mag_absolute*ones( n_timesteps, 1 );    	% [A] Absolute Applied Currents.
-Ias1_relative = Ias1_mag_relative*ones( n_timesteps, 1 );      	% [A] Relative Applied Currents.
+% Define the network design parameters.
+c_absolute = 2;                                             % [-] Design Constant.
 
 
-%% Create the Relative Transmission Subnetwork.
+%% Compute the Derived Absolute Transmission Subnetwork Parameters.
+
+% Compute the maximum membrane voltages.
+R2_absolute = c_absolute*R1_absolute;                                          % [V] Maximum Membrane Voltage (Neuron 2).
+
+% Compute the synaptic conductances.
+gs21_absolute = ( R2_absolute*Gm2_absolute - Ia2_absolute )/( dEs21_absolute - R2_absolute );             % [S] Synaptic Conductance (Synapse 21).
+
+
+%% Print Absolute Transmission Subnetwork Parameters.
+
+% Print out a header.
+fprintf( '\n------------------------------------------------------------\n' )
+fprintf( '------------------------------------------------------------\n' )
+fprintf( 'ABSOLUTE TRANSMISSION SUBNETWORK PARAMETERS:\n' )
+fprintf( '------------------------------------------------------------\n' )
+
+% Print out neuron information.
+fprintf( 'Neuron Parameters:\n' )
+fprintf( 'R1 \t\t= \t%0.2f \t[mV]\n', R1_absolute*( 10^3 ) )
+fprintf( 'R2 \t\t= \t%0.2f \t[mV]\n', R2_absolute*( 10^3 ) )
+
+fprintf( 'Gm1 \t= \t%0.2f \t[muS]\n', Gm1_absolute*( 10^6 ) )
+fprintf( 'Gm2 \t= \t%0.2f \t[muS]\n', Gm2_absolute*( 10^6 ) )
+
+fprintf( 'Cm1 \t= \t%0.2f \t[nF]\n', Cm1_absolute*( 10^9 ) )
+fprintf( 'Cm2 \t= \t%0.2f \t[nF]\n', Cm2_absolute*( 10^9 ) )
+
+fprintf( 'Gna1 \t= \t%0.2f \t[muS]\n', Gna1_absolute*( 10^6 ) )
+fprintf( 'Gna2 \t= \t%0.2f \t[muS]\n', Gna2_absolute*( 10^6 ) )
+fprintf( '\n' )
+
+% Print out the synapse information.
+fprintf( 'Synapse Parameters:\n' )
+fprintf( 'dEs21 \t= \t%0.2f \t[mV]\n', dEs21_absolute*( 10^3 ) )
+fprintf( 'gs21 \t= \t%0.2f \t[muS]\n', gs21_absolute*( 10^6 ) )
+fprintf( '\n' )
+
+% Print out the applied current information.
+fprintf( 'Applied Curent Parameters:\n' )
+fprintf( 'Ia1 \t= \t%0.2f \t[nA]\n', current_state1_absolute*Ia1_absolute*( 10^9 ) )
+fprintf( '\n' )
+
+% Print out the network design parameters.
+fprintf( 'Network Design Parameters:\n' )
+fprintf( 'c \t\t= \t%0.2f \t[-]\n', c_absolute )
+
+% Print out ending information.
+fprintf( '------------------------------------------------------------\n' )
+fprintf( '------------------------------------------------------------\n' )
+
+
+%% Create an Absolute Transmission Subnetwork.
 
 % Create an instance of the network class.
 network_absolute = network_class( network_dt, network_tf );
-network_relative = network_class( network_dt, network_tf );
 
-% Create a transmission subnetwork.
-[ c_absolute, Gnas_absolute, R2_absolute, dEs21_absolute, gs21_absolute, Ia2_absolute, neurons_absolute, synapses_absolute, neuron_manager_absolute, synapse_manager_absolute, network_absolute ] = network_absolute.create_transmission_subnetwork( absolute_transmission_parameters, 'absolute', network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, true, true, false, undetected_option );
-[ c_relative, Gnas_relative, R2_relative, dEs21_relative, gs21_relative, Ia2_relative, neurons_relative, synapses_relative, neuron_manager_relative, synapse_manager_relative, network_relative ] = network_relative.create_transmission_subnetwork( relative_transmission_parameters, 'relative', network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, true, true, false, undetected_option );
+% Create the network components.
+[ network_absolute.neuron_manager, neuron_IDs_absolute ] = network_absolute.neuron_manager.create_neurons( 2 );
+[ network_absolute.synapse_manager, synapse_IDs_absolute ] = network_absolute.synapse_manager.create_synapses( 1 );
+[ network_absolute.applied_current_manager, applied_current_IDs_absolute ] = network_absolute.applied_current_manager.create_applied_currents( 2 );
 
-% Create the input applied current.
-[ ~, ~, ~, network_absolute.applied_current_manager ] = network_absolute.applied_current_manager.create_applied_current( input_current_ID_absolute, input_current_name_absolute, input_current_to_neuron_ID_absolute, ts, Ias1_absolute, true, network_absolute.applied_current_manager.applied_currents, true, false, network_absolute.applied_current_manager.array_utilities );
-[ ~, ~, ~, network_relative.applied_current_manager ] = network_relative.applied_current_manager.create_applied_current( input_current_ID_relative, input_current_name_relative, input_current_to_neuron_ID_relative, ts, Ias1_relative, true, network_relative.applied_current_manager.applied_currents, true, false, network_relative.applied_current_manager.array_utilities );
+% Set the neuron parameters.
+network_absolute.neuron_manager = network_absolute.neuron_manager.set_neuron_property( neuron_IDs_absolute, [ Gna1_absolute, Gna2_absolute ], 'Gna' );
+network_absolute.neuron_manager = network_absolute.neuron_manager.set_neuron_property( neuron_IDs_absolute, [ R1_absolute, R2_absolute ], 'R' );
+network_absolute.neuron_manager = network_absolute.neuron_manager.set_neuron_property( neuron_IDs_absolute, [ Gm1_absolute, Gm2_absolute ], 'Gm' );
+network_absolute.neuron_manager = network_absolute.neuron_manager.set_neuron_property( neuron_IDs_absolute, [ Cm1_absolute, Cm2_absolute ], 'Cm' );
 
+% Set the synapse parameters.
+network_absolute.synapse_manager = network_absolute.synapse_manager.set_synapse_property( synapse_IDs_absolute, 1, 'from_neuron_ID' );
+network_absolute.synapse_manager = network_absolute.synapse_manager.set_synapse_property( synapse_IDs_absolute, 2, 'to_neuron_ID' );
+network_absolute.synapse_manager = network_absolute.synapse_manager.set_synapse_property( synapse_IDs_absolute, gs21_absolute, 'g_syn_max' );
+network_absolute.synapse_manager = network_absolute.synapse_manager.set_synapse_property( synapse_IDs_absolute, dEs21_absolute, 'dE_syn' );
 
-%% Define Encoding & Decoding Functions.
-
-% Define the decoding operation.
-f_decode_absolute = @( x ) x*( 10^3 );
-
-% Define the decoding operations.
-f_decode_relative1 = @( x ) ( R1_absolute/R1 )*x*( 10^3 );
-f_decode_relative2 = @( x ) ( R2_absolute/R2 )*x*( 10^3 );
-f_decode_relative = @( x ) [ f_decode_relative1( x( :, 1 ) ), f_decode_relative2( x( :, 2 ) ) ];
-
+% Set the applied current parameters.
+network_absolute.applied_current_manager = network_absolute.applied_current_manager.set_applied_current_property( applied_current_IDs_absolute, [ 1, 2 ], 'neuron_ID' );
+network_absolute.applied_current_manager = network_absolute.applied_current_manager.set_applied_current_property( applied_current_IDs_absolute, [ current_state1_absolute*Ia1_absolute, Ia2_absolute ], 'I_apps' );
 
 
 %% Define Basic Relative Transmission Subnetwork Parameters.
