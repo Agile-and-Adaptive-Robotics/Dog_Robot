@@ -35,6 +35,9 @@ num_neurons = 2;                                 	% [#] Number of Neurons.
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
 
+% Define the encoding scheme.
+encoding_scheme = 'relative';
+
 
 %% Define Relative Transmission Subnetwork Parameters.
 
@@ -49,8 +52,8 @@ Cm2 = 5e-9;                                         % [F] Membrane Capacitance (
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
 
-% Define the encoding scheme.
-encoding_scheme = 'relative';
+
+%% Define Encoding & Decoding Operations.
 
 % Define the absolute transmission comparison example.
 R1_absolute = 20e-3;                                % [V] Relative Maximum Membrane Voltage (Neuron 1).  (Used for decoding.)

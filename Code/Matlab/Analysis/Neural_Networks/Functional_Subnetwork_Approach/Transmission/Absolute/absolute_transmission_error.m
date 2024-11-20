@@ -29,11 +29,20 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 % network_tf = 1;                                 	% [s] Simulation Duration.
 % network_tf = 3;                                 	% [s] Simulation Duration.
 
+% Compute the number of simulation timesteps.
+n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+
+% Construct the simulation times associated with the input currents.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+
 % Define the number of neurons.
 num_neurons = 2;                                    % [#] Number of Neurons.
 
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+
+% Define the encoding scheme.
+encoding_scheme = 'absolute';
 
 
 %% Define Absolute Transmission Subnetwork Parameters.
@@ -49,11 +58,26 @@ Cm2 = 5e-9;                                         % [F] Membrane Capacitance (
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { c, R1, Gm1, Gm2, Cm1, Cm2 };
 
-% Define the encoding scheme.
-encoding_scheme = 'absolute';
 
-% Define the decoding operation.
-f_decode = @( x ) x*( 10^3 );
+%% Define the Encoding & Decoding Operations.
+
+% Define the maximum value of the input signal.
+x_max = 20;
+
+% Define the encoding scheme.
+f_encode = @( x ) x*( 10^( -3 ) );
+
+% Define the decoding scheme.
+f_decode = @( U ) U*( 10^3 );
+
+
+%% Define the Desired Input Signal.
+
+% Define the desired decoded input signal.
+xs_desired = 20*ones( n_timesteps, 1 );
+
+% Encode the input signal.
+Us1_desired = f_encode( xs_desired );
 
 
 %% Define the Absolute Transmission Subnetwork Input Current Parameters.
@@ -63,22 +87,13 @@ input_current_ID = 1;                               % [#] Input Current ID.
 input_current_name = 'Applied Current 1';           % [str] Input Current Name.
 input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Input Current is Applied.
 
-% Compute the number of simulation timesteps.
-n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
-
-% Construct the simulation times associated with the input currents.
-ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
-
-% Define the current magnitudes.
-Ias1_mag = R1*Gm1;                                  % [A] Applied Current Magnitude.
-
 % Define the magnitudes of the applied current input.
-Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
+Ias1 = Us1_desired*Gm1;                           	% [A] Applied Currents.
 
 
 %% Create Absolute Transmission Subnetwork.
 
-% Create an instance of the netwo5rk class.
+% Create an instance of the network class.
 network = network_class( network_dt, network_tf );
 
 % Create a transmission subnetwork.
@@ -106,21 +121,20 @@ Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, net
 gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );                                                              % [S] Synaptic Conductance.
 dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );                                                            % [V] Synaptic Reversal Potential.
 Ias = network.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network.neuron_manager.neurons, undetected_option );     % [A] Applied Currents.
+
+% Define the stability analysis timestep seed.
 dt0 = 1e-6;                                                                                                                                 % [s] Numerical Stability Time Step.
 
 % Define the transmission subnetwork inputs.
-U1s = linspace( 0, Rs( 1 ), 100  );
-
-% Create the input points.
-U1s_flat = reshape( U1s, [ numel( U1s ), 1 ] );
+U1s = linspace( 0, Rs( 1 ), 100  )';
 
 % Compute the desired and achieved absolute transmission steady state output.
-U2s_flat_desired = network.compute_da_transmission_sso( U1s_flat, c, network.neuron_manager, undetected_option, network.network_utilities );
-[ U2s_flat_achieved_theoretical, As, dts, condition_numbers ] = network.achieved_transmission_RK4_stability_analysis( U1s_flat, Cms, Gms, Rs, Ias, gs, dEs, dt0, network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
+U2s_desired = network.compute_da_transmission_sso( U1s, c, network.neuron_manager, undetected_option, network.network_utilities );
+[ U2s_achieved_theoretical, As, dts, condition_numbers ] = network.achieved_transmission_RK4_stability_analysis( U1s, Cms, Gms, Rs, Ias, gs, dEs, dt0, network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
 
 % Store the desired and theoretically achieved absolute transmission steady state results in arrays.
-Us_flat_desired = [ U1s_flat, U2s_flat_desired ];
-Us_flat_achieved_theoretical = [ U1s_flat, U2s_flat_achieved_theoretical ];
+Us_desired = [ U1s, U2s_desired ];
+Us_achieved_theoretical = [ U1s, U2s_achieved_theoretical ];
 
 % Retrieve the maximum RK4 step size and condition number.
 [ dt_max, indexes_dt ] = max( dts );
@@ -133,35 +147,53 @@ Us_flat_achieved_theoretical = [ U1s_flat, U2s_flat_achieved_theoretical ];
 network.numerical_method_utilities.print_numerical_stability_info( As, dts, network_dt, condition_numbers );
 
 
+%% Decode the Desired & Theoreticall Achieved Absolute Transmission Subnetwork Results.
+
+% Decode the network input.
+xs = f_decode( Us_desired( :, 1 ) );
+
+% Decode the desired network output.
+ys_desired = f_decode( Us_desired( :, 2 ) );
+
+% Decode the achieved theoretical network output.
+ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ) );
+
+
 %% Plot the Desired and Achieved Absolute Transmission Formulation Results.
 
-% Decode the input and output membrane voltages.
-Us_flat_desired_decoded = f_decode( Us_flat_desired );
-Us_flat_achieved_theoretical_decoded = f_decode( Us_flat_achieved_theoretical );
-
-% Plot the desired and achieved absolute transmission formulation results.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Theory' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'Absolute Transmission Theory' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), Us_flat_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_flat_achieved_theoretical( :, 1 )*( 10^3 ), Us_flat_achieved_theoretical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
+% Plot the encoded desired and achieved absolute transmission formulation results.
+fig = figure( 'Color', 'w', 'Name', 'AT: Encoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'AT: Encoded Desired & Achieved (Theory) SS Behavior' )
+plot( Us_desired( :, 1 )*( 10^3 ), Us_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
+plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), Us_achieved_theoretical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_theory' ] )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_desired_achieved_theory_encoded' ] )
 
 % Plot the decoded desired and achieved absolute transmission formulation results.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Theory Decoded' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'Absolute Transmission Theory Decoded' )
-plot( Us_flat_desired_decoded( :, 1 ), Us_flat_desired_decoded( :, 2 ), '-', 'Linewidth', 3 )
-plot( Us_flat_achieved_theoretical_decoded( :, 1 ), Us_flat_achieved_theoretical_decoded( :, 2 ), '--', 'Linewidth', 3 )
+fig = figure( 'Color', 'w', 'Name', 'AT: Decoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Output, y [-]' ), title( 'AT: Decoded Desired & Achieved (Theory) SS Behavior' )
+plot( xs, ys_desired, '-', 'Linewidth', 3 )
+plot( xs, ys_achieved_theoretical, '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_theory_decoded' ] )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_desired_achieved_theory_decoded' ] )
 
-% Plot the RK4 maximum timestep.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission RK4 Maximum Timestep' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Absolute Transmission RK4 Maximum Timestep' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), dts, '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_rk4_maximum_timestep' ] )
+% Plot the RK4 maximum timestep vs the encoded input.
+fig = figure( 'Color', 'w', 'Name', 'AT: RK4 Maximum Timestep vs Encoded Input' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'AT: RK4 Maximum Timestep vs Encoded Input' )
+plot( Us_desired( :, 1 )*( 10^3 ), dts, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_rk4_maximum_timestep_encoded' ] )
 
-% Plot the linearized system condition numbers.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Condition Numbers' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'Absolute Transmission Condition Number' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_condition_numbers' ] )
+% Plot the RK4 maximum timestep vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'AT: RK4 Maximum Timestep vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'AT: RK4 Maximum Timestep vs Decoded Input' )
+plot( xs, dts, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_rk4_maximum_timestep_decoded' ] )
+
+% Plot the linearized system condition numbers vs the encoded input.
+fig = figure( 'Color', 'w', 'Name', 'AT: Condition Numbers vs Encoded Input' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'AT: Condition Number vs Encoded Input' )
+plot( Us_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_condition_numbers_encoded' ] )
+
+% Plot the linearized system condition numbers vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'AT: Condition Numbers vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Condition Number [-]' ), title( 'AT: Condition Number vs Decoded Input' )
+plot( xs, condition_numbers, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'absolute_transmission_condition_numbers_decoded' ] )
 
 
 %% Simulate the Absolute Transmission Network.
@@ -175,17 +207,23 @@ undetected_option = 'Ignore';               % [str] Undetected Option.
 % Determine whether to simulate the network.
 if simulate_flag                            % If we want to simulate the network...
     
-    % Define the number of applied currents to use.
-    n_applied_currents = 20;             	% [#] Number of Applied Currents.
+    % Define the number of different input signals.
+    n_input_signals = 20;             	% [#] Number of Input Signals.
+    
+    % Define the input signals.
+    xs = linspace( 0, x_max, n_input_signals );
+    
+    % Encode the input signals.
+    Us_input = f_encode( xs );
     
     % Create the applied currents.
-    applied_currents = linspace( 0, network.neuron_manager.neurons( 1 ).R*network.neuron_manager.neurons( 1 ).Gm, n_applied_currents );
-
+    applied_currents = network.neuron_manager.neurons( 1 ).Gm*Us_input;
+    
     % Create a matrix to store the membrane voltages.
-    Us_achieved_numerical = zeros( n_applied_currents, num_neurons );
+    Us_achieved_numerical = zeros( n_input_signals, num_neurons );
     
     % Simulate the network for each of the applied current combinations.
-    for k = 1:n_applied_currents         	% Iterate through each of the currents applied to the input neuron...
+    for k = 1:n_input_signals         	% Iterate through each of the currents applied to the input neuron...
             
             % Create applied currents.
             [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
@@ -197,9 +235,12 @@ if simulate_flag                            % If we want to simulate the network
             Us_achieved_numerical( k, : ) = Us( :, end );
             
     end
+    
+    % Decode the achieved membrane voltages.
+    ys_achieved_numerical = f_decode( Us_achieved_numerical );
 
     % Save the simulation results.
-    save( [ save_directory, '\', 'absolute_transmission_subnetwork_error' ], 'applied_currents', 'Us_achieved_numerical' )
+    save( [ save_directory, '\', 'absolute_transmission_subnetwork_error' ], 'xs', 'Us_input', 'applied_currents', 'Us_achieved_numerical', 'ys_achieved_numerical' )
     
 else                % Otherwise... ( We must want to load data from an existing simulation... )
     
@@ -207,188 +248,73 @@ else                % Otherwise... ( We must want to load data from an existing 
     data = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );
     
     % Store the simulation results in separate variables.
+    xs = data.xs;
+    Us_input = data.Us_input;
     applied_currents = data.applied_currents;
     Us_achieved_numerical = data.Us_achieved_numerical;
+    ys_achieved_numerical = data.ys_achieved_numerical;
 
 end
 
 
-%% Compute the Absolute Transmission Network Error.
+%% Compute the Absolute Transmission Desired & Achieved (Theory) Network Output.
 
-% Compute the desired membrane voltage output.
+% Compute the encoded desired and achieved (theory) result output.
 Us_desired_output = network.compute_da_transmission_sso( Us_achieved_numerical( :, 1 ), c, network.neuron_manager, undetected_option, network.network_utilities );
 Us_achieved_theoretical_output = network.compute_achieved_transmission_sso( Us_achieved_numerical( :, 1 ), Rs( 1 ), Gms( 2 ), Ias( 2 ), gs( 2, 1 ), dEs( 2, 1 ), network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
 
-% Compute the desired membrane voltage output.
+% Compute the encoded desired and achieved (theory) result.
 Us_desired = Us_achieved_numerical; Us_desired( :, end ) = Us_desired_output;
 Us_achieved_theoretical = Us_achieved_numerical; Us_achieved_theoretical( :, end ) = Us_achieved_theoretical_output;
 
-% Decode the achieved and desired decoded membrane voltage output.
-R2_decoded = f_decode( R2 );
-Us_desired_decoded = f_decode( Us_desired );
-Us_achieved_theoretical_decoded = f_decode( Us_achieved_theoretical );
-Us_achieved_numerical_decoded = f_decode( Us_achieved_numerical );
+% Compute the decoded desired and achieved (theory) result.
+ys_desired = f_decode( Us_desired );
+ys_achieved_theoretical = f_decode( Us_achieved_theoretical );
 
-% Compute the error between the achieved and desired results.
-errors_theoretical = Us_achieved_theoretical( :, end ) - Us_desired( :, end );
-errors_numerical = Us_achieved_numerical( :, end ) - Us_desired( :, end );
 
-% Compute the error between the decoded achieved and desired results.
-errors_theoretical_decoded = Us_achieved_theoretical_decoded( :, end ) - Us_desired_decoded( :, end );
-errors_numerical_decoded = Us_achieved_numerical_decoded( :, end ) - Us_desired_decoded( :, end );
+%% Compute the Absolute Transmission Network Error.
 
-% Compute the error percentage between the achieved and desired results.
-error_percentages_theoretical = 100*( errors_theoretical/R2 );
-error_percentages_numerical = 100*( errors_numerical/R2 );
+% Compute the decoded output maximum.
+y_max = f_decode( R2 );
 
-% Compute the error percentage between the decoded achieved and desired results.
-error_percentages_theoretical_decoded = 100*( errors_theoretical_decoded/R2_decoded );
-error_percentages_numerical_decoded = 100*( errors_numerical_decoded/R2_decoded );
+% Compute the error between the encoded theoretical output and the desired output.
+[ errors_theoretical_encoded, error_percentages_theoretical_encoded, error_rmse_theoretical_encoded, error_rmse_percentage_theoretical_encoded, error_std_theoretical_encoded, error_std_percentage_theoretical_encoded, error_min_theoretical_encoded, error_min_percentage_theoretical_encoded, index_min_theoretical_encoded, error_max_theoretical_encoded, error_max_percentage_theoretical_encoded, index_max_theoretical_encoded, error_range_theoretical_encoded, error_range_percentage_theoretical_encoded ] = network.numerical_method_utilities.compute_error_statistics( Us_achieved_theoretical, Us_desired, R2 );
 
-% Compute the root mean squared error.
-error_rmse_theoretical = sqrt( ( 1/( numel( errors_theoretical ) ) )*sum( errors_theoretical.^2, 'all' ) );
-error_rmse_numerical = sqrt( ( 1/( numel( errors_numerical ) ) )*sum( errors_numerical.^2, 'all' ) );
+% Compute the error between the encoded numerical output and the desired output.
+[ errors_numerical_encoded, error_percentages_numerical_encoded, error_rmse_numerical_encoded, error_rmse_percentage_numerical_encoded, error_std_numerical_encoded, error_std_percentage_numerical_encoded, error_min_numerical_encoded, error_min_percentage_numerical_encoded, index_min_numerical_encoded, error_max_numerical_encoded, error_max_percentage_numerical_encoded, index_max_numerical_encoded, error_range_numerical_encoded, error_range_percentage_numerical_encoded ] = network.numerical_method_utilities.compute_error_statistics( Us_achieved_numerical, Us_desired, R2 );
 
-% Compute the decoded root mean squared error.
-error_rmse_theoretical_decoded = sqrt( ( 1/( numel( errors_theoretical_decoded ) ) )*sum( errors_theoretical_decoded.^2, 'all' ) );
-error_rmse_numerical_decoded = sqrt( ( 1/( numel( errors_numerical_decoded ) ) )*sum( errors_numerical_decoded.^2, 'all' ) );
+% Compute the error between the decoded theoretical output and the desired output.
+[ errors_theoretical_decoded, error_percentages_theoretical_decoded, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, index_min_theoretical_decoded, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, index_max_theoretical_decoded, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded ] = network.numerical_method_utilities.compute_error_statistics( ys_achieved_theoretical, ys_desired, y_max );
 
-% Compute the root mean squared error percentage.
-error_rmse_percentage_theoretical = 100*( error_rmse_theoretical/R2 );
-error_rmse_percentage_numerical = 100*( error_rmse_numerical/R2 );
-
-% Compute the decoded root mean squared error percentage.
-error_rmse_percentage_theoretical_decoded = 100*( error_rmse_theoretical_decoded/R2_decoded );
-error_rmse_percentage_numerical_decoded = 100*( error_rmse_numerical_decoded/R2_decoded );
-
-% Compute the standard deviation of the error.
-error_std_theoretical = std( errors_theoretical, 0, 'all' );
-error_std_numerical = std( errors_numerical, 0, 'all' );
-
-% Compute the standard deviation of the decoded error.
-error_std_theoretical_decoded = std( errors_theoretical_decoded, 0, 'all' );
-error_std_numerical_decoded = std( errors_numerical_decoded, 0, 'all' );
-
-% Compute the standard deviation of the error percentage.
-error_std_percentage_theoretical = 100*( error_std_theoretical/R2 );
-error_std_percentage_numerical = 100*( error_std_numerical/R2 );
-
-% Compute the standard deviation of the decoded error percentage.
-error_std_percentage_theoretical_decoded = 100*( error_std_theoretical_decoded/R2_decoded );
-error_std_percentage_numerical_decoded = 100*( error_std_numerical_decoded/R2_decoded );
-
-% Compute the minimum and maximum error.
-[ error_min_theoretical, index_min_theoretical ] = min( errors_theoretical, [  ], 'all', 'linear' );
-[ error_min_numerical, index_min_numerical ] = min( errors_numerical, [  ], 'all', 'linear' );
-[ error_max_theoretical, index_max_theoretical ] = max( errors_theoretical, [  ], 'all', 'linear' );
-[ error_max_numerical, index_max_numerical ] = max( errors_numerical, [  ], 'all', 'linear' );
-
-% Compute the minimum and maximum decoded error.
-[ error_min_theoretical_decoded, index_min_theoretical_decoded ] = min( errors_theoretical_decoded, [  ], 'all', 'linear' );
-[ error_min_numerical_decoded, index_min_numerical_decoded ] = min( errors_numerical_decoded, [  ], 'all', 'linear' );
-[ error_max_theoretical_decoded, index_max_theoretical_decoded ] = max( errors_theoretical_decoded, [  ], 'all', 'linear' );
-[ error_max_numerical_decoded, index_max_numerical_decoded ] = max( errors_numerical_decoded, [  ], 'all', 'linear' );
-
-% Compute the minimum and maximum error percentages.
-error_min_percentage_theoretical = 100*( error_min_theoretical/R2 );
-error_min_percentage_numerical = 100*( error_min_numerical/R2 );
-error_max_percentage_theoretical = 100*( error_max_theoretical/R2 );
-error_max_percentage_numerical = 100*( error_max_numerical/R2 );
-
-% Compute the minimum and maximum decoded error percentages.
-error_min_percentage_theoretical_decoded = 100*( error_min_theoretical_decoded/R2_decoded );
-error_min_percentage_numerical_decoded = 100*( error_min_numerical_decoded/R2_decoded );
-error_max_percentage_theoretical_decoded = 100*( error_max_theoretical_decoded/R2_decoded );
-error_max_percentage_numerical_decoded = 100*( error_max_numerical_decoded/R2_decoded );
-
-% Compute the error range.
-error_range_theoretical = range( errors_theoretical, 'all' );
-error_range_numerical = range( errors_numerical, 'all' );
-
-% Compute the decoded error range.
-error_range_theoretical_decoded = range( errors_theoretical_decoded, 'all' );
-error_range_numerical_decoded = range( errors_numerical_decoded, 'all' );
-
-% Compute the error range percentage.
-error_range_percentage_theoretical = 100*( error_range_theoretical/R2 );
-error_range_percentage_numerical = 100*( error_range_numerical/R2 );
-
-% Compute the decoded error range percentage.
-error_range_percentage_theoretical_decoded = 100*( error_range_theoretical_decoded/R2_decoded );
-error_range_percentage_numerical_decoded = 100*( error_range_numerical_decoded/R2_decoded );
+% Compute the error between the decoded numerical output and the desired output.
+[ errors_numerical_decoded, error_percentages_numerical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_numerical_decoded, error_min_percentage_numerical_decoded, index_min_numerical_decoded, error_max_numerical_decoded, error_max_percentage_numerical_decoded, index_max_numerical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded ] = network.numerical_method_utilities.compute_error_statistics( ys_achieved_numerical, ys_desired, y_max );
 
 
 %% Print the Absolute Tranmission Summary Statistics.
 
-% Print the absolute transmission summary statistics.
-fprintf( '\n' )
-fprintf( 'Absolute Transmission Summary Statistics (Membrane Voltages)\n' )
-fprintf( '\n' )
+% Define the header strings.
+header_str_encoded = 'Absolute Transmission Encoded Summary Statistics\n';
+header_str_decoded = 'Absolute Transmission Decoded Summary Statistics\n';
 
-fprintf( 'RMSE:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[mV] \t(%6.2f [%%])\n', error_rmse_theoretical*( 10^3 ), error_rmse_percentage_theoretical )
-fprintf( '\tNumerical: \t\t%9.3f \t[mV] \t(%6.2f [%%])\n', error_rmse_numerical*( 10^3 ), error_rmse_percentage_numerical )
-fprintf( '\tDifference: \t%9.3e \t[mV] \t(%6.2f [%%])\n', ( error_rmse_numerical - error_rmse_theoretical )*( 10^3 ), error_rmse_percentage_numerical - error_rmse_percentage_theoretical )
-fprintf( '\n' )
+% Define the unit strings.
+unit_str_encoded = 'mV';
+unit_str_decoded = '-';
 
-fprintf( 'STD:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[mV] \t(%6.2f [%%])\n', error_std_theoretical*( 10^3 ), error_std_percentage_theoretical )
-fprintf( '\tNumerical: \t\t%9.3f \t[mV] \t(%6.2f [%%])\n', error_std_numerical*( 10^3 ), error_std_percentage_numerical )
-fprintf( '\tDifference: \t%9.3e \t[mV] \t(%6.2f [%%])\n', ( error_std_numerical - error_std_theoretical )*( 10^3 ), error_std_percentage_numerical - error_std_percentage_theoretical )
-fprintf( '\n' )
+% Retrieve the minimum and maximum encoded theoretical and numerical network results.
+Us_critmin_achieved_theoretical_steady = Us_achieved_theoretical( index_min_theoretical_encoded, : );
+Us_critmin_achieved_numerical_steady = Us_achieved_numerical( index_min_numerical_encoded, : );
+Us_critmax_achieved_theoretical_steady = Us_achieved_theoretical( index_max_theoretical_encoded, : );
+Us_critmax_achieved_numerical_steady = Us_achieved_numerical( index_max_numerical_encoded, : );
 
-fprintf( 'Min:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[mV] \t(%6.2f [%%]) \t@ \t(%9.3f [mV], %9.3f [mV])\n', error_min_theoretical*( 10^3 ), error_min_percentage_theoretical, Us_achieved_theoretical( index_min_theoretical, 1 )*( 10^3 ), Us_achieved_theoretical( index_min_theoretical, 2 )*( 10^3 ) )
-fprintf( '\tNumerical: \t\t%9.3e \t[mV] \t(%6.2f [%%]) \t@ \t(%9.3f [mV], %9.3f [mV])\n', error_min_numerical*( 10^3 ), error_min_percentage_numerical, Us_achieved_numerical( index_min_numerical, 1 )*( 10^3 ), Us_achieved_numerical( index_min_numerical, 2 )*( 10^3 ) )
-fprintf( '\tDifference: \t%9.3e \t[mV] \t(%6.2f [%%])\n', ( error_min_numerical - error_min_theoretical )*( 10^3 ), error_min_percentage_numerical - error_min_percentage_theoretical )
-fprintf( '\n' )
+% Retrieve the minimum and maximum decoded theoretical and numerical network results.
+ys_critmin_achieved_theoretical_steady = ys_achieved_theoretical( index_min_theoretical_decoded, : );
+ys_critmin_achieved_numerical_steady = ys_achieved_numerical( index_min_numerical_decoded, : );
+ys_critmax_achieved_theoretical_steady = ys_achieved_theoretical( index_max_theoretical_decoded, : );
+ys_critmax_achieved_numerical_steady = ys_achieved_numerical( index_max_numerical_decoded, : );
 
-fprintf( 'Max:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[mV] \t(%6.2f [%%]) \t@ \t(%9.3f [mV], %9.3f [mV])\n', error_max_theoretical*( 10^3 ), error_max_percentage_theoretical, Us_achieved_theoretical( index_max_theoretical, 1 )*( 10^3 ), Us_achieved_theoretical( index_max_theoretical, 2 )*( 10^3 ) )
-fprintf( '\tNumerical: \t\t%9.3f \t[mV] \t(%6.2f [%%]) \t@ \t(%9.3f [mV], %9.3f [mV])\n', error_max_numerical*( 10^3 ), error_max_percentage_numerical, Us_achieved_numerical( index_max_numerical, 1 )*( 10^3 ), Us_achieved_numerical( index_max_numerical, 2 )*( 10^3 ) )
-fprintf( '\tDifference: \t%9.3e \t[mV] \t(%6.2f [%%])\n', ( error_max_numerical - error_max_theoretical )*( 10^3 ), error_max_percentage_numerical - error_max_percentage_theoretical )
-fprintf( '\n' )
-
-fprintf( 'Range:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[mV] \t(%6.2f [%%])\n', error_range_theoretical*( 10^3 ), error_range_percentage_theoretical )
-fprintf( '\tNumerical: \t\t%9.3f \t[mV] \t(%6.2f [%%])\n', error_range_numerical*( 10^3 ), error_range_percentage_numerical )
-fprintf( '\tDifference: \t%9.3e \t[mV] \t(%6.2f [%%])\n', ( error_range_numerical - error_range_theoretical )*( 10^3 ), error_range_percentage_numerical - error_range_percentage_theoretical )
-fprintf( '\n' )
-
-% Print the decoded absolute transmission summary statistics.
-fprintf( '\n' )
-fprintf( 'Absolute Transmission Summary Statistics (Decoded Outputs)\n' )
-fprintf( '\n' )
-
-fprintf( 'RMSE:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[-] \t(%6.2f [%%])\n', error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded )
-fprintf( '\tNumerical: \t\t%9.3f \t[-] \t(%6.2f [%%])\n', error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded )
-fprintf( '\tDifference: \t%9.3e \t[-] \t(%6.2f [%%])\n', error_rmse_numerical_decoded - error_rmse_theoretical_decoded, error_rmse_percentage_numerical_decoded - error_rmse_percentage_theoretical_decoded )
-fprintf( '\n' )
-
-fprintf( 'STD:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[-] \t(%6.2f [%%])\n', error_std_theoretical_decoded, error_std_percentage_theoretical_decoded )
-fprintf( '\tNumerical: \t\t%9.3f \t[-] \t(%6.2f [%%])\n', error_std_numerical_decoded, error_std_percentage_numerical_decoded )
-fprintf( '\tDifference: \t%9.3e \t[-] \t(%6.2f [%%])\n', error_std_numerical_decoded - error_std_theoretical_decoded, error_std_percentage_numerical_decoded - error_std_percentage_theoretical_decoded )
-fprintf( '\n' )
-
-fprintf( 'Min:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[-] \t(%6.2f [%%]) \t@ \t(%9.3f [-], %9.3f [-])\n', error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, Us_achieved_theoretical_decoded( index_min_theoretical_decoded, 1 ), Us_achieved_theoretical_decoded( index_min_theoretical_decoded, 2 ) )
-fprintf( '\tNumerical: \t\t%9.3e \t[-] \t(%6.2f [%%]) \t@ \t(%9.3f [-], %9.3f [-])\n', error_min_numerical_decoded, error_min_percentage_numerical_decoded, Us_achieved_numerical_decoded( index_min_numerical_decoded, 1 ), Us_achieved_numerical_decoded( index_min_numerical_decoded, 2 ) )
-fprintf( '\tDifference: \t%9.3e \t[-] \t(%6.2f [%%])\n', error_min_numerical_decoded - error_min_theoretical_decoded, error_min_percentage_numerical_decoded - error_min_percentage_theoretical_decoded )
-fprintf( '\n' )
-
-fprintf( 'Max:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[-] \t(%6.2f [%%]) \t@ \t(%9.3f [-], %9.3f [-])\n', error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, Us_achieved_theoretical_decoded( index_max_theoretical_decoded, 1 ), Us_achieved_theoretical_decoded( index_max_theoretical_decoded, 2 ) )
-fprintf( '\tNumerical: \t\t%9.3f \t[-] \t(%6.2f [%%]) \t@ \t(%9.3f [-], %9.3f [-])\n', error_max_numerical_decoded, error_max_percentage_numerical_decoded, Us_achieved_numerical_decoded( index_max_numerical_decoded, 1 ), Us_achieved_numerical_decoded( index_max_numerical_decoded, 2 ) )
-fprintf( '\tDifference: \t%9.3e \t[-] \t(%6.2f [%%])\n', error_max_numerical_decoded - error_max_theoretical_decoded, error_max_percentage_numerical_decoded - error_max_percentage_theoretical_decoded )
-fprintf( '\n' )
-
-fprintf( 'Range:\n' )
-fprintf( '\tTheoretical: \t%9.3f \t[-] \t(%6.2f [%%])\n', error_range_theoretical_decoded, error_range_percentage_theoretical_decoded )
-fprintf( '\tNumerical: \t\t%9.3f \t[-] \t(%6.2f [%%])\n', error_range_numerical_decoded, error_range_percentage_numerical_decoded )
-fprintf( '\tDifference: \t%9.3e \t[-] \t(%6.2f [%%])\n', error_range_numerical_decoded - error_range_theoretical_decoded, error_range_percentage_numerical_decoded - error_range_percentage_theoretical_decoded )
-fprintf( '\n' )
+% Print the absolute transmission encoded summary statistics.
+network.numerical_method_utilities.print_error_statistics( header_str_encoded, unit_str_encoded, 10^( -3 ), error_rmse_theoretical_encoded, error_rmse_percentage_theoretical_encoded, error_rmse_numerical_encoded, error_rmse_percentage_numerical_encoded, error_std_theoretical_encoded, error_std_percentage_theoretical_encoded, error_std_numerical_encoded, error_std_percentage_numerical_encoded, error_min_theoretical_encoded, error_min_percentage_theoretical_encoded, Us_critmin_achieved_theoretical_steady, error_min_numerical_encoded, error_min_percentage_numerical_encoded, Us_critmin_achieved_numerical_steady, error_max_theoretical_encoded, error_max_percentage_theoretical_encoded, Us_critmax_achieved_theoretical_steady, error_max_numerical_encoded, error_max_percentage_numerical_encoded, Us_critmax_achieved_numerical_steady, error_range_theoretical_encoded, error_range_percentage_theoretical_encoded, error_range_numerical_encoded, error_range_percentage_numerical_encoded )    
+network.numerical_method_utilities.print_error_statistics( header_str_decoded, unit_str_decoded, 1, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, ys_critmin_achieved_theoretical_steady, error_min_numerical_decoded, error_min_percentage_numerical_decoded, ys_critmin_achieved_numerical_steady, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, ys_critmax_achieved_theoretical_steady, error_max_numerical_decoded, error_max_percentage_numerical_decoded, ys_critmax_achieved_numerical_steady, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded )    
 
 
 %% Plot the Absolute Transmission Network Results.
@@ -426,8 +352,8 @@ saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_decoding_compariso
 
 % Create a surface that shows the membrane voltage error.
 fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Steady State Error' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Membrane Voltage Error, E [mV]' ), title( 'Absolute Transmission Steady State Error' )
-plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), errors_theoretical*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical( :, 1 )*( 10^3 ), errors_numerical*( 10^3 ), '--', 'Linewidth', 3 )
+plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), errors_theoretical_encoded*( 10^3 ), '-', 'Linewidth', 3 )
+plot( Us_achieved_numerical( :, 1 )*( 10^3 ), errors_numerical_encoded*( 10^3 ), '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_response_error' ] )
 
@@ -440,8 +366,8 @@ saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_response_decoding_
 
 % Create a surface that shows the decoding error.
 fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Steady State Error Percentage' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Membrane Voltage Error Percentage, E [%]' ), title( 'Absolute Transmission Steady State Error Percentage' )
-plot( Us_achieved_theoretical( :, 1 ), error_percentages_theoretical, '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical( :, 1 ), error_percentages_numerical, '--', 'Linewidth', 3 )
+plot( Us_achieved_theoretical( :, 1 ), error_percentages_theoretical_encoded, '-', 'Linewidth', 3 )
+plot( Us_achieved_numerical( :, 1 ), error_percentages_numerical_encoded, '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_response_error_percentage' ] )
 

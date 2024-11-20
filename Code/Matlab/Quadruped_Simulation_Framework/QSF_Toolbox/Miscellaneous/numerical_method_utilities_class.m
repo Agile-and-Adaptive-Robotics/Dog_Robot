@@ -30,18 +30,18 @@ classdef numerical_method_utilities_class
         %% Numerical Stability Methods.
         
         % Implement a function to determine whether a stability metric is stable.
-        function b_stable = is_metric_stable( ~, R )
+        function stable_flag = is_metric_stable( ~, R )
             
             % Determine whether this metric is stable.
             if any( abs( R ) >= 1 )      	% If the absolute value of the stability metric is greater than or equal to one...
                 
                 % Set the stable flag to false.
-                b_stable = false;
+                stable_flag = false;
                 
             else                            % Otherwise...
                 
                 % Set the stable flag to true.
-                b_stable = true;
+                stable_flag = true;
                 
             end
             
@@ -187,29 +187,29 @@ classdef numerical_method_utilities_class
         %% Error Functions.
         
         % Implement a function that computes summary statistics given desired and achieved outputs.
-        function [ errors, error_percentages, error_rmse, error_rmse_percentage, error_std, error_std_percentage, error_min, error_min_percentage, index_min, error_max, error_max_percentage, index_max, error_range, error_range_percentage ] = compute_summary_statistics( ~, values, targets, scale )
+        function [ errors, error_percentages, error_rmse, error_rmse_percentage, error_std, error_std_percentage, error_min, error_min_percentage, index_min, error_max, error_max_percentage, index_max, error_range, error_range_percentage ] = compute_error_statistics( ~, values, targets, scale )
             
             % Compute the error between the achieved and desired results.
             errors = values( :, end ) - targets( :, end );
             error_percentages = 100*( errors/scale );
             
             % Compute the root mean squared error.
-            error_rmse = sqrt( ( 1/( numel( errors ) ) )*sum( errors.^2, 'all' ) );
-            error_rmse_percentage = 100*( error_rmse/scale );
+            error_rmse = sqrt( ( 1 / ( numel( errors ) ) )*sum( errors.^2, 'all' ) );
+            error_rmse_percentage = 100*( error_rmse / scale );
             
             % Compute the standard deviation of the error.
             error_std = std( errors, 0, 'all' );
-            error_std_percentage = 100*( error_std/scale );
+            error_std_percentage = 100*( error_std / scale );
             
             % Compute the minimum and maximum error.
             [ error_min, index_min ] = min( errors, [  ], 'all', 'linear' );
             [ error_max, index_max ] = max( errors, [  ], 'all', 'linear' );
-            error_min_percentage = 100*( error_min/scale );
-            error_max_percentage = 100*( error_max/scale );
+            error_min_percentage = 100*( error_min / scale );
+            error_max_percentage = 100*( error_max / scale );
             
             % Compute the error range.
             error_range = range( errors, 'all' );
-            error_range_percentage = 100*( error_range/scale );
+            error_range_percentage = 100*( error_range / scale );
             
         end
         
@@ -217,7 +217,7 @@ classdef numerical_method_utilities_class
         %% Printing Functions.
         
         % Implement a function to print summary statistics.
-        function print_summary_statistics( ~, header_str, unit_str, scale, error_rmse_theoretical, error_rmse_percentage_theoretical, error_rmse_numerical, error_rmse_percentage_numerical, error_std_theoretical, error_std_percentage_theoretical, error_std_numerical, error_std_percentage_numerical, error_min_theoretical, error_min_percentage_theoretical, Us_critmin_achieved_theoretical_steady, error_min_numerical, error_min_percentage_numerical, Us_critmin_achieved_numerical_steady, error_max_theoretical, error_max_percentage_theoretical, Us_critmax_achieved_theoretical_steady, error_max_numerical, error_max_percentage_numerical, Us_critmax_achieved_numerical_steady, error_range_theoretical, error_range_percentage_theoretical, error_range_numerical, error_range_percentage_numerical )            
+        function print_error_statistics( ~, header_str, unit_str, scale, error_rmse_theoretical, error_rmse_percentage_theoretical, error_rmse_numerical, error_rmse_percentage_numerical, error_std_theoretical, error_std_percentage_theoretical, error_std_numerical, error_std_percentage_numerical, error_min_theoretical, error_min_percentage_theoretical, Us_critmin_achieved_theoretical_steady, error_min_numerical, error_min_percentage_numerical, Us_critmin_achieved_numerical_steady, error_max_theoretical, error_max_percentage_theoretical, Us_critmax_achieved_theoretical_steady, error_max_numerical, error_max_percentage_numerical, Us_critmax_achieved_numerical_steady, error_range_theoretical, error_range_percentage_theoretical, error_range_numerical, error_range_percentage_numerical )            
             
             % Print the relative transmission summary statistics.
             fprintf( '\n' )
@@ -278,6 +278,7 @@ classdef numerical_method_utilities_class
             fprintf( '------------------------------------------------------------\n\n' )
             
         end
+        
         
     end
 end

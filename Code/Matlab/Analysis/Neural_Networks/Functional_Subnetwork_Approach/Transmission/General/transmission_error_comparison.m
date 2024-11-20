@@ -4,7 +4,7 @@
 clear, close( 'all' ), clc
 
 
-%% Initialize Project Options.
+%% Define Simulation Parameters.
 
 % Define the save and load directories.
 save_directory = '.\Save';                         	% [str] Save Directory.
@@ -21,9 +21,6 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
-
-
-%% Define Simulation Time Parameters.
 
 % Compute the number of simulation timesteps.
 n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
@@ -55,6 +52,26 @@ absolute_transmission_parameters = { c_absolute, R1_absolute, Gm1_absolute, Gm2_
 relative_transmission_parameters = { R1_relative, R2_relative, Gm1_relative, Gm2_relative, Cm1_relative, Cm2_relative };
 
 
+%% Define Encoding & Decoding Functions.
+
+% Define the maximum value of the input signal.
+R_reference = 20;
+
+% Define the decoding operation.
+f_encode_absolute = @( x ) x*( 10^( -3 ) );
+f_decode_absolute = @( xi ) xi*( 10^3 );
+
+% Define the decoding operations.
+f_decode_relative = @( xi, R_reference, R_relative ) ( R_reference/R_relative )*xi*( 10^3 );
+f_encode_relative = @( x, R_reference, R_relative ) ( R_relative/R_reference )*x*( 10^( -3 ) );
+
+
+%% Define the Input Signal.
+
+% Define the input signal.
+xs = 
+
+
 %% Define the Absolute Transmission Subnetwork Input Current Parameters.
 
 % Define the applied current ID.
@@ -68,6 +85,8 @@ input_current_name_relative = 'Applied Current 1 (Relative)';  	% [str] Relative
 % Define the IDs of the neurons to which the currents are applied.
 input_current_to_neuron_ID_absolute = 1;                        % [#] Absolute Neuron ID to Which Input Current is Applied.
 input_current_to_neuron_ID_relative = 1;                        % [#] Relative Neuron ID to Which Input Current is Applied.
+
+% Define the target input.
 
 % Define the current magnitudes.
 Ias1_mag_absolute = R1_absolute*Gm1_absolute;                  	% [A] Applied Current Magnitude.
@@ -93,124 +112,6 @@ network_relative = network_class( network_dt, network_tf );
 [ ~, ~, ~, network_relative.applied_current_manager ] = network_relative.applied_current_manager.create_applied_current( input_current_ID_relative, input_current_name_relative, input_current_to_neuron_ID_relative, ts, Ias1_relative, true, network_relative.applied_current_manager.applied_currents, true, false, network_relative.applied_current_manager.array_utilities );
 
 
-%% Define Encoding & Decoding Functions.
-
-% Define the decoding operation.
-f_decode_absolute = @( x ) x*( 10^3 );
-
-% Define the decoding operations.
-f_decode_relative1 = @( x ) ( R1_absolute/R1 )*x*( 10^3 );
-f_decode_relative2 = @( x ) ( R2_absolute/R2 )*x*( 10^3 );
-f_decode_relative = @( x ) [ f_decode_relative1( x( :, 1 ) ), f_decode_relative2( x( :, 2 ) ) ];
-
-
-
-%% Define Basic Relative Transmission Subnetwork Parameters.
-
-% Define the maximum membrane voltages.
-R1_relative = 20e-3;                                        % [V] Maximum Membrane Voltage (Neuron 1).
-R2_relative = 20e-3;                                        % [V] Maximum Membrane Voltage (Neuron 2).
-
-% Define the membrane conductances.
-Gm1_relative = 1e-6;                                       	% [S] Membrane Conductance (Neuron 1)
-Gm2_relative = 1e-6;                                      	% [S] Membrane Conductance (Neuron 2) 
-
-% Define the membrane capacitance.
-Cm1_relative = 5e-9;                                     	% [F] Membrane Capacitance (Neuron 1)
-Cm2_relative = 5e-9;                                      	% [F] Membrane Capacitance (Neuron 2)
-
-% Define the sodium channel conductance.
-Gna1_relative = 0;                                          % [S] Sodium Channel Conductance (Neuron 1).
-Gna2_relative = 0;                                          % [S] Sodium Channel Conductance (Neuron 2).
-
-% Define the synaptic conductances.
-dEs21_relative = 194e-3;                                   	% [V] Synaptic Reversal Potential (Synapse 21).
-
-% Define the applied currents.
-Ia1_relative = R1_relative*Gm1_relative;                  	% [A] Applied Current (Neuron 1)
-Ia2_relative = 0;                                       	% [A] Applied Current (Neuron 2).
-
-% Define the current state.
-current_state1_relative = 1.0;                              % [-] Current State (Neuron 1). (Specified as a ratio of the total applied current that is active.)
-
-% Define the network design parameters.
-c_relative = 1;                                          	% [-] Design Constant.
-
-
-%% Compute Derived Relative Transmission Subnetwork Parameters.
-
-% Compute the synaptic conductances.
-gs21_relative = ( R2_relative*Gm2_relative - Ia2_relative )/( dEs21_relative - R2_relative );             % [S] Synaptic Conductance (Synapse 21).
-
-
-%% Print Relative Transmission Subnetwork Parameters.
-
-% Print out a header.
-fprintf( '\n------------------------------------------------------------\n' )
-fprintf( '------------------------------------------------------------\n' )
-fprintf( 'RELATIVE TRANSMISSION SUBNETWORK PARAMETERS:\n' )
-fprintf( '------------------------------------------------------------\n' )
-
-% Print out neuron information.
-fprintf( 'Neuron Parameters:\n' )
-fprintf( 'R1 \t\t= \t%0.2f \t[mV]\n', R1_relative*( 10^3 ) )
-fprintf( 'R2 \t\t= \t%0.2f \t[mV]\n', R2_relative*( 10^3 ) )
-
-fprintf( 'Gm1 \t= \t%0.2f \t[muS]\n', Gm1_relative*( 10^6 ) )
-fprintf( 'Gm2 \t= \t%0.2f \t[muS]\n', Gm2_relative*( 10^6 ) )
-
-fprintf( 'Cm1 \t= \t%0.2f \t[nF]\n', Cm1_relative*( 10^9 ) )
-fprintf( 'Cm2 \t= \t%0.2f \t[nF]\n', Cm2_relative*( 10^9 ) )
-
-fprintf( 'Gna1 \t= \t%0.2f \t[muS]\n', Gna1_relative*( 10^6 ) )
-fprintf( 'Gna2 \t= \t%0.2f \t[muS]\n', Gna2_relative*( 10^6 ) )
-fprintf( '\n' )
-
-% Print out the synapse information.
-fprintf( 'Synapse Parameters:\n' )
-fprintf( 'dEs21 \t= \t%0.2f \t[mV]\n', dEs21_relative*( 10^3 ) )
-fprintf( 'gs21 \t= \t%0.2f \t[muS]\n', gs21_relative*( 10^6 ) )
-fprintf( '\n' )
-
-% Print out the applied current information.
-fprintf( 'Applied Curent Parameters:\n' )
-fprintf( 'Ia1 \t= \t%0.2f \t[nA]\n', current_state1_relative*Ia1_relative*( 10^9 ) )
-fprintf( '\n' )
-
-% Print out the network design parameters.
-fprintf( 'Network Design Parameters:\n' )
-fprintf( 'c \t\t= \t%0.2f \t[-]\n', c_relative )
-
-% Print out ending information.
-fprintf( '------------------------------------------------------------\n' )
-fprintf( '------------------------------------------------------------\n' )
-
-
-%% Create a Relative Transmission Subnetwork.
-
-% Create an instance of the network class.
-network_relative = network_class( network_dt, network_tf );
-
-% Create the network components.
-[ network_relative.neuron_manager, neuron_IDs ] = network_relative.neuron_manager.create_neurons( 2 );
-[ network_relative.synapse_manager, synapse_IDs ] = network_relative.synapse_manager.create_synapses( 1 );
-[ network_relative.applied_current_manager, applied_current_IDs ] = network_relative.applied_current_manager.create_applied_currents( 2 );
-
-% Define neuron parameters.
-network_relative.neuron_manager = network_relative.neuron_manager.set_neuron_property( neuron_IDs, [ R1_relative, R2_relative ], 'R' );
-network_relative.neuron_manager = network_relative.neuron_manager.set_neuron_property( neuron_IDs, [ Gm1_relative, Gm2_relative ], 'Gm' );
-network_relative.neuron_manager = network_relative.neuron_manager.set_neuron_property( neuron_IDs, [ Cm1_relative, Cm2_relative ], 'Cm' );
-network_relative.neuron_manager = network_relative.neuron_manager.set_neuron_property( neuron_IDs, [ Gna1_relative, Gna2_relative ], 'Gna' );
-
-% Define synapse parameters.
-network_relative.synapse_manager = network_relative.synapse_manager.set_synapse_property( synapse_IDs, 1, 'from_neuron_ID' );
-network_relative.synapse_manager = network_relative.synapse_manager.set_synapse_property( synapse_IDs, 2, 'to_neuron_ID' );
-network_relative.synapse_manager = network_relative.synapse_manager.set_synapse_property( synapse_IDs, gs21_relative, 'g_syn_max' );
-network_relative.synapse_manager = network_relative.synapse_manager.set_synapse_property( synapse_IDs, dEs21_relative, 'dE_syn' );
-
-% Define applied current manager.
-network_relative.applied_current_manager = network_relative.applied_current_manager.set_applied_current_property( applied_current_IDs, [ 1, 2 ], 'neuron_ID' );
-network_relative.applied_current_manager = network_relative.applied_current_manager.set_applied_current_property( applied_current_IDs, [ current_state1_relative*Ia1_relative, Ia2_relative ], 'I_apps' );
 
 
 %% Load the Absolute & Relative Transmission Subnetworks.
@@ -219,13 +120,13 @@ network_relative.applied_current_manager = network_relative.applied_current_mana
 absolute_transmission_simulation_data = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );
 relative_transmission_simulation_data = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
 
-% Store the absolute simulation results in separate variables.
+% Unpack the applied current simulation data.
 absolute_applied_currents = absolute_transmission_simulation_data.applied_currents;
-Us_achieved_absolute = absolute_transmission_simulation_data.Us_achieved;
-
-% Store the relative simulation results in separate variables.
 relative_applied_currents = relative_transmission_simulation_data.applied_currents;
-Us_achieved_relative = relative_transmission_simulation_data.Us_achieved;
+
+% Unpack the numerical achieved voltage simulation data.
+Us_achieved_absolute = absolute_transmission_simulation_data.Us_achieved_numerical;
+Us_achieved_relative = relative_transmission_simulation_data.Us_achieved_numerical;
 
 
 %% Compute the Error in the Steady State Transmission Subnetwork Responses.

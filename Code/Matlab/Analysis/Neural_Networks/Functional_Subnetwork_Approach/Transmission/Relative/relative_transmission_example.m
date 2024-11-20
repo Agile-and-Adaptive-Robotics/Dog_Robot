@@ -25,8 +25,17 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 % network_tf = 1;                                 	% [s] Simulation Duration.
 % network_tf = 3;                                 	% [s] Simulation Duration.
 
+% Compute the number of simulation timesteps.
+n_timesteps = floor( network_tf/network_dt ) + 1;	% [#] Number of Simulation Timesteps.
+
+% Construct the simulation times associated with the input currents.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+
+% Define the encoding scheme.
+encoding_scheme = 'relative';
 
 
 %% Define Relative Transmission Subnetwork Parameters.
@@ -36,14 +45,34 @@ R1 = 20e-3;                                         % [V] Maximum Membrane Volta
 R2 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 2).
 Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
 Gm2 = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
-Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
-Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+% Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+% Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+Cm1 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+Cm2 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 2).
 
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
 
-% Define the encoding scheme.
-encoding_scheme = 'relative';
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the maximum value of the input signal.
+x_max = 20;
+
+% Define the encoding operation.
+f_encode = @( x, R, x_max ) ( R./x_max ).*x;
+
+% Define the decoding operations.
+f_decode = @( U, R, x_max ) ( x_max./R ).*U;
+
+
+%% Define the Desired Input Signal.
+
+% Define the desired input signal.
+xs_desired = 20*ones( n_timesteps, 1 );
+
+% Encode the input signal.
+Us1_desired = f_encode( xs_desired, R1, x_max );
 
 
 %% Define the Relative Transmission Subnetwork Input Current Parameters.
@@ -53,17 +82,8 @@ input_current_ID = 1;                               % [#] Input Current ID.
 input_current_name = 'Applied Current 1';           % [str] Input Current Name.
 input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Input Current is Applied.
 
-% Compute the number of simulation timesteps.
-n_timesteps = floor( network_tf/network_dt ) + 1;	% [#] Number of Simulation Timesteps.
-
-% Construct the simulation times associated with the input currents.
-ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
-
-% Define the current magnitudes.
-Ias1_mag = R1*Gm1;                                  % [A] Applied Current Magnitude.
-
 % Define the magnitudes of the applied current input.
-Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
+Ias1 = Us1_desired*Gm1;                             % [A] Applied Currents.
 
 
 %% Create Relative Transmission Subnetwork.
@@ -103,6 +123,9 @@ dt0 = 1e-6;                                                                     
 % Compute the maximum RK4 step size and condition number.
 [ As, dts, condition_numbers ] = network.RK4_stability_analysis( Cms, Gms, Rs, gs, dEs, Us, dt0, network.neuron_manager, network.synapse_manager, undetected_option, network.network_utilities );
 
+
+%% Print the Numerical Stability Information.
+
 % Print out the stability information.
 network.numerical_method_utilities.print_numerical_stability_info( As, dts, network_dt, condition_numbers );
 
@@ -125,11 +148,16 @@ tic
 toc
 
 
-%% Plot the Relative Transmission Subnetwork Results.
+%% Decode the Relative Transmission Subnetwork Output.
 
-% Define the absolute transmission comparison example.
-R1_absolute = 20e-3;
-R2_absolute = 20e-3;
+% Decode the network input.
+xs = f_decode( Us( 1, : ), R1, x_max );
+
+% Decode the network output.
+ys = f_decode( Us( 2, : ), R2, x_max );
+
+
+%% Plot the Relative Transmission Subnetwork Results.
 
 % Retrieve the neuron IDs.
 neuron_IDs = network.neuron_manager.get_all_neuron_IDs( network.neuron_manager.neurons );
@@ -140,24 +168,29 @@ fig_network_currents = network.network_utilities.plot_network_currents( ts, I_le
 % Plot the network states over time.
 fig_network_states = network.network_utilities.plot_network_states( ts, Us, hs, neuron_IDs );
 
-% Plot the relative network encoding over time.
-fig_network_encoding = figure( 'Color', 'w' ); hold on, grid on, xlabel( 'Time, t [s]' ), ylabel( 'Network Encoding, U/R [-]' ), title( 'Relative Transmission Encoding vs Time' )
-plot( ts, Us( 1, : )/R1, '-', 'Linewidth', 3 )
-plot( ts, Us( 2, : )/R2, '-', 'Linewidth', 3 )
+% Plot the encoded network input and output over time.
+fig_network_encoded = figure( 'Color', 'w', 'Name', 'RT: Encoded Input & Output vs Time' ); hold on, grid on, xlabel( 'Time, t [s]' ), ylabel( 'RT: Encoded Input & Output [V]' ), title( 'RT: Encoded Input & Output vs Time' )
+plot( ts, Us( 1, : ), '-', 'Linewidth', 3 )
+plot( ts, Us( 2, : ), '-', 'Linewidth', 3 )
 legend( 'Input', 'Output' )
-saveas( fig_network_encoding, [ save_directory, '\', 'relative_transmission_encoding_example' ] )
+saveas( fig_network_encoded, [ save_directory, '\', 'relative_transmission_example_encoded' ] )
 
-% Plot the relative network decoding over time.
-fig_network_decoding = figure( 'Color', 'w' ); hold on, grid on, xlabel( 'Time, t [s]' ), ylabel( 'Network Decoding [-]' ), title( 'Relative Transmission Decoding vs Time' )
-plot( ts, ( R1_absolute/R1 )*Us( 1, : )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( ts, ( R2_absolute/R2 )*Us( 2, : )*( 10^3 ), '-', 'Linewidth', 3 )
+% Plot the decoded network input and output over time.
+fig_network_decoded = figure( 'Color', 'w', 'Name', 'RT: Decoded Input & Output vs Time' ); hold on, grid on, xlabel( 'Time, t [s]' ), ylabel( 'RT: Decoded Input & Output [-]' ), title( 'RT: Decoded Input & Output vs Time' )
+plot( ts, xs, '-', 'Linewidth', 3 )
+plot( ts, ys, '-', 'Linewidth', 3 )
 legend( 'Input', 'Output' )
-saveas( fig_network_decoding, [ save_directory, '\', 'relative_transmission_decoding_example' ] )
+saveas( fig_network_decoded, [ save_directory, '\', 'relative_transmission_example_decoded' ] )
 
-% Plot the absolute network dynamic decoding example.
-fig_network_decoding = figure( 'Color', 'w', 'Name', 'Absolute Transmission Dynamic Decoding Example' ); hold on, grid on, xlabel( 'Time, t [s]' ), ylabel( 'Network Decoding [-]' ), title( 'Absolute Transmission Dynamic Decoding Example' )
-plot( ( R1_absolute/R1 )*Us( 1, : )*( 10^3 ), ( R2_absolute/R2 )*Us( 2, : )*( 10^3 ), '-', 'Linewidth', 3 )
-saveas( fig_network_decoding, [ save_directory, '\', 'relative_transmission_dynamic_decoding_example' ] )
+% Plot the encoded network input and output.
+fig_network_encoded = figure( 'Color', 'w', 'Name', 'RT: Encoded Output vs Encoded Input' ); hold on, grid on, xlabel( 'Encoded Input, U1 [V]' ), ylabel( 'Encoded Output, U [V]' ), title( 'RT: Encoded Output vs Encoded Input' )
+plot( Us( 1, : ), Us( 2, : ), '-', 'Linewidth', 3 )
+saveas( fig_network_encoded, [ save_directory, '\', 'relative_transmission_dynamic_example_encoded' ] )
+
+% Plot the decoded network input and output.
+fig_network_decoded = figure( 'Color', 'w', 'Name', 'RT: Decoded Output vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Output, y [-]' ), title( 'RT: Decoded Output vs Decoded Input' )
+plot( xs, ys, '-', 'Linewidth', 3 )
+saveas( fig_network_decoded, [ save_directory, '\', 'relative_transmission_dynamic_example_decoded' ] )
 
 % Animate the network states over time.
 fig_network_animation = network.network_utilities.animate_network_states( Us, hs, neuron_IDs );
