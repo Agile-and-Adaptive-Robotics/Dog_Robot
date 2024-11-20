@@ -60,7 +60,7 @@ transmission_parameters = { c, R1, Gm1, Gm2, Cm1, Cm2 };
 f_encode = @( x ) x*( 10^( -3 ) );
 
 % Define the decoding scheme.
-f_decode = @( x ) x*( 10^3 );
+f_decode = @( U ) U*( 10^3 );
 
 
 %% Define the Desired Input Signal.
