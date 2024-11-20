@@ -29,6 +29,12 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 % network_tf = 1;                                 	% [s] Simulation Duration.
 % network_tf = 3;                                 	% [s] Simulation Duration.
 
+% Compute the number of simulation timesteps.
+n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+
+% Construct the simulation times associated with the input currents.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+
 % Define the number of neurons.
 num_neurons = 2;                                 	% [#] Number of Neurons.
 
@@ -46,8 +52,10 @@ R1 = 20e-3;                                         % [V] Maximum Membrane Volta
 R2 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 2).
 Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
 Gm2 = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
-Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
-Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+% Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+% Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+Cm1 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+Cm2 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 2).
 
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
@@ -55,14 +63,23 @@ transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
 
 %% Define Encoding & Decoding Operations.
 
-% Define the absolute transmission comparison example.
-R1_absolute = 20e-3;                                % [V] Relative Maximum Membrane Voltage (Neuron 1).  (Used for decoding.)
-R2_absolute = 20e-3;                                % [V] Relative Maximum Membrane Voltage (Neuron 2).  (Used for decoding.)
+% Define the maximum value of the input signal.
+x_max = 20;
+
+% Define the encoding operation.
+f_encode = @( x, R, x_max ) ( R./x_max ).*x;
 
 % Define the decoding operations.
-f_decode1 = @( x ) ( R1_absolute/R1 )*x*( 10^3 );
-f_decode2 = @( x ) ( R2_absolute/R2 )*x*( 10^3 );
-f_decode = @( x ) [ f_decode1( x( :, 1 ) ), f_decode2( x( :, 2 ) ) ];
+f_decode = @( U, R, x_max ) ( x_max./R ).*U;
+
+
+%% Define the Desired Input Signal.
+
+% Define the desired input signal.
+xs_desired = 20*ones( n_timesteps, 1 );
+
+% Encode the input signal.
+Us1_desired = f_encode( xs_desired, R1, x_max );
 
 
 %% Define the Relative Transmission Subnetwork Input Current Parameters.
@@ -72,22 +89,13 @@ input_current_ID = 1;                               % [#] Input Current ID.
 input_current_name = 'Applied Current 1';           % [str] Input Current Name.
 input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Input Current is Applied.
 
-% Compute the number of simulation timesteps.
-n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
-
-% Construct the simulation times associated with the input currents.
-ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
-
-% Define the current magnitudes.
-Ias1_mag = R1*Gm1;                                  % [A] Applied Current Magnitude.
-
 % Define the magnitudes of the applied current input.
-Ias1 = Ias1_mag*ones( n_timesteps, 1 );             % [A] Applied Currents.
+Ias1 = Us1_desired*Gm1;                           	% [A] Applied Currents.
 
 
 %% Create the Relative Transmission Subnetwork.
 
-% Create an instance of the netwo5rk class.
+% Create an instance of the network class.
 network = network_class( network_dt, network_tf );
 
 % Create a transmission subnetwork.
@@ -115,21 +123,20 @@ Rs = network.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, net
 gs = network.get_gs( 'all', network.neuron_manager, network.synapse_manager );                                                              % [S] Synaptic Conductance.
 dEs = network.get_dEs( 'all', network.neuron_manager, network.synapse_manager );                                                            % [V] Synaptic Reversal Potential.
 Ias = network.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network.neuron_manager.neurons, undetected_option );     % [A] Applied Currents.
+
+% Define the stability analysis timestep seed.
 dt0 = 1e-6;                                                                                                                                 % [s] Numerical Stability Time Step.
 
 % Define the transmission subnetwork inputs.
-U1s = linspace( 0, Rs( 1 ), 100  );
-
-% Create the input points.
-U1s_flat = reshape( U1s, [ numel( U1s ), 1 ] );
+U1s = linspace( 0, Rs( 1 ), 100  )';
 
 % Compute the desired and achieved absolute transmission steady state output.
-U2s_flat_desired = network.compute_dr_transmission_sso( U1s_flat, c, R1, R2, network.neuron_manager, undetected_option, network.network_utilities );
-[ U2s_flat_achieved_theoretical, As, dts, condition_numbers ] = network.achieved_transmission_RK4_stability_analysis( U1s_flat, Cms, Gms, Rs, Ias, gs, dEs, dt0, network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
+U2s_desired = network.compute_dr_transmission_sso( U1s, c, R1, R2, network.neuron_manager, undetected_option, network.network_utilities );
+[ U2s_achieved_theoretical, As, dts, condition_numbers ] = network.achieved_transmission_RK4_stability_analysis( U1s, Cms, Gms, Rs, Ias, gs, dEs, dt0, network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
 
 % Store the desired and theoretically achieved absolute transmission steady state results in arrays.
-Us_flat_desired = [ U1s_flat, U2s_flat_desired ];
-Us_flat_achieved_theoretical = [ U1s_flat, U2s_flat_achieved_theoretical ];
+Us_desired = [ U1s_flat, U2s_desired ];
+Us_achieved_theoretical = [ U1s_flat, U2s_achieved_theoretical ];
 
 % Retrieve the maximum RK4 step size and condition number.
 [ dt_max, indexes_dt ] = max( dts );
@@ -142,16 +149,24 @@ Us_flat_achieved_theoretical = [ U1s_flat, U2s_flat_achieved_theoretical ];
 network.numerical_method_utilities.print_numerical_stability_info( As, dts, network_dt, condition_numbers );
 
 
-%% Plot the Desired and Achieved Relative Transmission Formulation Results.
+%% Decode the Desired & Theoreticall Achieved Absolute Transmission Subnetwork Results.
 
-% Decode the input and output membrane voltages.
-Us_flat_desired_decoded = f_decode( Us_flat_desired );
-Us_flat_achieved_theoretical_decoded = f_decode( Us_flat_achieved_theoretical );
+% Decode the network input.
+xs = f_decode( Us_desired( :, 1 ), R1, x_max );
+
+% Decode the desired network output.
+ys_desired = f_decode( Us_desired( :, 2 ), R2, x_max );
+
+% Decode the achieved theoretical network output.
+ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, x_max );
+
+
+%% Plot the Desired and Achieved Relative Transmission Formulation Results.
 
 % Plot the desired and achieved relative transmission formulation results.
 fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Theory' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'Relative Transmission Theory' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), Us_flat_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_flat_achieved_theoretical( :, 1 )*( 10^3 ), Us_flat_achieved_theoretical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
+plot( Us_desired( :, 1 )*( 10^3 ), Us_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
+plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), Us_achieved_theoretical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
 saveas( fig, [ save_directory, '\', 'relative_transmission_theory' ] )
 
@@ -164,12 +179,12 @@ saveas( fig, [ save_directory, '\', 'relative_transmission_theory_decoded' ] )
 
 % Plot the RK4 maximum timestep.
 fig = figure( 'Color', 'w', 'Name', 'Relative Transmission RK4 Maximum Timestep' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Relative Transmission RK4 Maximum Timestep' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), dts, '-', 'Linewidth', 3 )
+plot( Us_desired( :, 1 )*( 10^3 ), dts, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'relative_transmission_rk4_maximum_timestep' ] )
 
 % Plot the linearized system condition numbers.
 fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Condition Numbers' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'Relative Transmission Condition Number' )
-plot( Us_flat_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
+plot( Us_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'relative_transmission_condition_numbers' ] )
 
 
