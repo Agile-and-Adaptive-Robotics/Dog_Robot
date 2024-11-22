@@ -51,7 +51,7 @@ encoding_scheme = 'absolute';
 network_utilities = network_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 2.0;                                            % [-] Absolute Transmission Subnetwork Gain.
+c = 1.0;                                            % [-] Absolute Transmission Subnetwork Gain.
 
 % Define the desired mapping operation.
 f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );

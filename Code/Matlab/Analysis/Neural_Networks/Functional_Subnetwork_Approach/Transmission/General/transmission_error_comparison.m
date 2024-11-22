@@ -10,6 +10,16 @@ clear, close( 'all' ), clc
 save_directory = '.\Save';                         	% [str] Save Directory.
 load_directory = '.\Load';                        	% [str] Load Directory.
 
+% Set a flag to determine whether to simulate.
+simulate_flag = true;                             	% [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)
+% simulate_flag = false;                            % [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)
+
+% Set the level of verbosity.
+verbose_flag = true;                            	% [T/F] Printing Flag. (Determines whether to print out information.)
+
+% Define the undetected option.
+undetected_option = 'Error';                        % [str] Undetected Option.
+
 % Define the network simulation time step.
 network_dt = 1e-3;                                 	% [s] Simulation Time Step.
 % network_dt = 1e-4;                             	% [s] Simulation Timestep.
@@ -19,20 +29,46 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 % network_tf = 1;                                 	% [s] Simulation Duration.
 % network_tf = 3;                                 	% [s] Simulation Duration.
 
-% Define the integration method.
-integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
-
 % Compute the number of simulation timesteps.
 n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
 
 % Construct the simulation times associated with the input currents.
 ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
 
+% Define the integration method.
+integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+
+
+%% Define the Desired Transmission Subnetwork Parameters.
+
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
+
+% Define the transmission subnetwork parameters.
+c = 1.0;            % [-] Subnetwork Gain.
+
+% Define the desired mapping operation.
+f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+
+% Define the domain of the input and output signals.
+x_max = 20;
+y_max = f_desired( x_max );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the encoding operation.
+f_encode_absolute = @( x ) x*( 10^( -3 ) );
+f_encode_relative = @( x, R_encode, R_decode ) ( R_encode./R_decode ).*x;
+
+% Define the decoding operations.
+f_decode_absolute = @( U ) U*( 10^3 );
+f_decode_relative = @( U, R_encode, R_decode ) ( R_decode./R_encode ).*U;
+
 
 %% Define Transmission Subnetwork Parameters.
 
 % Define the absolute transmission subnetwork design parameters.
-c_absolute = 1.0;                                           % [-] Absolute Transmission Subnetwork Gain.
 R1_absolute = 20e-3;                                        % [V] Maximum Membrane Voltage (Neuron 1).
 Gm1_absolute = 1e-6;                                        % [S] Membrane Conductance (Neuron 1).
 Gm2_absolute = 1e-6;                                        % [S] Membrane Conductance (Neuron 2).
@@ -48,28 +84,8 @@ Cm1_relative = 5e-9;                                         % [F] Membrane Capa
 Cm2_relative = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
 
 % Store the transmission subnetwork design parameters in a cell.
-absolute_transmission_parameters = { c_absolute, R1_absolute, Gm1_absolute, Gm2_absolute, Cm1_absolute, Cm2_absolute };
+absolute_transmission_parameters = { c, R1_absolute, Gm1_absolute, Gm2_absolute, Cm1_absolute, Cm2_absolute };
 relative_transmission_parameters = { R1_relative, R2_relative, Gm1_relative, Gm2_relative, Cm1_relative, Cm2_relative };
-
-
-%% Define Encoding & Decoding Functions.
-
-% Define the maximum value of the input signal.
-R_reference = 20;
-
-% Define the decoding operation.
-f_encode_absolute = @( x ) x*( 10^( -3 ) );
-f_decode_absolute = @( xi ) xi*( 10^3 );
-
-% Define the decoding operations.
-f_decode_relative = @( xi, R_reference, R_relative ) ( R_reference/R_relative )*xi*( 10^3 );
-f_encode_relative = @( x, R_reference, R_relative ) ( R_relative/R_reference )*x*( 10^( -3 ) );
-
-
-%% Define the Input Signal.
-
-% Define the input signal.
-xs = 
 
 
 %% Define the Absolute Transmission Subnetwork Input Current Parameters.
@@ -86,15 +102,16 @@ input_current_name_relative = 'Applied Current 1 (Relative)';  	% [str] Relative
 input_current_to_neuron_ID_absolute = 1;                        % [#] Absolute Neuron ID to Which Input Current is Applied.
 input_current_to_neuron_ID_relative = 1;                        % [#] Relative Neuron ID to Which Input Current is Applied.
 
-% Define the target input.
+% Define the desired input signal.
+xs_desired = x_max*ones( n_timesteps, 1 );
 
-% Define the current magnitudes.
-Ias1_mag_absolute = R1_absolute*Gm1_absolute;                  	% [A] Applied Current Magnitude.
-Ias1_mag_relative = R1_relative*Gm1_relative;                 	% [A] Applied Current Magnitude.
+% Encode the input signal.
+Us1_desired_absolute = f_encode_absolute( xs_desired );
+Us1_desired_relative = f_encode_relative( xs_desired, R1_relative, x_max );
 
-% Define the magnitudes of the applied current input.
-Ias1_absolute = Ias1_mag_absolute*ones( n_timesteps, 1 );    	% [A] Absolute Applied Currents.
-Ias1_relative = Ias1_mag_relative*ones( n_timesteps, 1 );      	% [A] Relative Applied Currents.
+% Define the applied current magnitudes.
+Ias1_absolute = Us1_desired_absolute*Gm1_absolute;            	% [A] Applied Current Magnitude.
+Ias1_relative = Us1_desired_relative*Gm1_relative;           	% [A] Applied Current Magnitude.
 
 
 %% Create the Relative Transmission Subnetwork.
@@ -112,21 +129,25 @@ network_relative = network_class( network_dt, network_tf );
 [ ~, ~, ~, network_relative.applied_current_manager ] = network_relative.applied_current_manager.create_applied_current( input_current_ID_relative, input_current_name_relative, input_current_to_neuron_ID_relative, ts, Ias1_relative, true, network_relative.applied_current_manager.applied_currents, true, false, network_relative.applied_current_manager.array_utilities );
 
 
-
-
 %% Load the Absolute & Relative Transmission Subnetworks.
 
 % Load the simulation results.
-absolute_transmission_simulation_data = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );
-relative_transmission_simulation_data = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
+data_absolute = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );
+data_relative = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
 
-% Unpack the applied current simulation data.
-absolute_applied_currents = absolute_transmission_simulation_data.applied_currents;
-relative_applied_currents = relative_transmission_simulation_data.applied_currents;
+% Unpack the absolute transmission simulation data.
+xs_achieved_numerical_absolute = data_absolute.xs_achieved_numerical;
+Us_input_absolute = data_absolute.Us_input;
+applied_currents_absolute = data_absolute.applied_currents;
+Us_achieved_numerical_absolute = data_absolute.Us_achieved_numerical;
+ys_achieved_numerical_absolute = data_absolute.ys_achieved_numerical;
 
-% Unpack the numerical achieved voltage simulation data.
-Us_achieved_absolute = absolute_transmission_simulation_data.Us_achieved_numerical;
-Us_achieved_relative = relative_transmission_simulation_data.Us_achieved_numerical;
+% Unpack the absolute transmission simulation data.
+xs_achieved_numerical_relative = data_relative.xs_achieved_numerical;
+Us_input_relative = data_relative.Us_input;
+applied_currents_relative = data_relative.applied_currents;
+Us_achieved_numerical_relative = data_relative.Us_achieved_numerical;
+ys_achieved_numerical_relative = data_relative.ys_achieved_numerical;
 
 
 %% Compute the Error in the Steady State Transmission Subnetwork Responses.
