@@ -44,7 +44,7 @@ encoding_scheme = 'relative';
 network_utilities = network_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 2.0;            % [-] Subnetwork Gain.
+c = 1.0;            % [-] Subnetwork Gain.
 
 % Define the desired mapping operation.
 f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );

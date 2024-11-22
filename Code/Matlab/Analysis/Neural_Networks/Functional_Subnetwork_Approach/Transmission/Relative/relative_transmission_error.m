@@ -45,6 +45,31 @@ integration_method = 'RK4';                         % [str] Integration Method (
 encoding_scheme = 'relative';
 
 
+%% Define the Desired Transmission Subnetwork Parameters.
+
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
+
+% Define the transmission subnetwork parameters.
+c = 1.0;            % [-] Subnetwork Gain.
+
+% Define the desired mapping operation.
+f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the domain of the input and output signals.
+x_max = 20;
+y_max = f_desired( x_max );
+
+% Define the encoding operation.
+f_encode = @( x, R_encode, R_decode ) ( R_encode./R_decode ).*x;
+
+% Define the decoding operations.
+f_decode = @( U, R_encode, R_decode ) ( R_decode./R_encode ).*U;
+
+
 %% Define Relative Transmission Subnetwork Parameters.
 
 % Define the transmission subnetwork design parameters.
@@ -61,22 +86,10 @@ Cm2 = 30e-9;                                         % [F] Membrane Capacitance 
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
 
 
-%% Define Encoding & Decoding Operations.
-
-% Define the maximum value of the input signal.
-x_max = 20;
-
-% Define the encoding operation.
-f_encode = @( x, R, x_max ) ( R./x_max ).*x;
-
-% Define the decoding operations.
-f_decode = @( U, R, x_max ) ( x_max./R ).*U;
-
-
 %% Define the Desired Input Signal.
 
 % Define the desired input signal.
-xs_desired = 20*ones( n_timesteps, 1 );
+xs_desired = x_max*ones( n_timesteps, 1 );
 
 % Encode the input signal.
 Us1_desired = f_encode( xs_desired, R1, x_max );
@@ -135,8 +148,8 @@ U2s_desired = network.compute_dr_transmission_sso( U1s, c, R1, R2, network.neuro
 [ U2s_achieved_theoretical, As, dts, condition_numbers ] = network.achieved_transmission_RK4_stability_analysis( U1s, Cms, Gms, Rs, Ias, gs, dEs, dt0, network.neuron_manager, network.synapse_manager, network.applied_current_manager, undetected_option, network.network_utilities );
 
 % Store the desired and theoretically achieved absolute transmission steady state results in arrays.
-Us_desired = [ U1s_flat, U2s_desired ];
-Us_achieved_theoretical = [ U1s_flat, U2s_achieved_theoretical ];
+Us_desired = [ U1s, U2s_desired ];
+Us_achieved_theoretical = [ U1s, U2s_achieved_theoretical ];
 
 % Retrieve the maximum RK4 step size and condition number.
 [ dt_max, indexes_dt ] = max( dts );
@@ -151,41 +164,50 @@ network.numerical_method_utilities.print_numerical_stability_info( As, dts, netw
 
 %% Decode the Desired & Theoreticall Achieved Absolute Transmission Subnetwork Results.
 
-% Decode the network input.
-xs = f_decode( Us_desired( :, 1 ), R1, x_max );
+% Compute the decoded desired result.
+xs_desired = f_decode( Us_desired( :, 1 ), R1, x_max );
+ys_desired = f_decode( Us_desired( :, 2 ), R2, y_max );
 
-% Decode the desired network output.
-ys_desired = f_decode( Us_desired( :, 2 ), R2, x_max );
-
-% Decode the achieved theoretical network output.
-ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, x_max );
+% Compute the decoded achieved (theory) result.
+xs_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 1 ), R1, x_max );
+ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, y_max );
 
 
 %% Plot the Desired and Achieved Relative Transmission Formulation Results.
 
-% Plot the desired and achieved relative transmission formulation results.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Theory' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'Relative Transmission Theory' )
+% Plot the encoded desired and achieved relative transmission formulation results.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'RT: Encoded Desired & Achieved (Theory) SS Behavior' )
 plot( Us_desired( :, 1 )*( 10^3 ), Us_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
 plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), Us_achieved_theoretical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_theory' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_theory_encoded' ] )
 
 % Plot the decoded desired and achieved relative transmission formulation results.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Theory Decoded' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'Relative Transmission Theory Decoded' )
-plot( Us_flat_desired_decoded( :, 1 )*( 10^3 ), Us_flat_desired_decoded( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_flat_achieved_theoretical_decoded( :, 1 )*( 10^3 ), Us_flat_achieved_theoretical_decoded( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 )
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'RT: Decoded Desired & Achieved (Theory) SS Behavior' )
+plot( xs_desired, ys_desired, '-', 'Linewidth', 3 )
+plot( xs_achieved_theoretical, ys_achieved_theoretical, '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
 saveas( fig, [ save_directory, '\', 'relative_transmission_theory_decoded' ] )
 
-% Plot the RK4 maximum timestep.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission RK4 Maximum Timestep' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Relative Transmission RK4 Maximum Timestep' )
+% Plot the RK4 maximum timestep vs the encoded input.
+fig = figure( 'Color', 'w', 'Name', 'RT: RK4 Maximum Timestep vs Encoded Input' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'RT: RK4 Maximum Timestep vs Encoded Input' )
 plot( Us_desired( :, 1 )*( 10^3 ), dts, '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'relative_transmission_rk4_maximum_timestep' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_rk4_maximum_timestep_encoded' ] )
+
+% Plot the RK4 maximum timestep vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'RT: RK4 Maximum Timestep vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'RT: RK4 Maximum Timestep vs Decoded Input' )
+plot( xs_desired, dts, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'relative_transmission_rk4_maximum_timestep_decoded' ] )
 
 % Plot the linearized system condition numbers.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Condition Numbers' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'Relative Transmission Condition Number' )
+fig = figure( 'Color', 'w', 'Name', 'RT: Condition Numbers vs Encoded Input' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'RT: Condition Numbers vs Encoded Input' )
 plot( Us_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'relative_transmission_condition_numbers' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_condition_numbers_encoded' ] )
+
+% Plot the linearized system condition numbers vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'RT: Condition Numbers vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Condition Number [-]' ), title( 'RT: Condition Number vs Decoded Input' )
+plot( xs_desired, condition_numbers, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'relative_transmission_condition_numbers_decoded' ] )
 
 
 %% Simulate the Relative Transmission Network.
@@ -199,17 +221,23 @@ undetected_option = 'Ignore';               % [str] Undetected Option.
 % Determine whether to simulate the network.
 if simulate_flag                            % If we want to simulate the network...
     
-    % Define the number of applied currents to use.
-    n_applied_currents = 20;             	% [#] Number of Applied Currents.
+    % Define the number of different input signals.
+    n_input_signals = 20;                   % [#] Number of Input Signals.
+    
+    % Define the input signals.
+    xs_achieved_numerical = linspace( 0, x_max, n_input_signals );
+    
+    % Encode the input signals.
+    Us_input = f_encode( xs_achieved_numerical, R1, x_max );
     
     % Create the applied currents.
-    applied_currents = linspace( 0, network.neuron_manager.neurons( 1 ).R*network.neuron_manager.neurons( 1 ).Gm, n_applied_currents );
-
+    applied_currents = network.neuron_manager.neurons( 1 ).Gm*Us_input;
+    
     % Create a matrix to store the membrane voltages.
-    Us_achieved_numerical = zeros( n_applied_currents, num_neurons );
+    Us_achieved_numerical = zeros( n_input_signals, num_neurons );
     
     % Simulate the network for each of the applied current combinations.
-    for k = 1:n_applied_currents         	% Iterate through each of the currents applied to the input neuron...
+    for k = 1:n_input_signals         	% Iterate through each of the currents applied to the input neuron...
             
             % Create applied currents.
             [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
@@ -222,8 +250,11 @@ if simulate_flag                            % If we want to simulate the network
             
     end
 
+    % Decode the achieved membrane voltages.
+    ys_achieved_numerical = f_decode( Us_achieved_numerical( :, 2 ), R2, y_max );
+    
     % Save the simulation results.
-    save( [ save_directory, '\', 'relative_transmission_subnetwork_error' ], 'applied_currents', 'Us_achieved_numerical' )
+    save( [ save_directory, '\', 'relative_transmission_subnetwork_error' ], 'xs_achieved_numerical', 'Us_input', 'applied_currents', 'Us_achieved_numerical', 'ys_achieved_numerical' )
     
 else                % Otherwise... ( We must want to load data from an existing simulation... )
     
@@ -231,13 +262,16 @@ else                % Otherwise... ( We must want to load data from an existing 
     data = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
     
     % Store the simulation results in separate variables.
+    xs_achieved_numerical = data.xs_achieved_numerical;
+    Us_input = data.Us_input;
     applied_currents = data.applied_currents;
     Us_achieved_numerical = data.Us_achieved_numerical;
+    ys_achieved_numerical = data.ys_achieved_numerical;
 
 end
 
 
-%% Compute the Relative Transmission Network Error.
+%% Compute the Relative Transmission Desired & Achieved (Theory) Network Output.
 
 % Compute the desired membrane voltage output.
 Us_desired_output = network.compute_dr_transmission_sso( Us_achieved_numerical( :, 1 ), c, Rs( 1 ), Rs( 2 ), network.neuron_manager, undetected_option, network.network_utilities );
@@ -247,109 +281,131 @@ Us_achieved_theoretical_output = network.compute_achieved_transmission_sso( Us_a
 Us_desired = Us_achieved_numerical; Us_desired( :, end ) = Us_desired_output;
 Us_achieved_theoretical = Us_achieved_numerical; Us_achieved_theoretical( :, end ) = Us_achieved_theoretical_output;
 
-% Decode the achieved and desired decoded membrane voltage output.
-R2_decoded = f_decode2( R2 );
-Us_desired_decoded = f_decode( Us_desired );
-Us_achieved_theoretical_decoded = f_decode( Us_achieved_theoretical );
-Us_achieved_numerical_decoded = f_decode( Us_achieved_numerical );
+% Compute the decoded desired result.
+xs_desired = f_decode( Us_desired( :, 1 ), R1, x_max );
+ys_desired = f_decode( Us_desired( :, 2 ), R2, y_max );
 
-% Compute the summary statistics associated with the decoded and non-decoded theoretical and achieved results.
-[ errors_theoretical, error_percentages_theoretical, error_rmse_theoretical, error_rmse_percentage_theoretical, error_std_theoretical, error_std_percentage_theoretical, error_min_theoretical, error_min_percentage_theoretical, index_min_theoretical, error_max_theoretical, error_max_percentage_theoretical, index_max_theoretical, error_range_theoretical, error_range_percentage_theoretical ] = network.numerical_method_utilities.compute_summary_statistics( Us_achieved_theoretical, Us_desired, R2 );
-[ errors_numerical, error_percentages_numerical, error_rmse_numerical, error_rmse_percentage_numerical, error_std_numerical, error_std_percentage_numerical, error_min_numerical, error_min_percentage_numerical, index_min_numerical, error_max_numerical, error_max_percentage_numerical, index_max_numerical, error_range_numerical, error_range_percentage_numerical ] = network.numerical_method_utilities.compute_summary_statistics( Us_achieved_numerical, Us_desired, R2 );
-[ errors_theoretical_decoded, error_percentages_theoretical_decoded, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, index_min_theoretical_decoded, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, index_max_theoretical_decoded, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded ] = network.numerical_method_utilities.compute_summary_statistics( Us_achieved_theoretical_decoded, Us_desired_decoded, R2_decoded );
-[ errors_numerical_decoded, error_percentages_numerical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_numerical_decoded, error_min_percentage_numerical_decoded, index_min_numerical_decoded, error_max_numerical_decoded, error_max_percentage_numerical_decoded, index_max_numerical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded ] = network.numerical_method_utilities.compute_summary_statistics( Us_achieved_numerical_decoded, Us_desired_decoded, R2_decoded );
+% Compute the decoded achieved (theory) result.
+xs_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 1 ), R1, x_max );
+ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, y_max );
+
+
+%% Compute the Relative Transmission Network Error.
+
+% Compute the error between the encoded theoretical output and the desired output.
+[ errors_theoretical_encoded, error_percentages_theoretical_encoded, error_rmse_theoretical_encoded, error_rmse_percentage_theoretical_encoded, error_std_theoretical_encoded, error_std_percentage_theoretical_encoded, error_min_theoretical_encoded, error_min_percentage_theoretical_encoded, index_min_theoretical_encoded, error_max_theoretical_encoded, error_max_percentage_theoretical_encoded, index_max_theoretical_encoded, error_range_theoretical_encoded, error_range_percentage_theoretical_encoded ] = network.numerical_method_utilities.compute_error_statistics( Us_achieved_theoretical, Us_desired, R2 );
+
+% Compute the error between the encoded numerical output and the desired output.
+[ errors_numerical_encoded, error_percentages_numerical_encoded, error_rmse_numerical_encoded, error_rmse_percentage_numerical_encoded, error_std_numerical_encoded, error_std_percentage_numerical_encoded, error_min_numerical_encoded, error_min_percentage_numerical_encoded, index_min_numerical_encoded, error_max_numerical_encoded, error_max_percentage_numerical_encoded, index_max_numerical_encoded, error_range_numerical_encoded, error_range_percentage_numerical_encoded ] = network.numerical_method_utilities.compute_error_statistics( Us_achieved_numerical, Us_desired, R2 );
+
+% Compute the error between the decoded theoretical output and the desired output.
+[ errors_theoretical_decoded, error_percentages_theoretical_decoded, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, index_min_theoretical_decoded, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, index_max_theoretical_decoded, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded ] = network.numerical_method_utilities.compute_error_statistics( ys_achieved_theoretical, ys_desired, y_max );
+
+% Compute the error between the decoded numerical output and the desired output.
+[ errors_numerical_decoded, error_percentages_numerical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_numerical_decoded, error_min_percentage_numerical_decoded, index_min_numerical_decoded, error_max_numerical_decoded, error_max_percentage_numerical_decoded, index_max_numerical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded ] = network.numerical_method_utilities.compute_error_statistics( ys_achieved_numerical, ys_desired, y_max );
 
 
 %% Print the Relative Tranmission Summary Statistics.
 
-% Retrieve the membrane voltage associated min and max theoretical and numerical error.
-Us_critmin_achieved_numerical_steady = Us_achieved_numerical( index_min_theoretical, : );
-Us_critmax_achieved_numerical_steady = Us_achieved_numerical( index_max_theoretical, : );
-Us_critmin_achieved_theoretical_steady = Us_achieved_theoretical( index_min_theoretical, : );
-Us_critmax_achieved_theoretical_steady = Us_achieved_theoretical( index_max_theoretical, : );
+% Define the header strings.
+header_str_encoded = 'Relative Transmission Encoded Summary Statistics\n';
+header_str_decoded = 'Relative Transmission Decoded Summary Statistics\n';
 
-% Retrieve the decoded result associated min and max theoretical and numerical error.
-Us_critmin_achieved_numerical_steady_decoded = Us_achieved_numerical( index_min_theoretical_decoded, : );
-Us_critmax_achieved_numerical_steady_decoded = Us_achieved_numerical( index_max_theoretical_decoded, : );
-Us_critmin_achieved_theoretical_steady_decoded = Us_achieved_theoretical( index_min_theoretical_decoded, : );
-Us_critmax_achieved_theoretical_steady_decoded = Us_achieved_theoretical( index_max_theoretical_decoded, : );
+% Define the unit strings.
+unit_str_encoded = 'mV';
+unit_str_decoded = '-';
 
-% Define the membrane voltage summary statistic printing information.
-header_mv = 'Relative Transmission Summary Statistics (Membrane Voltages)\n';
-unit_mv = 'mV';
-scale_mv = 10^3;
+% Retrieve the minimum and maximum encoded theoretical and numerical network results.
+Us_critmin_achieved_theoretical_steady = Us_achieved_theoretical( index_min_theoretical_encoded, : );
+Us_critmin_achieved_numerical_steady = Us_achieved_numerical( index_min_numerical_encoded, : );
+Us_critmax_achieved_theoretical_steady = Us_achieved_theoretical( index_max_theoretical_encoded, : );
+Us_critmax_achieved_numerical_steady = Us_achieved_numerical( index_max_numerical_encoded, : );
 
-% Print the summary statistics for the membrane voltage results.
-network.numerical_method_utilities.print_summary_statistics( header_mv, unit_mv, scale_mv, error_rmse_theoretical, error_rmse_percentage_theoretical, error_rmse_numerical, error_rmse_percentage_numerical, error_std_theoretical, error_std_percentage_theoretical, error_std_numerical, error_std_percentage_numerical, error_min_theoretical, error_min_percentage_theoretical, Us_critmin_achieved_theoretical_steady, error_min_numerical, error_min_percentage_numerical, Us_critmin_achieved_numerical_steady, error_max_theoretical, error_max_percentage_theoretical, Us_critmax_achieved_theoretical_steady, error_max_numerical, error_max_percentage_numerical, Us_critmax_achieved_numerical_steady, error_range_theoretical, error_range_percentage_theoretical, error_range_numerical, error_range_percentage_numerical ) 
+% Retrieve the minimum and maximum decoded theoretical and numerical network results.
+ys_critmin_achieved_theoretical_steady = f_decode( Us_critmin_achieved_theoretical_steady, [ R1, R2 ], [ x_max, y_max ] );
+ys_critmin_achieved_numerical_steady = f_decode( Us_critmin_achieved_numerical_steady, [ R1, R2 ], [ x_max, y_max ] );
+ys_critmax_achieved_theoretical_steady = f_decode( Us_critmax_achieved_theoretical_steady, [ R1, R2 ], [ x_max, y_max ] );
+ys_critmax_achieved_numerical_steady = f_decode( Us_critmax_achieved_numerical_steady, [ R1, R2 ], [ x_max, y_max ] );
 
-% Define the membrane voltage summary statistic printing information.
-header_decoded = 'Relative Transmission Summary Statistics (Decoded)\n';
-unit_decoded = '-';
-scale_decoded = 1;
-
-% Print the summary statistics for the decoded results.
-network.numerical_method_utilities.print_summary_statistics( header_decoded, unit_decoded, scale_decoded, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, Us_critmin_achieved_theoretical_steady_decoded, error_min_numerical_decoded, error_min_percentage_numerical_decoded, Us_critmin_achieved_numerical_steady_decoded, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, Us_critmax_achieved_theoretical_steady_decoded, error_max_numerical_decoded, error_max_percentage_numerical_decoded, Us_critmax_achieved_numerical_steady_decoded, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded ) 
+% Print the absolute transmission encoded summary statistics.
+network.numerical_method_utilities.print_error_statistics( header_str_encoded, unit_str_encoded, 10^( -3 ), error_rmse_theoretical_encoded, error_rmse_percentage_theoretical_encoded, error_rmse_numerical_encoded, error_rmse_percentage_numerical_encoded, error_std_theoretical_encoded, error_std_percentage_theoretical_encoded, error_std_numerical_encoded, error_std_percentage_numerical_encoded, error_min_theoretical_encoded, error_min_percentage_theoretical_encoded, Us_critmin_achieved_theoretical_steady, error_min_numerical_encoded, error_min_percentage_numerical_encoded, Us_critmin_achieved_numerical_steady, error_max_theoretical_encoded, error_max_percentage_theoretical_encoded, Us_critmax_achieved_theoretical_steady, error_max_numerical_encoded, error_max_percentage_numerical_encoded, Us_critmax_achieved_numerical_steady, error_range_theoretical_encoded, error_range_percentage_theoretical_encoded, error_range_numerical_encoded, error_range_percentage_numerical_encoded )    
+network.numerical_method_utilities.print_error_statistics( header_str_decoded, unit_str_decoded, 1, error_rmse_theoretical_decoded, error_rmse_percentage_theoretical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_theoretical_decoded, error_std_percentage_theoretical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_theoretical_decoded, error_min_percentage_theoretical_decoded, ys_critmin_achieved_theoretical_steady, error_min_numerical_decoded, error_min_percentage_numerical_decoded, ys_critmin_achieved_numerical_steady, error_max_theoretical_decoded, error_max_percentage_theoretical_decoded, ys_critmax_achieved_theoretical_steady, error_max_numerical_decoded, error_max_percentage_numerical_decoded, ys_critmax_achieved_numerical_steady, error_range_theoretical_decoded, error_range_percentage_theoretical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded )    
 
 
 %% Plot the Relative Transmission Network Results.
 
-% Create a plot of the desired membrane voltage output.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Response (Desired)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'Relative Transmission Steady State Response (Desired)' )
+% Create a plot of the encoded desired network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Response (Desired)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'RT: Encoded Steady State Response (Desired)' )
 plot( Us_desired( :, 1 )*( 10^3 ), Us_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_desired' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_desired_encoded' ] )
 
-% Create a plot of the achieved numerical membrane voltage output.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Response (Achieved Theoretical)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'Relative Transmission Steady State Response (Achieved Theoretical)' )
+% Create a plot of the decoded desired network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Response (Desired)' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'RT: Decoded Steady State Response (Desired)' )
+plot( xs_desired, ys_desired, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_desired_decoded' ] )
+
+% Create a plot of the encoded achieved numerical network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Response (Achieved Theoretical)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'RT: Encoded Steady State Response (Achieved Theoretical)' )
 plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), Us_achieved_theoretical( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_theoretical' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_theoretical_encoded' ] )
 
-% Create a plot of the achieved numerical membrane voltage output.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Response (Achieved Numerical)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'Relative Transmission Steady State Response (Achieved Numerical)' )
+% Create a plot of the decoded achieved numerical network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Response (Achieved Theoretical)' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'RT: Decoded Steady State Response (Achieved Theoretical)' )
+plot( xs_achieved_theoretical, ys_achieved_theoretical, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_theoretical_decoded' ] )
+
+% Create a plot of the encoded achieved numerical network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Response (Achieved Numerical)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'RT: Encoded Steady State Response (Achieved Numerical)' )
 plot( Us_achieved_numerical( :, 1 )*( 10^3 ), Us_achieved_numerical( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_numerical' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_numerical_encoded' ] )
 
-% Create a plot of the desired and achieved membrane voltage outputs.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'Relative Transmission Steady State Response (Comparison)' )
+% Create a plot of the decoded achieved numerical network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Response (Achieved Numerical)' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'RT: Decoded Steady State Response (Achieved Numerical)' )
+plot( xs_achieved_numerical, ys_achieved_numerical, '-', 'Linewidth', 3 )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_achieved_numerical_decoded' ] )
+
+% Create a plot of the encoded desired, achieved (theory), and achieved (numerical) network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Output Neuron Membrane Voltage, U2 [mV]' ), title( 'RT: Encoded Steady State Response (Comparison)' )
 h1 = plot( Us_desired( :, 1 )*( 10^3 ), Us_desired( :, 2 )*( 10^3 ), '-', 'Linewidth', 3 );
 h2 = plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), Us_achieved_theoretical( :, 2 )*( 10^3 ), '-.', 'Linewidth', 3 );
 h3 = plot( Us_achieved_numerical( :, 1 )*( 10^3 ), Us_achieved_numerical( :, 2 )*( 10^3 ), '--', 'Linewidth', 3 );
 legend( [ h1, h2, h3 ], { 'Desired', 'Achieved (Theoretical)', 'Achieved (Numerical)' }, 'Location', 'Best' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_comparison' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_comparison_encoded' ] )
 
-% Create a plot of the desired and achieved membrane voltage outputs.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Decoding (Comparison)' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'Relative Transmission Steady State Decoding (Comparison)' )
-h1 = plot( Us_desired_decoded( :, 1 ), Us_desired_decoded( :, 2 ), '-', 'Linewidth', 3 );
-h2 = plot( Us_achieved_theoretical_decoded( :, 1 ), Us_achieved_theoretical_decoded( :, 2 ), '-.', 'Linewidth', 3 );
-h3 = plot( Us_achieved_numerical_decoded( :, 1 ), Us_achieved_numerical_decoded( :, 2 ), '--', 'Linewidth', 3 );
+% Create a plot of the decoded desired, achieved (theory), and achieved (numerical) network behavior.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Output, y [-]' ), title( 'RT: Decoded Steady State Response (Comparison)' )
+h1 = plot( xs_desired, ys_desired, '-', 'Linewidth', 3 );
+h2 = plot( xs_achieved_theoretical, ys_achieved_theoretical, '-.', 'Linewidth', 3 );
+h3 = plot( xs_achieved_numerical, ys_achieved_numerical, '--', 'Linewidth', 3 );
 legend( [ h1, h2, h3 ], { 'Desired', 'Achieved (Theoretical)', 'Achieved (Numerical)' }, 'Location', 'Best' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_decoding_comparison' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_comparison_decoded' ] )
 
-% Create a surface that shows the membrane voltage error.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Error' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Membrane Voltage Error, E [mV]' ), title( 'Relative Transmission Steady State Error' )
-plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), errors_theoretical*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical( :, 1 )*( 10^3 ), errors_numerical*( 10^3 ), '--', 'Linewidth', 3 )
+% Create a plot of the encoded theoretical and numerical error.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Error' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Membrane Voltage Error, E [mV]' ), title( 'RT: Encoded Steady State Error' )
+plot( Us_achieved_theoretical( :, 1 )*( 10^3 ), errors_theoretical_encoded*( 10^3 ), '-', 'Linewidth', 3 )
+plot( Us_achieved_numerical( :, 1 )*( 10^3 ), errors_numerical_encoded*( 10^3 ), '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error_encoded' ] )
 
-% Create a surface that shows the decoding error.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Decoding Error' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Decoding Error, E [-]' ), title( 'Relative Transmission Steady State Decoding Error' )
-plot( Us_achieved_theoretical_decoded( :, 1 ), errors_theoretical_decoded, '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical_decoded( :, 1 ), errors_numerical_decoded, '--', 'Linewidth', 3 )
+% Create a plot of the decoded theoretical and numerical error.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Error' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'RT: Decoded Steady State Error' )
+plot( xs_achieved_theoretical, errors_theoretical_decoded, '-', 'Linewidth', 3 )
+plot( xs_achieved_numerical, errors_numerical_decoded, '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_decoding_error' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error_decoded' ] )
 
-% Create a surface that shows the decoding error.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Error Percentage' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Membrane Voltage Error Percentage, E [%]' ), title( 'Relative Transmission Steady State Error Percentage' )
-plot( Us_achieved_theoretical( :, 1 ), error_percentages_theoretical, '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical( :, 1 ), error_percentages_numerical, '--', 'Linewidth', 3 )
+% Create a plot of the encoded theoretical and numerical percentage error.
+fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Membrane Voltage Error Percentage, E [%]' ), title( 'RT: Encoded Steady State Error Percentage' )
+plot( Us_achieved_theoretical( :, 1 ), error_percentages_theoretical_encoded, '-', 'Linewidth', 3 )
+plot( Us_achieved_numerical( :, 1 ), error_percentages_numerical_encoded, '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error_percentage' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error_percentage_encoded' ] )
 
-% Create a surface that shows the decoding error.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Decoding Error Percentage' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Membrane Voltage Decoding Error Percentage, E [%]' ), title( 'Relative Transmission Steady State Decoding Error Percentage' )
-plot( Us_achieved_theoretical_decoded( :, 1 ), error_percentages_theoretical_decoded, '-', 'Linewidth', 3 )
-plot( Us_achieved_numerical_decoded( :, 1 ), error_percentages_numerical_decoded, '--', 'Linewidth', 3 )
+% Create a plot of the decoded theoretical and numerical percentage error.
+fig = figure( 'Color', 'w', 'Name', 'RT: Decoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Input, x [-]' ), ylabel( 'Decoded Error Percentage, E [%]' ), title( 'RT: Decoded Steady State Error Percentage' )
+plot( xs_achieved_theoretical, error_percentages_theoretical_decoded, '-', 'Linewidth', 3 )
+plot( xs_achieved_numerical, error_percentages_numerical_decoded, '--', 'Linewidth', 3 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_decoding_error_percentage' ] )
+saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_error_percentage_decoded' ] )
 
 

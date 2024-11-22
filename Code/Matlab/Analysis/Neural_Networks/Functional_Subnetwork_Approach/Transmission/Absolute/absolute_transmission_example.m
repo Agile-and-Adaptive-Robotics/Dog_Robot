@@ -52,8 +52,9 @@ f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
 
 %% Define the Encoding & Decoding Operations.
 
-% Define the domain of the input signals.
+% Define the domain of the input and output signals.
 x_max = 20;
+y_max = f_desired( x_max );
 
 % Define the encoding scheme.
 f_encode = @( x ) x*( 10^( -3 ) );

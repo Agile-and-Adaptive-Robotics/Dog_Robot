@@ -45,10 +45,34 @@ integration_method = 'RK4';                         % [str] Integration Method (
 encoding_scheme = 'absolute';
 
 
+%% Define the Desired Transmission Subnetwork Parameters.
+
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
+
+% Define the transmission subnetwork parameters.
+c = 2.0;                                            % [-] Absolute Transmission Subnetwork Gain.
+
+% Define the desired mapping operation.
+f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the domain of the input and output signals.
+x_max = 20;
+y_max = f_desired( x_max );
+
+% Define the encoding scheme.
+f_encode = @( x ) x*( 10^( -3 ) );
+
+% Define the decoding scheme.
+f_decode = @( U ) U*( 10^3 );
+
+
 %% Define Absolute Transmission Subnetwork Parameters.
 
 % Define the transmission subnetwork design parameters.
-c = 1.0;                                            % [-] Absolute Transmission Subnetwork Gain.
 R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
 Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
 Gm2 = 1e-6;                                       	% [S] Membrane Conductance (Neuron 2).
@@ -57,18 +81,6 @@ Cm2 = 5e-9;                                         % [F] Membrane Capacitance (
 
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { c, R1, Gm1, Gm2, Cm1, Cm2 };
-
-
-%% Define the Encoding & Decoding Operations.
-
-% Define the maximum value of the input signal.
-x_max = 20;
-
-% Define the encoding scheme.
-f_encode = @( x ) x*( 10^( -3 ) );
-
-% Define the decoding scheme.
-f_decode = @( U ) U*( 10^3 );
 
 
 %% Define the Desired Input Signal.
@@ -149,13 +161,12 @@ network.numerical_method_utilities.print_numerical_stability_info( As, dts, netw
 
 %% Decode the Desired & Theoreticall Achieved Absolute Transmission Subnetwork Results.
 
-% Decode the network input.
-xs = f_decode( Us_desired( :, 1 ) );
-
-% Decode the desired network output.
+% Compute the decoded desired result.
+xs_desired = f_decode( Us_desired( :, 1 ) );
 ys_desired = f_decode( Us_desired( :, 2 ) );
 
 % Decode the achieved theoretical network output.
+xs_achieved_theoretical  = f_decode( Us_achieved_theoretical( :, 1 ) );
 ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ) );
 
 
@@ -170,8 +181,8 @@ saveas( fig, [ save_directory, '\', 'absolute_transmission_desired_achieved_theo
 
 % Plot the decoded desired and achieved absolute transmission formulation results.
 fig = figure( 'Color', 'w', 'Name', 'AT: Decoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Output, y [-]' ), title( 'AT: Decoded Desired & Achieved (Theory) SS Behavior' )
-plot( xs, ys_desired, '-', 'Linewidth', 3 )
-plot( xs, ys_achieved_theoretical, '--', 'Linewidth', 3 )
+plot( xs_desired, ys_desired, '-', 'Linewidth', 3 )
+plot( xs_achieved_theoretical, ys_achieved_theoretical, '--', 'Linewidth', 3 )
 legend( 'Desired', 'Achieved (Theory)' )
 saveas( fig, [ save_directory, '\', 'absolute_transmission_desired_achieved_theory_decoded' ] )
 
@@ -182,7 +193,7 @@ saveas( fig, [ save_directory, '\', 'absolute_transmission_rk4_maximum_timestep_
 
 % Plot the RK4 maximum timestep vs the decoded input.
 fig = figure( 'Color', 'w', 'Name', 'AT: RK4 Maximum Timestep vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'AT: RK4 Maximum Timestep vs Decoded Input' )
-plot( xs, dts, '-', 'Linewidth', 3 )
+plot( xs_desired, dts, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'absolute_transmission_rk4_maximum_timestep_decoded' ] )
 
 % Plot the linearized system condition numbers vs the encoded input.
@@ -192,7 +203,7 @@ saveas( fig, [ save_directory, '\', 'absolute_transmission_condition_numbers_enc
 
 % Plot the linearized system condition numbers vs the decoded input.
 fig = figure( 'Color', 'w', 'Name', 'AT: Condition Numbers vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Condition Number [-]' ), title( 'AT: Condition Number vs Decoded Input' )
-plot( xs, condition_numbers, '-', 'Linewidth', 3 )
+plot( xs_desired, condition_numbers, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'absolute_transmission_condition_numbers_decoded' ] )
 
 
@@ -278,9 +289,6 @@ ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ) );
 
 %% Compute the Absolute Transmission Network Error.
 
-% Compute the decoded output maximum.
-y_max = f_decode( R2 );
-
 % Compute the error between the encoded theoretical output and the desired output.
 [ errors_theoretical_encoded, error_percentages_theoretical_encoded, error_rmse_theoretical_encoded, error_rmse_percentage_theoretical_encoded, error_std_theoretical_encoded, error_std_percentage_theoretical_encoded, error_min_theoretical_encoded, error_min_percentage_theoretical_encoded, index_min_theoretical_encoded, error_max_theoretical_encoded, error_max_percentage_theoretical_encoded, index_max_theoretical_encoded, error_range_theoretical_encoded, error_range_percentage_theoretical_encoded ] = network.numerical_method_utilities.compute_error_statistics( Us_achieved_theoretical, Us_desired, R2 );
 
@@ -311,11 +319,6 @@ Us_critmax_achieved_theoretical_steady = Us_achieved_theoretical( index_max_theo
 Us_critmax_achieved_numerical_steady = Us_achieved_numerical( index_max_numerical_encoded, : );
 
 % Retrieve the minimum and maximum decoded theoretical and numerical network results.
-% ys_critmin_achieved_theoretical_steady = ys_achieved_theoretical( index_min_theoretical_decoded );
-% ys_critmin_achieved_numerical_steady = ys_achieved_numerical( index_min_numerical_decoded );
-% ys_critmax_achieved_theoretical_steady = ys_achieved_theoretical( index_max_theoretical_decoded );
-% ys_critmax_achieved_numerical_steady = ys_achieved_numerical( index_max_numerical_decoded );
-
 ys_critmin_achieved_theoretical_steady = f_decode( Us_critmin_achieved_theoretical_steady );
 ys_critmin_achieved_numerical_steady = f_decode( Us_critmin_achieved_numerical_steady );
 ys_critmax_achieved_theoretical_steady = f_decode( Us_critmax_achieved_theoretical_steady );
