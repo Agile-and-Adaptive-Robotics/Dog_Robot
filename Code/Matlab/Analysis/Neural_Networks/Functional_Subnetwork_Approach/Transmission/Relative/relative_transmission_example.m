@@ -38,7 +38,32 @@ integration_method = 'RK4';                         % [str] Integration Method (
 encoding_scheme = 'relative';
 
 
-%% Define Relative Transmission Subnetwork Parameters.
+%% Define the Desired Transmission Subnetwork Parameters.
+
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
+
+% Define the transmission subnetwork parameters.
+c = 2.0;            % [-] Subnetwork Gain.
+
+% Define the desired mapping operation.
+f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the domain of the input and output signals.
+x_max = 20;
+y_max = f_desired( x_max );
+
+% Define the encoding operation.
+f_encode = @( x, R_encode, R_decode ) ( R_encode./R_decode ).*x;
+
+% Define the decoding operations.
+f_decode = @( U, R_encode, R_decode ) ( R_decode./R_encode ).*U;
+
+
+%% Define Relative Transmission Subnetwork Design Parameters.
 
 % Define the transmission subnetwork design parameters.
 R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
@@ -49,27 +74,15 @@ Gm2 = 1e-6;                                         % [S] Membrane Conductance (
 % Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
 Cm1 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 1).
 Cm2 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 2).
-
+ 
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
-
-
-%% Define the Encoding & Decoding Operations.
-
-% Define the maximum value of the input signal.
-x_max = 20;
-
-% Define the encoding operation.
-f_encode = @( x, R, x_max ) ( R./x_max ).*x;
-
-% Define the decoding operations.
-f_decode = @( U, R, x_max ) ( x_max./R ).*U;
 
 
 %% Define the Desired Input Signal.
 
 % Define the desired input signal.
-xs_desired = 20*ones( n_timesteps, 1 );
+xs_desired = x_max*ones( n_timesteps, 1 );
 
 % Encode the input signal.
 Us1_desired = f_encode( xs_desired, R1, x_max );
@@ -154,7 +167,7 @@ toc
 xs = f_decode( Us( 1, : ), R1, x_max );
 
 % Decode the network output.
-ys = f_decode( Us( 2, : ), R2, x_max );
+ys = f_decode( Us( 2, : ), R2, y_max );
 
 
 %% Plot the Relative Transmission Subnetwork Results.

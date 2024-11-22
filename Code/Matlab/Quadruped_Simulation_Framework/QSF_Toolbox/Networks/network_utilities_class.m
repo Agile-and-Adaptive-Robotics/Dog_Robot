@@ -1047,6 +1047,19 @@ classdef network_utilities_class
         
         % ---------- Transmission Subnetwork Functions ----------
         
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a transmission subnetwork.
+        function ys = compute_desired_transmission_sso( ~, xs, c )
+            
+            % Set the default input arguments.
+            if nargin < 3, c = 1; end
+            if nargin < 2, xs = 0; end
+            
+            % Compute the desired steady state output.
+            ys = c*xs;
+            
+        end
+        
+        
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute transmission subnetwork.
         function U2s = compute_da_transmission_sso( ~, U1s, c )
             
@@ -1112,6 +1125,28 @@ classdef network_utilities_class
         
         
         % ---------- Addition Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of an addition subnetwork.
+        function ys = compute_desired_addition_sso( ~, xs, c )
+            
+            %{
+            Input(s):
+                xs  =	[-] Decoded Inputs.
+                c 	=   [-] Gain.
+            
+            Output(s):
+                ys	=   [V] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 3, c = 1; end
+            if nargin < 2, xs = zeros( 1, 2 ); end
+            
+            % Compute the steady state network outputs.
+            ys = c*sum( xs, 2 );
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute addition subnetwork.
         function U_outputs = compute_da_addition_sso( ~, U_inputs, c )
@@ -1186,6 +1221,30 @@ classdef network_utilities_class
             
         
         % ---------- Subtraction Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a subtraction subnetwork.
+        function ys = compute_desired_subtraction_sso( ~, xs, c, ss )
+            
+            %{
+            Input(s):
+                xs = [-] Decoded Inputs.
+                c = [-] Absolute Subtraction Gain.
+                ss = [-1/1] Subtraction Signs.
+            
+            Output(s):
+                ys = [-] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 4, ss = [ 1, -1 ]; end
+            if nargin < 3, c = 1; end
+            if nargin < 2, xs = zeros( 1, 2 ); end
+            
+            % Compute the steady state network outputs.
+            ys = c*sum( ss.*xs, 2 );
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute subtraction subnetwork.
         function U_outputs = compute_da_subtraction_sso( ~, U_inputs, c, ss )
@@ -1268,6 +1327,31 @@ classdef network_utilities_class
         
         
         % ---------- Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of an inversion subnetwork.
+        function ys = compute_desired_inversion_sso( ~, xs, c1, c2, c3 )
+    
+            %{
+            Input(s):
+                xs      =   [-] Decoded Inputs.
+                c1      =   [?] Absolute Inversion Design Constant 1.
+                c2      =   [?] Absolute Inversion Design Constant 2.
+                c3      =   [?] Absolute Inversion Design Constant 3.
+            
+            Output(s):
+                ys      =   [-] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 5, c3 = 20e-9; end                          % [A] Design Constant 3.
+            if nargin < 4, c2 = 19e-6; end                          % [S] Design Constant 2.
+            if nargin < 3, c1 = 0.40e-9; end                        % [W] Design Constant 1.
+            
+            % Compute the steady state network outputs.
+            ys = c1./( c2*xs + c3 );                                % [-] Decoded Outputs.
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute inversion subnetwork.
         function U2s = compute_da_inversion_sso( ~, U1s, c1, c2, c3 )
@@ -1354,6 +1438,29 @@ classdef network_utilities_class
         
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a reduced inversion subnetwork.
+        function ys = compute_desired_reduced_inversion_sso( ~, xs, c1, c2 )
+           
+            %{
+            Input(s):
+                xs  =   [-] Decoded Inputs.
+                c1  =   [-] Reduced Absolute Inversion Design Constant 1.
+                c2  =   [-] Reduced Absolute Inversion Design Constant 2.
+            
+            Output(s):
+                ys  =   [-] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 4, c2 = 21.05e-6; end                       % [mV] Design Constant 2.
+            if nargin < 3, c1 = 1.05e-3; end                        % [mV^2] Design Constant 1.
+           
+            % Compute the steady state network outputs.
+            ys = c1./( xs + c2 );                                   % [-] Decoded Outputs.
+            
+        end
+        
+        
         % Implement a function to compute the steady state output associated with the desired formulation of a reduced absolute inversion subnetwork.
         function U2s = compute_dra_inversion_sso( ~, U1s, c1, c2 )
            
@@ -1434,6 +1541,35 @@ classdef network_utilities_class
         
         
         % ---------- Division Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a division subnetwork.
+        function ys = compute_desired_division_sso( ~, xs, c1, c2, c3 )
+        
+            %{
+            Input(s):
+                xs = [-] Decoded Inputs.
+                c1 = [?] Absolute Division Design Constant 1.
+                c2 = [?] Absolute Division Design Constant 2.
+                c3 = [?] Absolute Division Design Constant 3.
+            
+            Output(s):
+                ys = [-] Decoded Outputs. 
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 5, c3 = 0.40e-9; end           	% [W] Design Constant 3.
+            if nargin < 4, c2 = 380e-9; end          	% [A] Design Constant 2.
+            if nargin < 3, c1 = 0.40e-9; end          	% [W] Design Constant 1.
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );                         	% [-] Decoded Input 1.
+            xs2 = xs( :, 2 );                           % [-] Decoded Input 2.
+            
+            % Compute the steady state network outputs.
+            ys = ( c1*xs1 )./( c2*xs2 + c3 );           % [-] Decoded Output.
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute division subnetwork.
         function U3s = compute_da_division_sso( ~, U_inputs, c1, c2, c3 )
@@ -1530,6 +1666,33 @@ classdef network_utilities_class
         
         % ---------- Reduced Division Subnetwork Functions ----------
         
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a reduced division subnetwork.
+        function ys = compute_desired_reduced_division_sso( ~, xs, c1, c2 )
+        
+            %{
+            Input(s):
+                xs = [-] Decoded Inputs.
+                c1 = [?] Reduced Absolute Division Design Constant 1.
+                c2 = [?] Reduced Absolute Division Design Constant 2.
+            
+            Output(s):
+                ys = [-] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 4, c2 = 1.05e-3; end       	% [V] Design Constant 2.
+            if nargin < 3, c1 = 1.05e-3; end        % [V] Design Constant 1.
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );                      	% [-] Decoded Input 1.
+            xs2 = xs( :, 2 );                      	% [-] Decoded Input 2.
+            
+            % Compute the steady state network outputs.
+            ys = ( c1*xs1 )./( xs2 + c2 );          % [-] Decoded Output.
+            
+        end
+        
+        
         % Implement a function to compute the steady state output associated with the desired formulation of a reduced absolute division subnetwork.
         function U3s = compute_dra_division_sso( ~, U_inputs, c1, c2 )
         
@@ -1621,6 +1784,35 @@ classdef network_utilities_class
         
         
         % ---------- Division After Inversion Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a division after inversion subnetwork.
+        function ys = compute_desired_dai_sso( ~, xs, c1, c2, c3 )
+        
+            %{
+            Input(s):
+                xs = [-] Decoded Inputs.
+                c1 = [?] Absolute Division Design Constant 1.
+                c2 = [?] Absolute Division Design Constant 2.
+                c3 = [?] Absolute Division Design Constant 3.
+            
+            Output(s):
+                ys = [-] Decoded Outputs. 
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 5, c3 = 0.40e-9; end            % [W] Design Constant 3.
+            if nargin < 4, c2 = 380e-9; end             % [A] Design Constant 2.
+            if nargin < 3, c1 = 0.40e-9; end            % [W] Design Constant 1.
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );                          	% [-] Decoded Input 1.
+            xs2 = xs( :, 2 );                       	% [-] Decoded Input 2.
+            
+            % Compute the steady state network outputs.
+            ys = ( c1*xs1 )./( c2*xs2 + c3 );           % [V] Membrane Voltage (Neuron 3).
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute division after inversion subnetwork.
         function U3s = compute_da_dai_sso( ~, U_inputs, c1, c2, c3 )
@@ -1717,6 +1909,33 @@ classdef network_utilities_class
         
         % ---------- Reduced Division After Inversion Subnetwork Functions ----------
         
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a reduced division after inversion subnetwork.
+        function ys = compute_desired_reduced_dai_sso( ~, xs, c1, c2 )
+        
+            %{
+            Input(s):
+                xs  =   [-] Decoded Inputs.
+                c1  =   [?] Reduced Absolute Division Design Constant 1.
+                c2	=   [?] Reduced Absolute Division Design Constant 2.
+            
+            Output(s):
+                ys  =   [-] Decoded Outputs.
+            %}
+            
+            % Set the default input arguments.
+            if nargin < 4, c2 = 1.05e-3; end        % [V] Design Constant 2.
+            if nargin < 3, c1 = 1.05e-3; end        % [V] Design Constant 1.
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );                       % [V] Decoded Input 1.
+            xs2 = xs( :, 2 );                       % [V] Decoded Input 2.
+            
+            % Compute the steady state network outputs.
+            ys = ( c1*xs1 )./( xs2 + c2 );          % [V] Decoded Outputs.
+            
+        end
+        
+        
         % Implement a function to compute the steady state output associated with the desired formulation of a reduced absolute division after inversion subnetwork.
         function U3s = compute_dra_dai_sso( ~, U_inputs, c1, c2 )
         
@@ -1808,6 +2027,39 @@ classdef network_utilities_class
         
         
         % ---------- Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a multiplication subnetwork.
+        function ys = compute_desired_multiplication_sso( self, xs, c1, c2, c3, c4, c5, c6 )
+        
+            %{
+            Input(s):
+                xs  =   [-] Decoded Inputs.
+                c1  =   [?] Absolute Multiplication Design Constant 1.
+                c2  =   [?] Absolute Multiplication Design Constant 2.
+                c3	=   [?] Absolute Multiplication Design Constant 3.
+                c4	=   [?] Absolute Multiplication Design Constant 4.
+                c5	=   [?] Absolute Multiplication Design Constant 5.
+                c6	=	[?] Absolute Multiplication Design Constant 6.
+            
+            Output(s):
+                ys	=   [-] Decoded Outputs.
+            %}
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );
+            xs2 = xs( :, 2 );
+            
+            % Compute the desired absolute inversion steady state output.
+            xs3 = self.compute_desired_inversion_sso( xs2, c1, c2, c3 );
+            
+            % Compute the desired absolute division steady state output.
+            xs4 = self.compute_desired_dai_sso( [ xs1, xs3 ], c4, c5, c6 );
+            
+            % Concatenate the decoded outputs.
+            ys = [ xs3, xs4 ];
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of an absolute multiplication subnetwork.
         function [ U4s, U3s ] = compute_da_multiplication_sso( self, U_inputs, c1, c2, c3, c4, c5, c6 )
@@ -1914,6 +2166,37 @@ classdef network_utilities_class
         
         
         % ---------- Reduced Multiplication Subnetwork Functions ----------
+        
+        % Implement a function to compute the steady state output associated with the decoded desired formulation of a reduced multiplication subnetwork.
+        function ys = compute_desired_reduced_multiplication_sso( self, xs, c1, c2, c3, c4 )
+        
+            %{
+            Input(s):
+                xs	=   [-] Decoded Inputs.
+                c1  =   [?] Reduced Absolute Multiplication Design Constant 1.
+                c2  =   [?] Reduced Absolute Multiplication Design Constant 2.
+                c3  =   [?] Reduced Absolute Multiplication Design Constant 3.
+                c4  =	[?] Reduced Absolute Multiplication Design Constant 4.
+
+            Output(s):
+                ys  =	[-] Decoded Outputs.
+            %}
+            
+            % Retrieve the steady state inputs.
+            xs1 = xs( :, 1 );
+            xs2 = xs( :, 2 );
+            
+            % Compute the desired absolute inversion steady state output.            
+            xs3 = self.compute_dra_inversion_sso( xs2, c1, c2 );
+            
+            % Compute the desired absolute division steady state output.
+            xs4 = self.compute_dra_division_sso( [ xs1, xs3 ], c3, c4 );
+            
+            % Concatenate the decoded output.
+            ys = [ xs3, xs4 ];
+            
+        end
+        
         
         % Implement a function to compute the steady state output associated with the desired formulation of a reduced absolute multiplication subnetwork.
         function [ U4s, U3s ] = compute_dra_multiplication_sso( self, U_inputs, c1, c2, c3, c4 )

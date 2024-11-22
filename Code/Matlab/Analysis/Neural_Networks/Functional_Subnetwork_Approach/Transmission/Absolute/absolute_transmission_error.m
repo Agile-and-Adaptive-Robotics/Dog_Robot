@@ -74,7 +74,7 @@ f_decode = @( U ) U*( 10^3 );
 %% Define the Desired Input Signal.
 
 % Define the desired decoded input signal.
-xs_desired = 20*ones( n_timesteps, 1 );
+xs_desired = x_max*ones( n_timesteps, 1 );
 
 % Encode the input signal.
 Us1_desired = f_encode( xs_desired );
@@ -208,7 +208,7 @@ undetected_option = 'Ignore';               % [str] Undetected Option.
 if simulate_flag                            % If we want to simulate the network...
     
     % Define the number of different input signals.
-    n_input_signals = 20;             	% [#] Number of Input Signals.
+    n_input_signals = 20;                   % [#] Number of Input Signals.
     
     % Define the input signals.
     xs_achieved_numerical = linspace( 0, x_max, n_input_signals );
@@ -223,7 +223,7 @@ if simulate_flag                            % If we want to simulate the network
     Us_achieved_numerical = zeros( n_input_signals, num_neurons );
     
     % Simulate the network for each of the applied current combinations.
-    for k = 1:n_input_signals         	% Iterate through each of the currents applied to the input neuron...
+    for k = 1:n_input_signals               % Iterate through each of the currents applied to the input neuron...
             
             % Create applied currents.
             [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );

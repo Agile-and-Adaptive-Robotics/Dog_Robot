@@ -38,10 +38,33 @@ integration_method = 'RK4';                         % [str] Integration Method (
 encoding_scheme = 'absolute';
 
 
-%% Define Absolute Transmission Subnetwork Parameters.
+%% Define the Desired Transmission Subnetwork Parameters.
+
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
+
+% Define the transmission subnetwork parameters.
+c = 1.0;                                            % [-] Absolute Transmission Subnetwork Gain.
+
+% Define the desired mapping operation.
+f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the domain of the input signals.
+x_max = 20;
+
+% Define the encoding scheme.
+f_encode = @( x ) x*( 10^( -3 ) );
+
+% Define the decoding scheme.
+f_decode = @( U ) U*( 10^3 );
+
+
+%% Define Additional Absolute Transmission Design Subnetwork Parameters.
 
 % Define the transmission subnetwork design parameters.
-c = 1.0;                                            % [-] Absolute Transmission Subnetwork Gain.
 R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
 Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
 Gm2 = 1e-6;                                       	% [S] Membrane Conductance (Neuron 2).
@@ -54,19 +77,10 @@ Cm2 = 30e-9;                                         % [F] Membrane Capacitance 
 transmission_parameters = { c, R1, Gm1, Gm2, Cm1, Cm2 };
 
 
-%% Define the Encoding & Decoding Operations.
-
-% Define the encoding scheme.
-f_encode = @( x ) x*( 10^( -3 ) );
-
-% Define the decoding scheme.
-f_decode = @( U ) U*( 10^3 );
-
-
 %% Define the Desired Input Signal.
 
 % Define the desired decoded input signal.
-xs_desired = 20*ones( n_timesteps, 1 );
+xs_desired = x_max*ones( n_timesteps, 1 );
 
 % Encode the input signal.
 Us1_desired = f_encode( xs_desired );
