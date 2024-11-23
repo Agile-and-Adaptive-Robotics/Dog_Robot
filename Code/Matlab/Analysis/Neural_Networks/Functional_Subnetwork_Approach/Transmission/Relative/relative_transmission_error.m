@@ -51,7 +51,7 @@ encoding_scheme = 'relative';
 network_utilities = network_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 1.0;            % [-] Subnetwork Gain.
+c = 2.0;            % [-] Subnetwork Gain.
 
 % Define the desired mapping operation.
 f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
@@ -305,7 +305,7 @@ ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, y_max )
 [ errors_numerical_decoded, error_percentages_numerical_decoded, error_rmse_numerical_decoded, error_rmse_percentage_numerical_decoded, error_std_numerical_decoded, error_std_percentage_numerical_decoded, error_min_numerical_decoded, error_min_percentage_numerical_decoded, index_min_numerical_decoded, error_max_numerical_decoded, error_max_percentage_numerical_decoded, index_max_numerical_decoded, error_range_numerical_decoded, error_range_percentage_numerical_decoded ] = network.numerical_method_utilities.compute_error_statistics( ys_achieved_numerical, ys_desired, y_max );
 
 
-%% Print the Relative Tranmission Summary Statistics.
+%% Print the Relative Transmission Summary Statistics.
 
 % Define the header strings.
 header_str_encoded = 'Relative Transmission Encoded Summary Statistics\n';

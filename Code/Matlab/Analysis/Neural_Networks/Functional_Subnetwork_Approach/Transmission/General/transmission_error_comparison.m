@@ -30,7 +30,7 @@ network_tf = 0.5;                                 	% [s] Simulation Duration.
 % network_tf = 3;                                 	% [s] Simulation Duration.
 
 % Compute the number of simulation timesteps.
-n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+n_timesteps = floor( network_tf / network_dt ) + 1; % [#] Number of Simulation Timesteps.
 
 % Construct the simulation times associated with the input currents.
 ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
@@ -45,7 +45,7 @@ integration_method = 'RK4';                         % [str] Integration Method (
 network_utilities = network_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 1.0;            % [-] Subnetwork Gain.
+c = 1.0;                                            % [-] Subnetwork Gain.
 
 % Define the desired mapping operation.
 f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
@@ -76,12 +76,12 @@ Cm1_absolute = 5e-9;                                        % [F] Membrane Capac
 Cm2_absolute = 5e-9;                                        % [F] Membrane Capacitance (Neuron 2).
 
 % Define the relative transmission subnetwork design parameters.
-R1_relative = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
-R2_relative = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 2).
-Gm1_relative = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
-Gm2_relative = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
-Cm1_relative = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
-Cm2_relative = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+R1_relative = 20e-3;                                     	% [V] Maximum Membrane Voltage (Neuron 1).
+R2_relative = 20e-3;                                      	% [V] Maximum Membrane Voltage (Neuron 2).
+Gm1_relative = 1e-6;                                       	% [S] Membrane Conductance (Neuron 1).
+Gm2_relative = 1e-6;                                      	% [S] Membrane Conductance (Neuron 2).
+Cm1_relative = 5e-9;                                       	% [F] Membrane Capacitance (Neuron 1).
+Cm2_relative = 5e-9;                                       	% [F] Membrane Capacitance (Neuron 2).
 
 % Store the transmission subnetwork design parameters in a cell.
 absolute_transmission_parameters = { c, R1_absolute, Gm1_absolute, Gm2_absolute, Cm1_absolute, Cm2_absolute };
@@ -129,6 +129,19 @@ network_relative = network_class( network_dt, network_tf );
 [ ~, ~, ~, network_relative.applied_current_manager ] = network_relative.applied_current_manager.create_applied_current( input_current_ID_relative, input_current_name_relative, input_current_to_neuron_ID_relative, ts, Ias1_relative, true, network_relative.applied_current_manager.applied_currents, true, false, network_relative.applied_current_manager.array_utilities );
 
 
+%% Print Transmission Subnetwork Information.
+
+% Print absolute transmission subnetwork information.
+fprintf( '----------------------------------- ABSOLUTE TRANSMISSION SUBNETWORK -----------------------------------\n\n' )
+network_absolute.print( network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, verbose_flag );
+fprintf( '---------------------------------------------------------------------------------------------------------\n\n\n' )
+
+% Print the relative transmission subnetwork information.
+fprintf( '----------------------------------- RELATIVE TRANSMISSION SUBNETWORK -----------------------------------\n\n' )
+network_relative.print( network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, verbose_flag );
+fprintf( '---------------------------------------------------------------------------------------------------------\n\n\n' )
+
+
 %% Load the Absolute & Relative Transmission Subnetworks.
 
 % Load the simulation results.
@@ -150,131 +163,128 @@ Us_achieved_numerical_relative = data_relative.Us_achieved_numerical;
 ys_achieved_numerical_relative = data_relative.ys_achieved_numerical;
 
 
-%% Compute the Error in the Steady State Transmission Subnetwork Responses.
+%% Compute the Absolute & Relative Transmission Desired & Achieved (Theory) Network Output.
 
-% Store the absolute and relative maximum membrane voltages into arrays.
-Rs_absolute = [ R1_absolute, R2_absolute ];                                     % [V] Maximum Membrane Voltages (Absolute Neurons 1 & 2).
-Rs_relative = [ R1_relative, R2_relative ];                                     % [V] Maximum Membrane Voltages (Relative Neurons 1 & 2).
+% Compute the absolute and relative desired subnetwork output.
+Us_desired_output_absolute = network_absolute.compute_da_transmission_sso( Us_achieved_numerical_absolute( :, 1 ), c, network_absolute.neuron_manager, undetected_option, network_absolute.network_utilities );
+Us_desired_output_relative = network_relative.compute_dr_transmission_sso( Us_achieved_numerical_relative( :, 1 ), c, R1_relative, R2_relative, network_relative.neuron_manager, undetected_option, network_relative.network_utilities );
 
-% Compute the decoded absolute and relative maximum membrane voltages.
-Rs_decoded_absolute = Rs_absolute*( 10^3 );
-Rs_decoded_relative = Rs_absolute*( 10^3 );
+% Compute the absolute and relative achieved theoretical subnetwork output.
+Us_achieved_theoretical_output_absolute = network_absolute.compute_achieved_transmission_sso( Us_achieved_numerical_absolute( :, 1 ), R1_absolute, Gm2_absolute, Ia2_absolute, gs21_absolute, dEs21_absolute, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, undetected_option, network_absolute.network_utilities );
+Us_achieved_theoretical_output_relative = network_relative.compute_achieved_transmission_sso( Us_achieved_numerical_relative( :, 1 ), R1_relative, Gm2_relative, Ia2_relative, gs21_relative, dEs21_relative, network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, undetected_option, network_relative.network_utilities );
 
-% Compute the desired steady state output membrane voltage.
-Us_desired_absolute_output = c_absolute*Us_achieved_absolute( :, 1 );
-Us_desired_relative_output = c_relative*( R2_relative/R1_relative )*Us_achieved_relative( :, 1 );
+% Compute the absolute and relative desired subnetwork states.
+Us_desired_absolute = Us_achieved_numerical_absolute; Us_desired_absolute( :, end ) = Us_desired_output_absolute;
+Us_desired_relative = Us_achieved_numerical_relative; Us_desired_relative( :, end ) = Us_desired_output_relative;
 
-% Generate desired steady state membrane voltage matrices.
-Us_desired_absolute = Us_achieved_absolute; Us_desired_absolute( :, end ) = Us_desired_absolute_output;
-Us_desired_relative = Us_achieved_relative; Us_desired_relative( :, end ) = Us_desired_relative_output;
+% Compute the absolute and relative achieved theoretical subnetwork states.
+Us_achieved_theoretical_absolute = Us_achieved_numerical_absolute; Us_achieved_theoretical_absolute( :, end ) = Us_achieved_theoretical_output_absolute;
+Us_achieved_theoretical_relative = Us_achieved_numerical_relative; Us_achieved_theoretical_relative( :, end ) = Us_achieved_theoretical_output_relative;
 
-% Compute the absolute desired and achieved decoded steady state values.
-Us_achieved_decoded_absolute = Us_achieved_absolute*( 10^3 );
-Us_desired_decoded_absolute = Us_desired_absolute*( 10^3 );
+% Compute the decoded desired absolute and relative network inputs.
+xs_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 1 ) );
+xs_desired_relative = f_decode_relative( Us_desired_relative( :, 1 ), R1_relative, x_max );
 
-% Compute the relative desired and achieved encoded and decoded steady state values.
-Us_achieved_encoded_relative = Us_achieved_relative/Rs_relative;
-Us_desired_encoded_relative = Us_desired_relative/Rs_relative;
-Us_achieved_decoded_relative = ( Rs_absolute./Rs_relative ).*Us_achieved_relative*( 10^3 );
-Us_desired_decoded_relative = ( Rs_absolute./Rs_relative ).*Us_desired_relative*( 10^3 );
+% Compute the decoded desired absolute and relative network outputs.
+ys_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 2 ) );
+ys_desired_relative = f_decode_relative( Us_desired_relative( :, 2 ), R2_relative, y_max );
 
-% Compute the error between the achieved and desired membrane voltage results.
-error_absolute = Us_achieved_absolute( :, end ) - Us_desired_absolute( :, end );
-error_relative = Us_achieved_relative( :, end ) - Us_desired_relative( :, end );
+% Compute the decoded achieved theoretical absolute and relative network inputs.
+xs_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 1 ) );
+xs_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 1 ), R1_relative, x_max );
 
-% Compute the error between the achieved and desired decoded results.
-error_decoded_absolute = Us_achieved_decoded_absolute( :, end ) - Us_desired_decoded_absolute( :, end );
-error_decoded_relative = Us_achieved_decoded_relative( :, end ) - Us_desired_decoded_relative( :, end );
+% Compute the decoded achieved theoretical absolute and relative network outputs.
+ys_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 2 ) );
+ys_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 2 ), R2_relative, y_max );
 
-% Compute the percent error between the achieve and desired results.
-error_absolute_percent = 100*( error_absolute/R2_absolute );
-error_relative_percent = 100*( error_relative/R2_relative );
-error_decoded_absolute_percent = 100*( error_decoded_absolute/Rs_decoded_absolute( 2 ) );
-error_decoded_relative_percent = 100*( error_decoded_relative/Rs_decoded_relative( 2 ) );
 
-% Compute the mean squared error.
-mse_absolute = ( 1/numel( error_absolute ) )*sqrt( sum( error_absolute.^2, 'all' ) );
-mse_relative = ( 1/numel( error_relative ) )*sqrt( sum( error_relative.^2, 'all' ) );
-mse_decoded_absolute = ( 1/numel( error_decoded_absolute ) )*sqrt( sum( error_decoded_absolute.^2, 'all' ) );
-mse_decoded_relative = ( 1/numel( error_decoded_relative ) )*sqrt( sum( error_decoded_relative.^2, 'all' ) );
+%% Compute the Absolute & Relative Transmission Network Error.
 
-% Compute the mean squared error percentage.
-mse_absolute_percent = 100*( mse_absolute/R2_absolute );
-mse_relative_percent = 100*( mse_relative/R2_relative );
-mse_decoded_absolute_percent = 100*( mse_decoded_absolute/Rs_decoded_absolute( 2 ) );
-mse_decoded_relative_percent = 100*( mse_decoded_relative/Rs_decoded_relative( 2 ) );
+% Compute the error between the encoded theoretical output and the desired output.
+[ errors_theoretical_encoded_absolute, error_percentages_theoretical_encoded_absolute, error_rmse_theoretical_encoded_absolute, error_rmse_percentage_theoretical_encoded_absolute, error_std_theoretical_encoded_absolute, error_std_percentage_theoretical_encoded_absolute, error_min_theoretical_encoded_absolute, error_min_percentage_theoretical_encoded_absolute, index_min_theoretical_encoded_absolute, error_max_theoretical_encoded_absolute, error_max_percentage_theoretical_encoded_absolute, index_max_theoretical_encoded_absolute, error_range_theoretical_encoded_absolute, error_range_percentage_theoretical_encoded_absolute ] = network_absolute.numerical_method_utilities.compute_error_statistics( Us_achieved_theoretical_absolute, Us_desired_absolute, R2_absolute );
+[ errors_theoretical_encoded_relative, error_percentages_theoretical_encoded_relative, error_rmse_theoretical_encoded_relative, error_rmse_percentage_theoretical_encoded_relative, error_std_theoretical_encoded_relative, error_std_percentage_theoretical_encoded_relative, error_min_theoretical_encoded_relative, error_min_percentage_theoretical_encoded_relative, index_min_theoretical_encoded_relative, error_max_theoretical_encoded_relative, error_max_percentage_theoretical_encoded_relative, index_max_theoretical_encoded_relative, error_range_theoretical_encoded_relative, error_range_percentage_theoretical_encoded_relative ] = network_relative.numerical_method_utilities.compute_error_statistics( Us_achieved_theoretical_relative, Us_desired_relative, R2_relative );
 
-% Compute the standard deviation of the error.
-std_absolute = std( error_absolute, 0, 'all' );
-std_relative = std( error_relative, 0, 'all' );
-std_decoded_absolute = std( error_decoded_absolute, 0, 'all' );
-std_decoded_relative = std( error_decoded_relative, 0, 'all' );
+% Compute the error between the encoded numerical output and the desired output.
+[ errors_numerical_encoded_absolute, error_percentages_numerical_encoded_absolute, error_rmse_numerical_encoded_absolute, error_rmse_percentage_numerical_encoded_absolute, error_std_numerical_encoded_absolute, error_std_percentage_numerical_encoded_absolute, error_min_numerical_encoded_absolute, error_min_percentage_numerical_encoded_absolute, index_min_numerical_encoded_absolute, error_max_numerical_encoded_absolute, error_max_percentage_numerical_encoded_absolute, index_max_numerical_encoded_absolute, error_range_numerical_encoded_absolute, error_range_percentage_numerical_encoded_absolute ] = network_absolute.numerical_method_utilities.compute_error_statistics( Us_achieved_numerical_absolute, Us_desired_absolute, R2_absolute );
+[ errors_numerical_encoded_relative, error_percentages_numerical_encoded_relative, error_rmse_numerical_encoded_relative, error_rmse_percentage_numerical_encoded_relative, error_std_numerical_encoded_relative, error_std_percentage_numerical_encoded_relative, error_min_numerical_encoded_relative, error_min_percentage_numerical_encoded_relative, index_min_numerical_encoded_relative, error_max_numerical_encoded_relative, error_max_percentage_numerical_encoded_relative, index_max_numerical_encoded_relative, error_range_numerical_encoded_relative, error_range_percentage_numerical_encoded_relative ] = network_relative.numerical_method_utilities.compute_error_statistics( Us_achieved_numerical_relative, Us_desired_relative, R2_relative );
 
-% Compute the standard deviation of the error percentage.
-std_absolute_percent = 100*( std_absolute/R2_absolute );
-std_relative_percent = 100*( std_relative/R2_relative );
-std_decoded_absolute_percent = 100*( std_decoded_absolute/Rs_decoded_absolute( 2 ) );
-std_decoded_relative_percent = 100*( std_decoded_relative/Rs_decoded_relative( 2 ) );
+% Compute the error between the decoded theoretical output and the desired output.
+[ errors_theoretical_decoded_absolute, error_percentages_theoretical_decoded_absolute, error_rmse_theoretical_decoded_absolute, error_rmse_percentage_theoretical_decoded_absolute, error_std_theoretical_decoded_absolute, error_std_percentage_theoretical_decoded_absolute, error_min_theoretical_decoded_absolute, error_min_percentage_theoretical_decoded_absolute, index_min_theoretical_decoded_absolute, error_max_theoretical_decoded_absolute, error_max_percentage_theoretical_decoded_absolute, index_max_theoretical_decoded_absolute, error_range_theoretical_decoded_absolute, error_range_percentage_theoretical_decoded_absolute ] = network_absolute.numerical_method_utilities.compute_error_statistics( ys_achieved_theoretical_absolute, ys_desired_absolute, y_max );
+[ errors_theoretical_decoded_relative, error_percentages_theoretical_decoded_relative, error_rmse_theoretical_decoded_relative, error_rmse_percentage_theoretical_decoded_relative, error_std_theoretical_decoded_relative, error_std_percentage_theoretical_decoded_relative, error_min_theoretical_decoded_relative, error_min_percentage_theoretical_decoded_relative, index_min_theoretical_decoded_relative, error_max_theoretical_decoded_relative, error_max_percentage_theoretical_decoded_relative, index_max_theoretical_decoded_relative, error_range_theoretical_decoded_relative, error_range_percentage_theoretical_decoded_relative ] = network_relative.numerical_method_utilities.compute_error_statistics( ys_achieved_theoretical_relative, ys_desired_relative, y_max );
 
-% Compute the maximum errors.
-[ error_absolute_max, index_absolute_max ] = max( abs( error_absolute ), [  ], 'all', 'linear' );
-[ error_relative_max, index_relative_max ] = max( abs( error_relative ), [  ], 'all', 'linear' );
-[ error_decoded_absolute_max, index_decoded_absolute_max ] = max( abs( error_decoded_absolute ), [  ], 'all', 'linear' );
-[ error_decoded_relative_max, index_decoded_relative_max ] = max( abs( error_decoded_relative ), [  ], 'all', 'linear' );
+% Compute the error between the decoded numerical output and the desired output.
+[ errors_numerical_decoded_absolute, error_percentages_numerical_decoded_absolute, error_rmse_numerical_decoded_absolute, error_rmse_percentage_numerical_decoded_absolute, error_std_numerical_decoded_absolute, error_std_percentage_numerical_decoded_absolute, error_min_numerical_decoded_absolute, error_min_percentage_numerical_decoded_absolute, index_min_numerical_decoded_absolute, error_max_numerical_decoded_absolute, error_max_percentage_numerical_decoded_absolute, index_max_numerical_decoded_absolute, error_range_numerical_decoded_absolute, error_range_percentage_numerical_decoded_absolute ] = network_absolute.numerical_method_utilities.compute_error_statistics( ys_achieved_numerical_absolute, ys_desired_absolute, y_max );
+[ errors_numerical_decoded_relative, error_percentages_numerical_decoded_relative, error_rmse_numerical_decoded_relative, error_rmse_percentage_numerical_decoded_relative, error_std_numerical_decoded_relative, error_std_percentage_numerical_decoded_relative, error_min_numerical_decoded_relative, error_min_percentage_numerical_decoded_relative, index_min_numerical_decoded_relative, error_max_numerical_decoded_relative, error_max_percentage_numerical_decoded_relative, index_max_numerical_decoded_relative, error_range_numerical_decoded_relative, error_range_percentage_numerical_decoded_relative ] = network_relative.numerical_method_utilities.compute_error_statistics( ys_achieved_numerical_relative, ys_desired_relative, y_max );
 
-% Compute the maximum error percentages.
-error_absolute_max_percent = 100*( error_absolute_max/R2_absolute );
-error_relative_max_percent = 100*( error_relative_max/R2_relative );
-error_decoded_absolute_max_percent = 100*( error_decoded_absolute_max/Rs_decoded_absolute( 2 ) );
-error_decoded_relative_max_percent = 100*( error_decoded_relative_max/Rs_decoded_relative( 2 ) );
 
-% Compute the minimum errors.
-[ error_absolute_min, index_absolute_min ] = min( abs( error_absolute ), [  ], 'all', 'linear' );
-[ error_relative_min, index_relative_min ] = min( abs( error_relative ), [  ], 'all', 'linear' );
-[ error_decoded_absolute_min, index_decoded_absolute_min ] = min( abs( error_decoded_absolute ), [  ], 'all', 'linear' );
-[ error_decoded_relative_min, index_decoded_relative_min ] = min( abs( error_decoded_relative ), [  ], 'all', 'linear' );
+%% Print the Absolute & Relative Transmission Summary Statistics.
 
-% Compute the minimum error percentages.
-error_absolute_min_percent = 100*( error_absolute_min/R2_absolute );
-error_relative_min_percent = 100*( error_relative_min/R2_relative );
-error_decoded_absolute_min_percent = 100*( error_decoded_absolute_min/Rs_decoded_absolute( 2 ) );
-error_decoded_relative_min_percent = 100*( error_decoded_relative_min/Rs_decoded_relative( 2 ) );
+% Define the absolute header strings.
+header_str_encoded_absolute = 'Absolute Transmission Encoded Error Statistics';
+header_str_decoded_absolute = 'Absolute Transmission Decoded Error Statistics';
 
-% Compute the range of the error.
-error_absolute_range = error_absolute_max - error_absolute_min;
-error_relative_range = error_relative_max - error_relative_min;
-error_decoded_absolute_range = error_decoded_absolute_max - error_decoded_absolute_min;
-error_decoded_relative_range = error_decoded_relative_max - error_decoded_relative_min;
+% Define the relative header strings.
+header_str_encoded_relative = 'Relative Transmission Encoded Error Statistics';
+header_str_decoded_relative = 'Relative Transmission Decoded Error Statistics';
 
-% Compute the range of the error percentages.
-error_absolute_range_percent = 100*( error_absolute_range/R2_absolute );
-error_relative_range_percent = 100*( error_relative_range/R2_relative );
-error_decoded_absolute_range_percent = 100*( error_decoded_absolute_range/Rs_decoded_absolute( 2 ) );
-error_decoded_relative_range_percent = 100*( error_decoded_relative_range/Rs_decoded_relative( 2 ) );
+% Define the unit strings.
+unit_str_encoded = 'mV';
+unit_str_decoded = '-';
 
-% Compute the difference in error between the absolute and relative schemes.
-error_difference = abs( error_relative ) - abs( error_absolute );
-error_difference_percent = abs( error_relative_percent ) - abs( error_absolute_percent );
-error_decoded_difference = abs( error_decoded_relative ) - abs( error_decoded_absolute );
-error_decoded_difference_percent = abs( error_decoded_relative_percent ) - abs( error_decoded_absolute_percent );
+% Retrieve the minimum and maximum encoded theoretical and numerical absolute network results.
+Us_critmin_achieved_theoretical_steady_absolute = Us_achieved_theoretical_absolute( index_min_theoretical_encoded_absolute, : );
+Us_critmin_achieved_numerical_steady_absolute = Us_achieved_numerical_absolute( index_min_numerical_encoded_absolute, : );
+Us_critmax_achieved_theoretical_steady_absolute = Us_achieved_theoretical_absolute( index_max_theoretical_encoded_absolute, : );
+Us_critmax_achieved_numerical_steady_absolute = Us_achieved_numerical_absolute( index_max_numerical_encoded_absolute, : );
 
-% Compute the mean squared error difference.
-error_difference_mse = abs( mse_relative ) - abs( mse_absolute );
-error_difference_mse_percent = abs( mse_relative_percent ) - abs( mse_absolute_percent );
-error_decoded_difference_mse = abs( mse_decoded_relative ) - abs( mse_decoded_absolute );
-error_decoded_difference_mse_percent = abs( mse_decoded_relative_percent ) - abs( mse_decoded_absolute_percent );
+% Retrieve the minimum and maximum encoded theoretical and numerical relative network results.
+Us_critmin_achieved_theoretical_steady_relative = Us_achieved_theoretical_relative( index_min_theoretical_encoded_relative, : );
+Us_critmin_achieved_numerical_steady_relative = Us_achieved_numerical_relative( index_min_numerical_encoded_relative, : );
+Us_critmax_achieved_theoretical_steady_relative = Us_achieved_theoretical_relative( index_max_theoretical_encoded_relative, : );
+Us_critmax_achieved_numerical_steady_relative = Us_achieved_numerical_relative( index_max_numerical_encoded_relative, : );
 
-% Compute the standard deviation difference.
-error_difference_std = abs( std_relative ) - abs( std_absolute );
-error_difference_std_percent = abs( std_relative_percent ) - abs( std_absolute_percent );
-error_decoded_difference_std = abs( std_decoded_relative ) - abs( std_decoded_absolute );
-error_decoded_difference_std_percent = abs( std_decoded_relative_percent ) - abs( std_decoded_absolute_percent );
+% Retrieve the minimum and maximum decoded theoretical and numerical absolute network results.
+ys_critmin_achieved_theoretical_steady_absolute = f_decode_absolute( Us_critmin_achieved_theoretical_steady_absolute );
+ys_critmin_achieved_numerical_steady_absolute = f_decode_absolute( Us_critmin_achieved_numerical_steady_absolute );
+ys_critmax_achieved_theoretical_steady_absolute = f_decode_absolute( Us_critmax_achieved_theoretical_steady_absolute );
+ys_critmax_achieved_numerical_steady_absolute = f_decode_absolute( Us_critmax_achieved_numerical_steady_absolute );
 
-% Compute the maximum error difference.
-error_difference_max = abs( error_relative_max ) - abs( error_absolute_max );
-error_difference_max_percent = abs( error_relative_max_percent ) - abs( error_absolute_max_percent );
-error_decoded_difference_max = abs( error_decoded_relative_max ) - abs( error_decoded_absolute_max );
-error_decoded_difference_max_percent = abs( error_decoded_relative_max_percent ) - abs( error_decoded_absolute_max_percent );
+% Retrieve the minimum and maximum decoded theoretical and numerical relative network results.
+ys_critmin_achieved_theoretical_steady_relative = f_decode_relative( Us_critmin_achieved_theoretical_steady_relative, [ R1_relative, R2_relative ], [ x_max, y_max ] );
+ys_critmin_achieved_numerical_steady_relative = f_decode_relative( Us_critmin_achieved_numerical_steady_relative, [ R1_relative, R2_relative ], [ x_max, y_max ] );
+ys_critmax_achieved_theoretical_steady_relative = f_decode_relative( Us_critmax_achieved_theoretical_steady_relative, [ R1_relative, R2_relative ], [ x_max, y_max ] );
+ys_critmax_achieved_numerical_steady_relative = f_decode_relative( Us_critmax_achieved_numerical_steady_relative, [ R1_relative, R2_relative ], [ x_max, y_max ] );
+
+% Print the absolute transmission summary statistics.
+network_absolute.numerical_method_utilities.print_error_statistics( header_str_encoded_absolute, unit_str_encoded, 10^( -3 ), error_rmse_theoretical_encoded_absolute, error_rmse_percentage_theoretical_encoded_absolute, error_rmse_numerical_encoded_absolute, error_rmse_percentage_numerical_encoded_absolute, error_std_theoretical_encoded_absolute, error_std_percentage_theoretical_encoded_absolute, error_std_numerical_encoded_absolute, error_std_percentage_numerical_encoded_absolute, error_min_theoretical_encoded_absolute, error_min_percentage_theoretical_encoded_absolute, Us_critmin_achieved_theoretical_steady_absolute, error_min_numerical_encoded_absolute, error_min_percentage_numerical_encoded_absolute, Us_critmin_achieved_numerical_steady_absolute, error_max_theoretical_encoded_absolute, error_max_percentage_theoretical_encoded_absolute, Us_critmax_achieved_theoretical_steady_absolute, error_max_numerical_encoded_absolute, error_max_percentage_numerical_encoded_absolute, Us_critmax_achieved_numerical_steady_absolute, error_range_theoretical_encoded_absolute, error_range_percentage_theoretical_encoded_absolute, error_range_numerical_encoded_absolute, error_range_percentage_numerical_encoded_absolute )    
+network_absolute.numerical_method_utilities.print_error_statistics( header_str_decoded_absolute, unit_str_decoded, 1, error_rmse_theoretical_decoded_absolute, error_rmse_percentage_theoretical_decoded_absolute, error_rmse_numerical_decoded_absolute, error_rmse_percentage_numerical_decoded_absolute, error_std_theoretical_decoded_absolute, error_std_percentage_theoretical_decoded_absolute, error_std_numerical_decoded_absolute, error_std_percentage_numerical_decoded_absolute, error_min_theoretical_decoded_absolute, error_min_percentage_theoretical_decoded_absolute, ys_critmin_achieved_theoretical_steady_absolute, error_min_numerical_decoded_absolute, error_min_percentage_numerical_decoded_absolute, ys_critmin_achieved_numerical_steady_absolute, error_max_theoretical_decoded_absolute, error_max_percentage_theoretical_decoded_absolute, ys_critmax_achieved_theoretical_steady_absolute, error_max_numerical_decoded_absolute, error_max_percentage_numerical_decoded_absolute, ys_critmax_achieved_numerical_steady_absolute, error_range_theoretical_decoded_absolute, error_range_percentage_theoretical_decoded_absolute, error_range_numerical_decoded_absolute, error_range_percentage_numerical_decoded_absolute )    
+
+% Print the relative transmission summary statistics.
+network_relative.numerical_method_utilities.print_error_statistics( header_str_encoded_relative, unit_str_encoded, 10^( -3 ), error_rmse_theoretical_encoded_relative, error_rmse_percentage_theoretical_encoded_relative, error_rmse_numerical_encoded_relative, error_rmse_percentage_numerical_encoded_relative, error_std_theoretical_encoded_relative, error_std_percentage_theoretical_encoded_relative, error_std_numerical_encoded_relative, error_std_percentage_numerical_encoded_relative, error_min_theoretical_encoded_relative, error_min_percentage_theoretical_encoded_relative, Us_critmin_achieved_theoretical_steady_relative, error_min_numerical_encoded_relative, error_min_percentage_numerical_encoded_relative, Us_critmin_achieved_numerical_steady_relative, error_max_theoretical_encoded_relative, error_max_percentage_theoretical_encoded_relative, Us_critmax_achieved_theoretical_steady_relative, error_max_numerical_encoded_relative, error_max_percentage_numerical_encoded_relative, Us_critmax_achieved_numerical_steady_relative, error_range_theoretical_encoded_relative, error_range_percentage_theoretical_encoded_relative, error_range_numerical_encoded_relative, error_range_percentage_numerical_encoded_relative )    
+network_relative.numerical_method_utilities.print_error_statistics( header_str_decoded_relative, unit_str_decoded, 1, error_rmse_theoretical_decoded_relative, error_rmse_percentage_theoretical_decoded_relative, error_rmse_numerical_decoded_relative, error_rmse_percentage_numerical_decoded_relative, error_std_theoretical_decoded_relative, error_std_percentage_theoretical_decoded_relative, error_std_numerical_decoded_relative, error_std_percentage_numerical_decoded_relative, error_min_theoretical_decoded_relative, error_min_percentage_theoretical_decoded_relative, ys_critmin_achieved_theoretical_steady_relative, error_min_numerical_decoded_relative, error_min_percentage_numerical_decoded_relative, ys_critmin_achieved_numerical_steady_relative, error_max_theoretical_decoded_relative, error_max_percentage_theoretical_decoded_relative, ys_critmax_achieved_theoretical_steady_relative, error_max_numerical_decoded_relative, error_max_percentage_numerical_decoded_relative, ys_critmax_achieved_numerical_steady_relative, error_range_theoretical_decoded_relative, error_range_percentage_theoretical_decoded_relative, error_range_numerical_decoded_relative, error_range_percentage_numerical_decoded_relative )    
+
+
+%% Compute the Difference between the Absolute & Relative Transmission Network Errors.
+
+
+% DEBUGGING THIS SECTION.
+
+
+% Compute the difference between the theoretical absolute and relative network errors.
+[ error_diff_theoretical_encoded, error_percent_diff_theoretical_encoded, error_mse_diff_theoretical_encoded, error_mse_percent_diff_theoretical_encoded, error_std_diff_theoretical_encoded, error_std_percent_diff_theoretical_encoded, error_min_diff_theoretical_encoded, error_min_percent_diff_theoretical_encoded, error_max_diff_theoretical_encoded, error_max_percent_diff_theoretical_encoded ] = compute_error_difference_statistics( errors_theoretical_encoded_absolute, errors_theoretical_encoded_relative, error_percentages_theoretical_encoded_absolute, error_percentages_theoretical_encoded_relative, error_rmse_theoretical_encoded_absolute, error_rmse_theoretical_encoded_relative, error_rmse_percentage_theoretical_encoded_absolute, error_rmse_percentage_theoretical_encoded_relative, error_std_theoretical_encoded_absolute, error_std_theoretical_encoded_relative, error_std_percentage_theoretical_encoded_absolute, error_std_percentage_theoretical_encoded_relative, error_min_theoretical_encoded_absolute, error_min_theoretical_encoded_relative, error_min_percentage_theoretical_encoded_absolute, error_min_percentage_theoretical_encoded_relative, error_max_theoretical_encoded_absolute, error_max_theoretical_encoded_relative, error_max_percentage_theoretical_encoded_absolute, error_max_percentage_theoretical_encoded_relative );
+[ error_diff_theoretical_decoded, error_percent_diff_theoretical_decoded, error_mse_diff_theoretical_decoded, error_mse_percent_diff_theoretical_decoded, error_std_diff_theoretical_decoded, error_std_percent_diff_theoretical_decoded, error_min_diff_theoretical_decoded, error_min_percent_diff_theoretical_decoded, error_max_diff_theoretical_decoded, error_max_percent_diff_theoretical_decoded ] = compute_error_difference_statistics( errors_theoretical_decoded_absolute, errors_theoretical_decoded_relative, error_percentages_theoretical_decoded_absolute, error_percentages_theoretical_decoded_relative, error_rmse_theoretical_decoded_absolute, error_rmse_theoretical_decoded_relative, error_rmse_percentage_theoretical_decoded_absolute, error_rmse_percentage_theoretical_decoded_relative, error_std_theoretical_decoded_absolute, error_std_theoretical_decoded_relative, error_std_percentage_theoretical_decoded_absolute, error_std_percentage_theoretical_decoded_relative, error_min_theoretical_decoded_absolute, error_min_theoretical_decoded_relative, error_min_percentage_theoretical_decoded_absolute, error_min_percentage_theoretical_decoded_relative, error_max_theoretical_decoded_absolute, error_max_theoretical_decoded_relative, error_max_percentage_theoretical_decoded_absolute, error_max_percentage_theoretical_decoded_relative );
+
+% Compute the difference between the numerical absolute and relative network errors.
+[ error_diff_numerical_encoded, error_percent_diff_numerical_encoded, error_mse_diff_numerical_encoded, error_mse_percent_diff_numerical_encoded, error_std_diff_numerical_encoded, error_std_percent_diff_numerical_encoded, error_min_diff_numerical_encoded, error_min_percent_diff_numerical_encoded, error_max_diff_numerical_encoded, error_max_percent_diff_numerical_encoded ] = compute_error_difference_statistics( errors_numerical_encoded_absolute, errors_numerical_encoded_relative, error_percentages_numerical_encoded_absolute, error_percentages_numerical_encoded_relative, error_rmse_numerical_encoded_absolute, error_rmse_numerical_encoded_relative, error_rmse_percentage_numerical_encoded_absolute, error_rmse_percentage_numerical_encoded_relative, error_std_numerical_encoded_absolute, error_std_numerical_encoded_relative, error_std_percentage_numerical_encoded_absolute, error_std_percentage_numerical_encoded_relative, error_min_numerical_encoded_absolute, error_min_numerical_encoded_relative, error_min_percentage_numerical_encoded_absolute, error_min_percentage_numerical_encoded_relative, error_max_numerical_encoded_absolute, error_max_numerical_encoded_relative, error_max_percentage_numerical_encoded_absolute, error_max_percentage_numerical_encoded_relative );
+[ error_diff_numerical_decoded, error_percent_diff_numerical_decoded, error_mse_diff_numerical_decoded, error_mse_percent_diff_numerical_decoded, error_std_diff_numerical_decoded, error_std_percent_diff_numerical_decoded, error_min_diff_numerical_decoded, error_min_percent_diff_numerical_decoded, error_max_diff_numerical_decoded, error_max_percent_diff_numerical_decoded ] = compute_error_difference_statistics( errors_numerical_decoded_absolute, errors_numerical_decoded_relative, error_percentages_numerical_decoded_absolute, error_percentages_numerical_decoded_relative, error_rmse_numerical_decoded_absolute, error_rmse_numerical_decoded_relative, error_rmse_percentage_numerical_decoded_absolute, error_rmse_percentage_numerical_decoded_relative, error_std_numerical_decoded_absolute, error_std_numerical_decoded_relative, error_std_percentage_numerical_decoded_absolute, error_std_percentage_numerical_decoded_relative, error_min_numerical_decoded_absolute, error_min_numerical_decoded_relative, error_min_percentage_numerical_decoded_absolute, error_min_percentage_numerical_decoded_relative, error_max_numerical_decoded_absolute, error_max_numerical_decoded_relative, error_max_percentage_numerical_decoded_absolute, error_max_percentage_numerical_decoded_relative );
+
+% Compute the improvement between the theoretical absolute and relative network errors.
+[ error_improv_theoretical_encoded, error_percent_improv_theoretical_encoded, error_mse_improv_theoretical_encoded, error_mse_percent_improv_theoretical_encoded, error_std_improv_theoretical_encoded, error_std_percent_improv_theoretical_encoded, error_min_improv_theoretical_encoded, error_min_percent_improv_theoretical_encoded, error_max_improv_theoretical_encoded, error_max_percent_improv_theoretical_encoded ] = compute_error_improvement_statistics( errors_theoretical_encoded_absolute, errors_theoretical_encoded_relative, error_percentages_theoretical_encoded_absolute, error_percentages_theoretical_encoded_relative, error_rmse_theoretical_encoded_absolute, error_rmse_theoretical_encoded_relative, error_rmse_percentage_theoretical_encoded_absolute, error_rmse_percentage_theoretical_encoded_relative, error_std_theoretical_encoded_absolute, error_std_theoretical_encoded_relative, error_std_percentage_theoretical_encoded_absolute, error_std_percentage_theoretical_encoded_relative, error_min_theoretical_encoded_absolute, error_min_theoretical_encoded_relative, error_min_percentage_theoretical_encoded_absolute, error_min_percentage_theoretical_encoded_relative, error_max_theoretical_encoded_absolute, error_max_theoretical_encoded_relative, error_max_percentage_theoretical_encoded_absolute, error_max_percentage_theoretical_encoded_relative );
+[ error_improv_theoretical_decoded, error_percent_improv_theoretical_decoded, error_mse_improv_theoretical_decoded, error_mse_percent_improv_theoretical_decoded, error_std_improv_theoretical_decoded, error_std_percent_improv_theoretical_decoded, error_min_improv_theoretical_decoded, error_min_percent_improv_theoretical_decoded, error_max_improv_theoretical_decoded, error_max_percent_improv_theoretical_decoded ] = compute_error_improvement_statistics( errors_theoretical_decoded_absolute, errors_theoretical_decoded_relative, error_percentages_theoretical_decoded_absolute, error_percentages_theoretical_decoded_relative, error_rmse_theoretical_decoded_absolute, error_rmse_theoretical_decoded_relative, error_rmse_percentage_theoretical_decoded_absolute, error_rmse_percentage_theoretical_decoded_relative, error_std_theoretical_decoded_absolute, error_std_theoretical_decoded_relative, error_std_percentage_theoretical_decoded_absolute, error_std_percentage_theoretical_decoded_relative, error_min_theoretical_decoded_absolute, error_min_theoretical_decoded_relative, error_min_percentage_theoretical_decoded_absolute, error_min_percentage_theoretical_decoded_relative, error_max_theoretical_decoded_absolute, error_max_theoretical_decoded_relative, error_max_percentage_theoretical_decoded_absolute, error_max_percentage_theoretical_decoded_relative );
+
+% Compute the improvement between the numerical absolute and relative network errors.
+[ error_improv_numerical_encoded, error_percent_improv_numerical_encoded, error_mse_improv_numerical_encoded, error_mse_percent_improv_numerical_encoded, error_std_improv_numerical_encoded, error_std_percent_improv_numerical_encoded, error_min_improv_numerical_encoded, error_min_percent_improv_numerical_encoded, error_max_improv_numerical_encoded, error_max_percent_improv_numerical_encoded ] = compute_error_improvement_statistics( errors_numerical_encoded_absolute, errors_numerical_encoded_relative, error_percentages_numerical_encoded_absolute, error_percentages_numerical_encoded_relative, error_rmse_numerical_encoded_absolute, error_rmse_numerical_encoded_relative, error_rmse_percentage_numerical_encoded_absolute, error_rmse_percentage_numerical_encoded_relative, error_std_numerical_encoded_absolute, error_std_numerical_encoded_relative, error_std_percentage_numerical_encoded_absolute, error_std_percentage_numerical_encoded_relative, error_min_numerical_encoded_absolute, error_min_numerical_encoded_relative, error_min_percentage_numerical_encoded_absolute, error_min_percentage_numerical_encoded_relative, error_max_numerical_encoded_absolute, error_max_numerical_encoded_relative, error_max_percentage_numerical_encoded_absolute, error_max_percentage_numerical_encoded_relative );
+[ error_improv_numerical_decoded, error_percent_improv_numerical_decoded, error_mse_improv_numerical_decoded, error_mse_percent_improv_numerical_decoded, error_std_improv_numerical_decoded, error_std_percent_improv_numerical_decoded, error_min_improv_numerical_decoded, error_min_percent_improv_numerical_decoded, error_max_improv_numerical_decoded, error_max_percent_improv_numerical_decoded ] = compute_error_improvement_statistics( errors_numerical_decoded_absolute, errors_numerical_decoded_relative, error_percentages_numerical_decoded_absolute, error_percentages_numerical_decoded_relative, error_rmse_numerical_decoded_absolute, error_rmse_numerical_decoded_relative, error_rmse_percentage_numerical_decoded_absolute, error_rmse_percentage_numerical_decoded_relative, error_std_numerical_decoded_absolute, error_std_numerical_decoded_relative, error_std_percentage_numerical_decoded_absolute, error_std_percentage_numerical_decoded_relative, error_min_numerical_decoded_absolute, error_min_numerical_decoded_relative, error_min_percentage_numerical_decoded_absolute, error_min_percentage_numerical_decoded_relative, error_max_numerical_decoded_absolute, error_max_numerical_decoded_relative, error_max_percentage_numerical_decoded_absolute, error_max_percentage_numerical_decoded_relative );
 
 
 %% Print Out the Summary Information.

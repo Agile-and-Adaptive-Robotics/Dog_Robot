@@ -51,7 +51,7 @@ encoding_scheme = 'absolute';
 network_utilities = network_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 1.0;                                            % [-] Absolute Transmission Subnetwork Gain.
+c = 2.0;                                            % [-] Absolute Transmission Subnetwork Gain.
 
 % Define the desired mapping operation.
 f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
@@ -60,7 +60,7 @@ f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
 %% Define the Encoding & Decoding Operations.
 
 % Define the domain of the input and output signals.
-x_max = 20;
+x_max = 20;                                                    % How big can this number actually be?  Is there an upper bound?
 y_max = f_desired( x_max );
 
 % Define the encoding scheme.

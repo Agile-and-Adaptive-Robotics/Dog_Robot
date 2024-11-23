@@ -186,12 +186,12 @@ classdef numerical_method_utilities_class
         
         %% Error Functions.
         
-        % Implement a function that computes summary statistics given desired and achieved outputs.
+        % Implement a function that computes error statistics given desired and achieved outputs.
         function [ errors, error_percentages, error_rmse, error_rmse_percentage, error_std, error_std_percentage, error_min, error_min_percentage, index_min, error_max, error_max_percentage, index_max, error_range, error_range_percentage ] = compute_error_statistics( ~, values, targets, scale )
             
             % Compute the error between the achieved and desired results.
             errors = values( :, end ) - targets( :, end );
-            error_percentages = 100*( errors/scale );
+            error_percentages = 100*( errors / scale );
             
             % Compute the root mean squared error.
             error_rmse = sqrt( ( 1 / ( numel( errors ) ) )*sum( errors.^2, 'all' ) );
@@ -214,6 +214,58 @@ classdef numerical_method_utilities_class
         end
         
         
+        % Implement a function that computes the improvement in the error between absolute and relative simulation data.
+        function [ error_improvement, error_percent_improvement, error_mse_improvement, error_mse_percent_improvment, error_std_improvement, error_std_percent_improvement, error_min_improvement, error_min_percent_improvement, error_max_improvement, error_max_percent_improvement ] = compute_error_improvement_statistics( ~, error_absolute, error_relative, error_absolute_percent, error_relative_percent, mse_absolute, mse_relative, mse_absolute_percent, mse_relative_percent, std_absolute, std_relative, std_absolute_percent, std_relative_percent, error_absolute_min, error_relative_min, error_absolute_min_percent, error_relative_min_percent, error_absolute_max, error_relative_max, error_absolute_max_percent, error_relative_max_percent )
+            
+            % Compute the improvement in the error between the absolute and relative schemes.
+            error_improvement = abs( error_relative ) - abs( error_absolute );
+            error_percent_improvement = abs( error_relative_percent ) - abs( error_absolute_percent );
+
+            % Compute the error mean squared error improvement.
+            error_mse_improvement = abs( mse_relative ) - abs( mse_absolute );
+            error_mse_percent_improvment = abs( mse_relative_percent ) - abs( mse_absolute_percent );
+
+            % Compute the error standard deviation improvement.
+            error_std_improvement = abs( std_relative ) - abs( std_absolute );
+            error_std_percent_improvement = abs( std_relative_percent ) - abs( std_absolute_percent );
+
+            % Compute the minimum error improvement.
+            error_min_improvement = abs( error_relative_min ) - abs( error_absolute_min );
+            error_min_percent_improvement = abs( error_relative_min_percent ) - abs( error_absolute_min_percent );
+
+            % Compute the maximum error improvement.
+            error_max_improvement = abs( error_relative_max ) - abs( error_absolute_max );
+            error_max_percent_improvement = abs( error_relative_max_percent ) - abs( error_absolute_max_percent );
+
+        end
+        
+        
+        % Implement a function that computes the difference in the error between absolute and relative simulation data.
+        function [ error_difference, error_percent_difference, error_mse_difference, error_mse_percent_difference, error_std_difference, error_std_percent_difference, error_min_difference, error_min_percent_difference, error_max_difference, error_max_percent_difference ] = compute_error_difference_statistics( ~, error_absolute, error_relative, error_absolute_percent, error_relative_percent, mse_absolute, mse_relative, mse_absolute_percent, mse_relative_percent, std_absolute, std_relative, std_absolute_percent, std_relative_percent, error_absolute_min, error_relative_min, error_absolute_min_percent, error_relative_min_percent, error_absolute_max, error_relative_max, error_absolute_max_percent, error_relative_max_percent )
+            
+            % Compute the difference in the error between the absolute and relative schemes.
+            error_difference = error_relative - error_absolute;
+            error_percent_difference = error_relative_percent - error_absolute_percent;
+            
+            % Compute the error mean squared error difference.
+            error_mse_difference = mse_relative - mse_absolute;
+            error_mse_percent_difference = mse_relative_percent - mse_absolute_percent;
+
+            % compute the error standard deviation difference.
+            error_std_difference = std_relative - std_absolute;
+            error_std_percent_difference = std_relative_percent - std_absolute_percent;
+            
+            % Compute the minimum error difference.
+            error_min_difference = error_relative_min - error_absolute_min;
+            error_min_percent_difference = error_relative_min_percent - error_absolute_min_percent;
+
+            % Compute the maximum error difference.
+            error_max_difference = error_relative_max - error_absolute_max;
+            error_max_percent_difference = error_relative_max_percent - error_absolute_max_percent;
+            
+        end
+        
+        
         %% Printing Functions.
         
         % Implement a function to print summary statistics.
@@ -221,7 +273,7 @@ classdef numerical_method_utilities_class
             
             % Print the relative transmission summary statistics.
             fprintf( '\n' )
-            fprintf( header_str )
+            fprintf( [ '------------------------- ', header_str, ' -------------------------' ] )
             fprintf( '\n' )
             
             fprintf( 'RMSE:\n' )
@@ -253,6 +305,8 @@ classdef numerical_method_utilities_class
             fprintf( '\tNumerical: \t\t%9.3f \t[%s] \t(%6.2f [%%])\n', scale*error_range_numerical, unit_str, error_range_percentage_numerical )
             fprintf( '\tDifference: \t%9.3e \t[%s] \t(%6.2f [%%])\n', scale*( error_range_numerical - error_range_theoretical ), unit_str, error_range_percentage_numerical - error_range_percentage_theoretical )
             fprintf( '\n' )
+            
+            fprintf( '----------------------------------------------------------------------------------------------------\n' )
             
         end
         
