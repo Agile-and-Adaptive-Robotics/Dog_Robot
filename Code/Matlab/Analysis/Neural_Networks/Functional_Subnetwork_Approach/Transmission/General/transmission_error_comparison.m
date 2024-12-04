@@ -88,7 +88,17 @@ absolute_transmission_parameters = { c, R1_absolute, Gm1_absolute, Gm2_absolute,
 relative_transmission_parameters = { R1_relative, R2_relative, Gm1_relative, Gm2_relative, Cm1_relative, Cm2_relative };
 
 
-%% Define the Absolute Transmission Subnetwork Input Current Parameters.
+%% Define the Desired Input Signal.
+
+% Define the desired input signal.
+xs_desired = x_max*ones( n_timesteps, 1 );
+
+% Encode the input signal.
+Us1_desired_absolute = f_encode_absolute( xs_desired );
+Us1_desired_relative = f_encode_relative( xs_desired, R1_relative, x_max );
+
+
+%% Define the Absolute & Relative Transmission Subnetwork Input Currents.
 
 % Define the applied current ID.
 input_current_ID_absolute = 1;                                  % [#] Absolute Input Current ID.
@@ -101,13 +111,6 @@ input_current_name_relative = 'Applied Current 1 (Relative)';  	% [str] Relative
 % Define the IDs of the neurons to which the currents are applied.
 input_current_to_neuron_ID_absolute = 1;                        % [#] Absolute Neuron ID to Which Input Current is Applied.
 input_current_to_neuron_ID_relative = 1;                        % [#] Relative Neuron ID to Which Input Current is Applied.
-
-% Define the desired input signal.
-xs_desired = x_max*ones( n_timesteps, 1 );
-
-% Encode the input signal.
-Us1_desired_absolute = f_encode_absolute( xs_desired );
-Us1_desired_relative = f_encode_relative( xs_desired, R1_relative, x_max );
 
 % Define the applied current magnitudes.
 Ias1_absolute = Us1_desired_absolute*Gm1_absolute;            	% [A] Applied Current Magnitude.
@@ -142,7 +145,149 @@ network_relative.print( network_relative.neuron_manager, network_relative.synaps
 fprintf( '---------------------------------------------------------------------------------------------------------\n\n\n' )
 
 
-%% Load the Absolute & Relative Transmission Subnetworks.
+% %% Compute the Transmission Subnetwork Numerical Stability Information.
+% 
+% % Define the property retrieval settings.
+% as_matrix_flag = true;
+% 
+% % Define the stability analysis timestep seed.
+% dt0 = 1e-6;                                                                                                                                                             % [s] Numerical Stability Time Step.
+% 
+% % Retrieve properties from the absolute transmission subnetwork.
+% Cms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
+% Gms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
+% Rs_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
+% gs_absolute = network_absolute.get_gs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                      % [S] Synaptic Conductance.
+% dEs_absolute = network_absolute.get_dEs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
+% Ias_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
+% 
+% % Retrieve properties from the relative transmission subnetwork.
+% Cms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
+% Gms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
+% Rs_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
+% gs_relative = network_relative.get_gs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                      % [S] Synaptic Conductance.
+% dEs_relative = network_relative.get_dEs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
+% Ias_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
+% 
+% % Define the transmission subnetwork inputs.
+% U1s_absolute = linspace( 0, Rs_absolute( 1 ), 100  )';
+% U1s_relative = linspace( 0, Rs_relative( 1 ), 100  )';
+% 
+% % Compute the desired transmission steady state output.
+% U2s_desired_absolute = network_absolute.compute_da_transmission_sso( U1s_absolute, c, network_absolute.neuron_manager, undetected_option, network_absolute.network_utilities );
+% U2s_desired_relative = network_relative.compute_dr_transmission_sso( U1s_relative, c, R1_relative, R2_relative, network_relative.neuron_manager, undetected_option, network_relative.network_utilities );
+% 
+% % Store the desired transmission steady state results in arrays.
+% Us_desired_absolute = [ U1s_absolute, U2s_desired_absolute ];
+% Us_desired_relative = [ U1s_relative, U2s_desired_relative ];
+% 
+% % Compute the realtive transmission steady state output.
+% [ U2s_achieved_theoretical_absolute, As_absolute, dts_absolute, condition_numbers_absolute ] = network_absolute.achieved_transmission_RK4_stability_analysis( U1s_absolute, Cms_absolute, Gms_absolute, Rs_absolute, Ias_absolute, gs_absolute, dEs_absolute, dt0, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, undetected_option, network_absolute.network_utilities );
+% [ U2s_achieved_theoretical_relative, As_relative, dts_relative, condition_numbers_relative ] = network_relative.achieved_transmission_RK4_stability_analysis( U1s_relative, Cms_relative, Gms_relative, Rs_relative, Ias_relative, gs_relative, dEs_relative, dt0, network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, undetected_option, network_relative.network_utilities );
+% 
+% % Store the desired and theoretically achieved absolute transmission steady state results in arrays.
+% Us_achieved_theoretical_absolute = [ U1s_absolute, U2s_achieved_theoretical_absolute ];
+% Us_achieved_theoretical_relative = [ U1s_relative, U2s_achieved_theoretical_relative ];
+% 
+% % Retrieve the maximum RK4 step size.
+% [ dt_max_absolute, indexes_dt_absolute ] = max( dts_absolute );
+% [ dt_max_relative, indexes_dt_relative ] = max( dts_relative );
+% 
+% % Retrieve the maximum condition number.
+% [ condition_number_max_absolute, indexes_condition_number_absolute ] = max( condition_numbers_absolute );
+% [ condition_number_max_relative, indexes_condition_number_relative ] = max( condition_numbers_relative );
+% 
+% 
+% %% Print the Numerical Stability Information.
+% 
+% % Print out the stability information.
+% network_absolute.numerical_method_utilities.print_numerical_stability_info( As_absolute, dts_absolute, network_dt, condition_numbers_absolute );
+% network_relative.numerical_method_utilities.print_numerical_stability_info( As_relative, dts_relative, network_dt, condition_numbers_relative );
+% 
+% 
+% %% Decode the Desired & Theoretically Achieved Transmission Subnetwork Results.
+% 
+% % Compute the decoded desired inputs.
+% xs_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 1 ) );
+% xs_desired_relative = f_decode_relative( Us_desired_relative( :, 1 ), R1_relative, x_max );
+% 
+% % Compute the decoded desired outputs.
+% ys_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 2 ) );
+% ys_desired_relative = f_decode_relative( Us_desired_relative( :, 2 ), R2_relative, y_max );
+% 
+% % Compute the decoded theoretically achieved inputs.
+% xs_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 1 ) );
+% xs_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 1 ), R1_relative, x_max );
+% 
+% % Compute the decoded theoretically achieved outputs.
+% ys_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 2 ) );
+% ys_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 2 ), R2_relative, y_max );
+
+
+%% Simulate the Transmission Network.
+
+% Set additional simulation properties.
+filter_disabled_flag = true;                % [T/F] Filter Disabled Flag.
+set_flag = true;                            % [T/F] Set Flag.
+process_option = 'None';                    % [str] Process Option.
+undetected_option = 'Ignore';               % [str] Undetected Option.
+
+% Determine whether to simulate the network.
+if simulate_flag                            % If we want to simulate the network...
+    
+    % Define the number of different input signals.
+    n_input_signals = 20;                   % [#] Number of Input Signals.
+    
+    % Define the input signals.
+    xs_achieved_numerical = linspace( 0, x_max, n_input_signals );
+    
+    % Encode the input signals.
+    Us_input_absolute = f_encode_absolute( xs_achieved_numerical );
+    Us_input_relative = f_encode_relative( xs_achieved_numerical, R1_relative, x_max );
+
+    % Create the applied currents.
+    applied_currents_absolute = network_absolute.neuron_manager.neurons( 1 ).Gm*Us_input;
+    applied_currents_relative = network.neuron_manager.neurons( 1 ).Gm*Us_input;
+    
+    % Create a matrix to store the membrane voltages.
+    Us_achieved_numerical = zeros( n_input_signals, num_neurons );
+    
+    % Simulate the network for each of the applied current combinations.
+    for k = 1:n_input_signals         	% Iterate through each of the currents applied to the input neuron...
+
+        % Create applied currents.
+        [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
+
+        % Simulate the network.            
+        [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
+
+        % Retrieve the final membrane voltages.
+        Us_achieved_numerical( k, : ) = Us( :, end );
+            
+    end
+
+    % Decode the achieved membrane voltages.
+    ys_achieved_numerical = f_decode( Us_achieved_numerical( :, 2 ), R2, y_max );
+    
+    % Save the simulation results.
+    save( [ save_directory, '\', 'relative_transmission_subnetwork_error' ], 'xs_achieved_numerical', 'Us_input', 'applied_currents', 'Us_achieved_numerical', 'ys_achieved_numerical' )
+    
+else                % Otherwise... ( We must want to load data from an existing simulation... )
+    
+    % Load the simulation results.
+    data = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
+    
+    % Store the simulation results in separate variables.
+    xs_achieved_numerical = data.xs_achieved_numerical;
+    Us_input = data.Us_input;
+    applied_currents = data.applied_currents;
+    Us_achieved_numerical = data.Us_achieved_numerical;
+    ys_achieved_numerical = data.ys_achieved_numerical;
+
+end
+
+
+%% Load the Absolute & Relative Transmission Simulation Data.
 
 % Load the simulation results.
 data_absolute = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );

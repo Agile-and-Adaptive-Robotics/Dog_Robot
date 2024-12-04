@@ -19234,6 +19234,52 @@ classdef network_class
         %}
         
         
+        % Implement a function to compute steady state network simulation results for multiple input signals.
+        function Us_achieved_numerical = compute_steady_state_simulation( self, dt, tf, method, num_neurons, input_current_ID, applied_current_magnitudes, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, process_option, undetected_option, network_utilities )
+
+            % Set the default simulation duration.
+            if nargin < 13, network_utilities = self.network_utilities; end                                             % [class] Network Utilities Class.
+            if nargin < 12, undetected_option = self.undetected_option_DEFAULT; end                                     % [str] Undetected Option.
+            if nargin < 11, process_option = self.process_option_DEFAULT; end                                           % [str] Process Option.
+            if nargin < 9, filter_disabled_flag = self.filter_disabled_flag_DEFAULT; end                                % [T/F] Filter Disabled Flag.
+            if nargin < 8, applied_voltage_manager = self.applied_voltage_manager; end                                  % [class] Applied Voltage Manager Class.
+            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
+            if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
+            if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
+            if nargin < 5, num_neurons = self.neuron_manager.num_neurons; end
+            if nargin < 4, method = 'RK4'; end                                                                          % [str] Integration Method.
+            if nargin < 3, tf = self.tf; end                                                                            % [s] Simulation Duration.
+            if nargin < 2, dt = self.dt; end                                                                            % [s] Simulation Time Step.
+            
+            % Compute the number of input signals.
+            num_input_signals = size( applied_current_magnitudes, 2 );
+            
+            % Create a matrix to store the membrane voltages.
+            Us_achieved_numerical = zeros( num_input_signals, num_neurons );
+
+            % Store a copy of the original network.
+            network = self;
+            
+            % Set the set flag.
+            set_flag = false;
+            
+            % Simulate the network for each of the applied current combinations.
+            for k = 1:num_input_signals         	% Iterate through each of the currents applied to the input neuron...
+
+                % Create applied currents.
+                [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_current_magnitudes( k ), 'Ias', applied_current_manager.applied_currents, set_flag );
+
+                % Simulate the network.
+                [ ~, Us, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~ ] = network.compute_simulation( dt, tf, method, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network_utilities );
+
+                % Retrieve the final membrane voltages.
+                Us_achieved_numerical( k, : ) = Us( :, end );
+
+            end
+            
+        end
+        
+        
         %% Print Functions.
         
         % Implement a function to print the network information.

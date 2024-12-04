@@ -79,8 +79,8 @@ Gm1 = 1e-6;                                         % [S] Membrane Conductance (
 Gm2 = 1e-6;                                         % [S] Membrane Conductance (Neuron 2).
 Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
 Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
-% Cm1 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 1).
-% Cm2 = 30e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+% Cm1 = 30e-9;                                      % [F] Membrane Capacitance (Neuron 1).
+% Cm2 = 30e-9;                                      % [F] Membrane Capacitance (Neuron 2).
 
 % Store the transmission subnetwork design parameters in a cell.
 transmission_parameters = { R1, R2, Gm1, Gm2, Cm1, Cm2 };
@@ -124,7 +124,7 @@ network = network_class( network_dt, network_tf );
 network.print( network.neuron_manager, network.synapse_manager, network.applied_current_manager, verbose_flag );
 
 
-%% Compute Desired & Achieved Relative Transmission Formulations.
+%% Compute the Transmission Subnetwork Numerical Stability Information.
 
 % Define the property retrieval settings.
 as_matrix_flag = true;
@@ -162,7 +162,7 @@ Us_achieved_theoretical = [ U1s, U2s_achieved_theoretical ];
 network.numerical_method_utilities.print_numerical_stability_info( As, dts, network_dt, condition_numbers );
 
 
-%% Decode the Desired & Theoreticall Achieved Absolute Transmission Subnetwork Results.
+%% Decode the Desired & Theoretically Achieved Relative Transmission Subnetwork Results.
 
 % Compute the decoded desired result.
 xs_desired = f_decode( Us_desired( :, 1 ), R1, x_max );
@@ -173,7 +173,7 @@ xs_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 1 ), R1, x_max )
 ys_achieved_theoretical = f_decode( Us_achieved_theoretical( :, 2 ), R2, y_max );
 
 
-%% Plot the Desired and Achieved Relative Transmission Formulation Results.
+%% Plot the Desired and Theoretically Achieved Relative Transmission Formulation Results.
 
 % Plot the encoded desired and achieved relative transmission formulation results.
 fig = figure( 'Color', 'w', 'Name', 'RT: Encoded Desired & Achieved (Theory) SS Behavior' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Membrane Voltage 2 (Output), U2 [mV]' ), title( 'RT: Encoded Desired & Achieved (Theory) SS Behavior' )
@@ -239,15 +239,15 @@ if simulate_flag                            % If we want to simulate the network
     % Simulate the network for each of the applied current combinations.
     for k = 1:n_input_signals         	% Iterate through each of the currents applied to the input neuron...
             
-            % Create applied currents.
-            [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
+        % Create applied currents.
+        [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
 
-            % Simulate the network.            
-            [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
+        % Simulate the network.            
+        [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
 
-            % Retrieve the final membrane voltages.
-            Us_achieved_numerical( k, : ) = Us( :, end );
-            
+        % Retrieve the final membrane voltages.
+        Us_achieved_numerical( k, : ) = Us( :, end );
+
     end
 
     % Decode the achieved membrane voltages.

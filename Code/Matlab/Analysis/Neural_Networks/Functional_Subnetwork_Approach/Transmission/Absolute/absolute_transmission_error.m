@@ -236,14 +236,14 @@ if simulate_flag                            % If we want to simulate the network
     % Simulate the network for each of the applied current combinations.
     for k = 1:n_input_signals               % Iterate through each of the currents applied to the input neuron...
             
-            % Create applied currents.
-            [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
+        % Create applied currents.
+        [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_currents( k ), 'Ias', network.applied_current_manager.applied_currents, set_flag );
 
-            % Simulate the network.            
-            [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
+        % Simulate the network.            
+        [ ts, Us, hs, dUs, dhs, Gs, I_leaks, I_syns, I_nas, I_apps, I_totals, m_infs, h_infs, tauhs, neurons, synapses, neuron_manager, synapse_manager, network ] = network.compute_simulation( network_dt, network_tf, integration_method, network.neuron_manager, network.synapse_manager, network.applied_current_manager, network.applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network.network_utilities );
 
-            % Retrieve the final membrane voltages.
-            Us_achieved_numerical( k, : ) = Us( :, end );
+        % Retrieve the final membrane voltages.
+        Us_achieved_numerical( k, : ) = Us( :, end );
             
     end
     
