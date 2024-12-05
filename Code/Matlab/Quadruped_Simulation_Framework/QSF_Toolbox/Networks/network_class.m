@@ -19238,15 +19238,17 @@ classdef network_class
         function Us_achieved_numerical = compute_steady_state_simulation( self, dt, tf, method, num_neurons, input_current_ID, applied_current_magnitudes, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, process_option, undetected_option, network_utilities )
 
             % Set the default simulation duration.
-            if nargin < 13, network_utilities = self.network_utilities; end                                             % [class] Network Utilities Class.
-            if nargin < 12, undetected_option = self.undetected_option_DEFAULT; end                                     % [str] Undetected Option.
-            if nargin < 11, process_option = self.process_option_DEFAULT; end                                           % [str] Process Option.
-            if nargin < 9, filter_disabled_flag = self.filter_disabled_flag_DEFAULT; end                                % [T/F] Filter Disabled Flag.
-            if nargin < 8, applied_voltage_manager = self.applied_voltage_manager; end                                  % [class] Applied Voltage Manager Class.
-            if nargin < 7, applied_current_manager = self.applied_current_manager; end                                  % [class] Applied Current Manager Class.
-            if nargin < 6, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
-            if nargin < 5, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
-            if nargin < 5, num_neurons = self.neuron_manager.num_neurons; end
+            if nargin < 15, network_utilities = self.network_utilities; end                                             % [class] Network Utilities Class.
+            if nargin < 14, undetected_option = self.undetected_option_DEFAULT; end                                     % [str] Undetected Option.
+            if nargin < 13, process_option = self.process_option_DEFAULT; end                                           % [str] Process Option.
+            if nargin < 12, filter_disabled_flag = self.filter_disabled_flag_DEFAULT; end                               % [T/F] Filter Disabled Flag.
+            if nargin < 11, applied_voltage_manager = self.applied_voltage_manager; end                                 % [class] Applied Voltage Manager Class.
+            if nargin < 10, applied_current_manager = self.applied_current_manager; end                                 % [class] Applied Current Manager Class.
+            if nargin < 9, synapse_manager = self.synapse_manager; end                                                  % [class] Synapse Manager Class.
+            if nargin < 8, neuron_manager = self.neuron_manager; end                                                    % [class] Neuron Manager Class.
+            if nargin < 7, applied_current_magnitudes = zeros( 1, 1 ); end                                              % [A] Applied Current Magnitudes.
+            if nargin < 6, input_current_ID = applied_current_manager.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 1 ).ID, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 5, num_neurons = self.neuron_manager.num_neurons; end                                           % [#] Number of Neurons.
             if nargin < 4, method = 'RK4'; end                                                                          % [str] Integration Method.
             if nargin < 3, tf = self.tf; end                                                                            % [s] Simulation Duration.
             if nargin < 2, dt = self.dt; end                                                                            % [s] Simulation Time Step.
@@ -19256,21 +19258,15 @@ classdef network_class
             
             % Create a matrix to store the membrane voltages.
             Us_achieved_numerical = zeros( num_input_signals, num_neurons );
-
-            % Store a copy of the original network.
-            network = self;
-            
-            % Set the set flag.
-            set_flag = false;
             
             % Simulate the network for each of the applied current combinations.
             for k = 1:num_input_signals         	% Iterate through each of the currents applied to the input neuron...
 
                 % Create applied currents.
-                [ ~, network.applied_current_manager ] = network.applied_current_manager.set_applied_current_property( input_current_ID, applied_current_magnitudes( k ), 'Ias', applied_current_manager.applied_currents, set_flag );
+                [ ~, applied_current_manager ] = applied_current_manager.set_applied_current_property( input_current_ID, applied_current_magnitudes( k ), 'Ias', applied_current_manager.applied_currents, true );
 
                 % Simulate the network.
-                [ ~, Us, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~ ] = network.compute_simulation( dt, tf, method, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, set_flag, process_option, undetected_option, network_utilities );
+                [ ~, Us, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~ ] = self.compute_simulation( dt, tf, method, neuron_manager, synapse_manager, applied_current_manager, applied_voltage_manager, filter_disabled_flag, false, process_option, undetected_option, network_utilities );
 
                 % Retrieve the final membrane voltages.
                 Us_achieved_numerical( k, : ) = Us( :, end );
