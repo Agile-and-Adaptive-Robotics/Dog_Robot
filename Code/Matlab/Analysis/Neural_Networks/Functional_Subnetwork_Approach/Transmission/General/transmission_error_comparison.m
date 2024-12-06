@@ -41,21 +41,26 @@ num_neurons = 2;                                    % [#] Number of Neurons.
 % Define the integration method.
 integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
 
+% Define whether to save the figures.
+save_flag = true;                                   %[T/F] Save Flag.
+
 
 %% Define the Desired Transmission Subnetwork Parameters.
 
 % Create an instance of the network utilities class.
 network_utilities = network_utilities_class(  );
+numerical_method_utilities = numerical_method_utilities_class(  );
+plotting_utilities = plotting_utilities_class(  );
 
 % Define the transmission subnetwork parameters.
-c = 1.0;                                            % [-] Subnetwork Gain.
+c = 2.0;                                            % [-] Subnetwork Gain.
 
 % Define the desired mapping operation.
-f_desired = @( x ) network_utilities.compute_desired_transmission_sso( x, c );
+f_desired = @( x, c ) network_utilities.compute_desired_transmission_sso( x, c );
 
 % Define the domain of the input and output signals.
 x_max = 20;
-y_max = f_desired( x_max );
+y_max = f_desired( x_max, c );
 
 
 %% Define the Encoding & Decoding Operations.
@@ -91,16 +96,6 @@ absolute_transmission_parameters = { c, R1_absolute, Gm1_absolute, Gm2_absolute,
 relative_transmission_parameters = { R1_relative, R2_relative, Gm1_relative, Gm2_relative, Cm1_relative, Cm2_relative };
 
 
-%% Define the Desired Input Signal.
-
-% Define the desired input signal.
-xs_desired = x_max*ones( n_timesteps, 1 );
-
-% Encode the input signal.
-Us1_desired_absolute = f_encode_absolute( xs_desired );
-Us1_desired_relative = f_encode_relative( xs_desired, R1_relative, x_max );
-
-
 %% Define the Absolute & Relative Transmission Subnetwork Input Currents.
 
 % Define the applied current ID.
@@ -116,8 +111,8 @@ input_current_to_neuron_ID_absolute = 1;                        % [#] Absolute N
 input_current_to_neuron_ID_relative = 1;                        % [#] Relative Neuron ID to Which Input Current is Applied.
 
 % Define the applied current magnitudes.
-Ias1_absolute = Us1_desired_absolute*Gm1_absolute;            	% [A] Applied Current Magnitude.
-Ias1_relative = Us1_desired_relative*Gm1_relative;           	% [A] Applied Current Magnitude.
+Ias1_absolute = zeros( n_timesteps, 1 );                        % [A] Applied Current Magnitude.
+Ias1_relative = zeros( n_timesteps, 1 );                        % [A] Applied Current Magnitude.
 
 
 %% Create the Relative Transmission Subnetwork.
@@ -146,85 +141,6 @@ fprintf( '----------------------------------------------------------------------
 fprintf( '----------------------------------- RELATIVE TRANSMISSION SUBNETWORK -----------------------------------\n\n' )
 network_relative.print( network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, verbose_flag );
 fprintf( '---------------------------------------------------------------------------------------------------------\n\n\n' )
-
-
-% %% Compute the Transmission Subnetwork Numerical Stability Information.
-% 
-% % Define the property retrieval settings.
-% as_matrix_flag = true;
-% 
-% % Define the stability analysis timestep seed.
-% dt0 = 1e-6;                                                                                                                                                             % [s] Numerical Stability Time Step.
-% 
-% % Retrieve properties from the absolute transmission subnetwork.
-% Cms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
-% Gms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
-% Rs_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
-% gs_absolute = network_absolute.get_gs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                      % [S] Synaptic Conductance.
-% dEs_absolute = network_absolute.get_dEs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
-% Ias_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
-% 
-% % Retrieve properties from the relative transmission subnetwork.
-% Cms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
-% Gms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
-% Rs_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
-% gs_relative = network_relative.get_gs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                      % [S] Synaptic Conductance.
-% dEs_relative = network_relative.get_dEs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
-% Ias_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
-% 
-% % Define the transmission subnetwork inputs.
-% U1s_absolute = linspace( 0, Rs_absolute( 1 ), 100  )';
-% U1s_relative = linspace( 0, Rs_relative( 1 ), 100  )';
-% 
-% % Compute the desired transmission steady state output.
-% U2s_desired_absolute = network_absolute.compute_da_transmission_sso( U1s_absolute, c, network_absolute.neuron_manager, undetected_option, network_absolute.network_utilities );
-% U2s_desired_relative = network_relative.compute_dr_transmission_sso( U1s_relative, c, R1_relative, R2_relative, network_relative.neuron_manager, undetected_option, network_relative.network_utilities );
-% 
-% % Store the desired transmission steady state results in arrays.
-% Us_desired_absolute = [ U1s_absolute, U2s_desired_absolute ];
-% Us_desired_relative = [ U1s_relative, U2s_desired_relative ];
-% 
-% % Compute the realtive transmission steady state output.
-% [ U2s_achieved_theoretical_absolute, As_absolute, dts_absolute, condition_numbers_absolute ] = network_absolute.achieved_transmission_RK4_stability_analysis( U1s_absolute, Cms_absolute, Gms_absolute, Rs_absolute, Ias_absolute, gs_absolute, dEs_absolute, dt0, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, undetected_option, network_absolute.network_utilities );
-% [ U2s_achieved_theoretical_relative, As_relative, dts_relative, condition_numbers_relative ] = network_relative.achieved_transmission_RK4_stability_analysis( U1s_relative, Cms_relative, Gms_relative, Rs_relative, Ias_relative, gs_relative, dEs_relative, dt0, network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, undetected_option, network_relative.network_utilities );
-% 
-% % Store the desired and theoretically achieved absolute transmission steady state results in arrays.
-% Us_achieved_theoretical_absolute = [ U1s_absolute, U2s_achieved_theoretical_absolute ];
-% Us_achieved_theoretical_relative = [ U1s_relative, U2s_achieved_theoretical_relative ];
-% 
-% % Retrieve the maximum RK4 step size.
-% [ dt_max_absolute, indexes_dt_absolute ] = max( dts_absolute );
-% [ dt_max_relative, indexes_dt_relative ] = max( dts_relative );
-% 
-% % Retrieve the maximum condition number.
-% [ condition_number_max_absolute, indexes_condition_number_absolute ] = max( condition_numbers_absolute );
-% [ condition_number_max_relative, indexes_condition_number_relative ] = max( condition_numbers_relative );
-% 
-% 
-% %% Print the Numerical Stability Information.
-% 
-% % Print out the stability information.
-% network_absolute.numerical_method_utilities.print_numerical_stability_info( As_absolute, dts_absolute, network_dt, condition_numbers_absolute );
-% network_relative.numerical_method_utilities.print_numerical_stability_info( As_relative, dts_relative, network_dt, condition_numbers_relative );
-% 
-% 
-% %% Decode the Desired & Theoretically Achieved Transmission Subnetwork Results.
-% 
-% % Compute the decoded desired inputs.
-% xs_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 1 ) );
-% xs_desired_relative = f_decode_relative( Us_desired_relative( :, 1 ), R1_relative, x_max );
-% 
-% % Compute the decoded desired outputs.
-% ys_desired_absolute = f_decode_absolute( Us_desired_absolute( :, 2 ) );
-% ys_desired_relative = f_decode_relative( Us_desired_relative( :, 2 ), R2_relative, y_max );
-% 
-% % Compute the decoded theoretically achieved inputs.
-% xs_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 1 ) );
-% xs_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 1 ), R1_relative, x_max );
-% 
-% % Compute the decoded theoretically achieved outputs.
-% ys_achieved_theoretical_absolute = f_decode_absolute( Us_achieved_theoretical_absolute( :, 2 ) );
-% ys_achieved_theoretical_relative = f_decode_relative( Us_achieved_theoretical_relative( :, 2 ), R2_relative, y_max );
 
 
 %% Simulate the Transmission Network.
@@ -306,7 +222,7 @@ xs_theoretical = xs_numerical;
 
 % Compute the absolute and relative desired subnetwork output.
 Us_desired_output_absolute = network_absolute.compute_da_transmission_sso( Us_numerical_absolute( :, 1 ), c, network_absolute.neuron_manager, undetected_option, network_absolute.network_utilities );
-Us_desired_output_relative = network_relative.compute_dr_transmission_sso( Us_numerical_relative( :, 1 ), c, R1_relative, R2_relative, network_relative.neuron_manager, undetected_option, network_relative.network_utilities );
+Us_desired_output_relative = network_relative.compute_dr_transmission_sso( Us_numerical_relative( :, 1 ), 1, R1_relative, R2_relative, network_relative.neuron_manager, undetected_option, network_relative.network_utilities );
 
 % Compute the absolute and relative achieved theoretical subnetwork output.
 Us_theoretical_output_absolute = network_absolute.compute_achieved_transmission_sso( Us_numerical_absolute( :, 1 ), R1_absolute, Gm2_absolute, Ia2_absolute, gs21_absolute, dEs21_absolute, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, undetected_option, network_absolute.network_utilities );
@@ -330,9 +246,6 @@ ys_theoretical_relative = f_decode_relative( Us_theoretical_relative( :, 2 ), R2
 
 
 %% Compute the Absolute & Relative Transmission Network Error.
-
-% Retrieve an instance of the numerical method utilities class.
-numerical_method_utilities = network_absolute.numerical_method_utilities;
 
 % Compute the error between the encoded theoretical output and the desired output.
 [ errors_theoretical_encoded_absolute, error_percentages_theoretical_encoded_absolute, error_rmse_theoretical_encoded_absolute, error_rmse_percentage_theoretical_encoded_absolute, error_std_theoretical_encoded_absolute, error_std_percentage_theoretical_encoded_absolute, error_min_theoretical_encoded_absolute, error_min_percentage_theoretical_encoded_absolute, index_min_theoretical_encoded_absolute, error_max_theoretical_encoded_absolute, error_max_percentage_theoretical_encoded_absolute, index_max_theoretical_encoded_absolute, error_range_theoretical_encoded_absolute, error_range_percentage_theoretical_encoded_absolute ] = numerical_method_utilities.compute_error_statistics( Us_theoretical_absolute, Us_desired_absolute, R2_absolute );
@@ -417,159 +330,201 @@ network_relative.numerical_method_utilities.print_error_statistics( header_str_d
 [ error_improv_numerical_decoded, error_percent_improv_numerical_decoded, error_mse_improv_numerical_decoded, error_mse_percent_improv_numerical_decoded, error_std_improv_numerical_decoded, error_std_percent_improv_numerical_decoded, error_min_improv_numerical_decoded, error_min_percent_improv_numerical_decoded, error_max_improv_numerical_decoded, error_max_percent_improv_numerical_decoded ] = numerical_method_utilities.compute_error_improvement_statistics( errors_numerical_decoded_absolute, errors_numerical_decoded_relative, error_percentages_numerical_decoded_absolute, error_percentages_numerical_decoded_relative, error_rmse_numerical_decoded_absolute, error_rmse_numerical_decoded_relative, error_rmse_percentage_numerical_decoded_absolute, error_rmse_percentage_numerical_decoded_relative, error_std_numerical_decoded_absolute, error_std_numerical_decoded_relative, error_std_percentage_numerical_decoded_absolute, error_std_percentage_numerical_decoded_relative, error_min_numerical_decoded_absolute, error_min_numerical_decoded_relative, error_min_percentage_numerical_decoded_absolute, error_min_percentage_numerical_decoded_relative, error_max_numerical_decoded_absolute, error_max_numerical_decoded_relative, error_max_percentage_numerical_decoded_absolute, error_max_percentage_numerical_decoded_relative );
 
 
-%% Print Out the Summary Information.
+%% Compute the Transmission Subnetwork Numerical Stability Information.
+
+% Define the property retrieval settings.
+as_matrix_flag = true;
+
+% Define the stability analysis timestep seed.
+dt0 = 1e-6;                                                                                                                                                             % [s] Numerical Stability Time Step.
+
+% Retrieve properties from the absolute transmission subnetwork.
+Cms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
+Gms_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
+Rs_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
+gs_absolute = network_absolute.get_gs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                      % [S] Synaptic Conductance.
+dEs_absolute = network_absolute.get_dEs( 'all', network_absolute.neuron_manager, network_absolute.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
+Ias_absolute = network_absolute.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_absolute.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
+
+% Retrieve properties from the relative transmission subnetwork.
+Cms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Cm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [F] Membrane Capacitance.
+Gms_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Gm', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );          % [S] Membrane Conductance.
+Rs_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'R', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );            % [V] Maximum Membrane Voltage.
+gs_relative = network_relative.get_gs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                      % [S] Synaptic Conductance.
+dEs_relative = network_relative.get_dEs( 'all', network_relative.neuron_manager, network_relative.synapse_manager );                                                    % [V] Synaptic Reversal Potential.
+Ias_relative = network_relative.neuron_manager.get_neuron_property( 'all', 'Itonic', as_matrix_flag, network_relative.neuron_manager.neurons, undetected_option );      % [A] Applied Currents.
+
+% Compute the realtive transmission steady state output.
+[ ~, As_absolute, dts_absolute, condition_numbers_absolute ] = network_absolute.achieved_transmission_RK4_stability_analysis( Us_desired_absolute( :, 1 ), Cms_absolute, Gms_absolute, Rs_absolute, Ias_absolute, gs_absolute, dEs_absolute, dt0, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, undetected_option, network_absolute.network_utilities );
+[ ~, As_relative, dts_relative, condition_numbers_relative ] = network_relative.achieved_transmission_RK4_stability_analysis( Us_desired_relative( :, 1 ), Cms_relative, Gms_relative, Rs_relative, Ias_relative, gs_relative, dEs_relative, dt0, network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, undetected_option, network_relative.network_utilities );
+
+% Retrieve the maximum RK4 step size.
+[ dt_max_absolute, indexes_dt_absolute ] = max( dts_absolute );
+[ dt_max_relative, indexes_dt_relative ] = max( dts_relative );
+
+% Retrieve the maximum condition number.
+[ condition_number_max_absolute, indexes_condition_number_absolute ] = max( condition_numbers_absolute );
+[ condition_number_max_relative, indexes_condition_number_relative ] = max( condition_numbers_relative );
 
 
-% Working on this section.
+%% Print the Numerical Stability Information.
 
-% Retrieve the absolute input voltage matrices.
-Us1_achieved_absolute = Us_achieved_absolute( :, 1 );
-Us2_achieved_absolute = Us_achieved_absolute( :, 2 );
-
-% Retrieve the relative input voltage matrices.
-Us1_achieved_relative = Us_achieved_relative( :, 1 );
-Us2_achieved_relative = Us_achieved_relative( :, 2 );
-
-% Print out the absolute transmission membrane voltage summary statistics.
-fprintf( 'Absolute Transmission Summary Statistics (Encoded)\n' )
-fprintf( 'MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', mse_absolute, mse_absolute_percent )
-fprintf( 'STD: \t\t\t%9.3e [mV] (%6.2f [%%])\n', std_absolute, std_absolute_percent )
-fprintf( 'Max Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_absolute_max, error_absolute_max_percent, Us1_achieved_absolute( index_absolute_max ), Us2_achieved_absolute( index_absolute_max ) )
-fprintf( 'Min Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_absolute_min, error_absolute_min_percent, Us1_achieved_absolute( index_absolute_min ), Us2_achieved_absolute( index_absolute_min ) )
-fprintf( 'Range Error: \t%0.3e [mV] (%6.2f [%%])\n', error_absolute_range, error_absolute_range_percent )
-
-fprintf( '\n' )
-fprintf( 'Relative Transmission Summary Statistics (Encoded)\n' )
-fprintf( 'MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', mse_relative, mse_relative_percent )
-fprintf( 'STD: \t\t\t%9.3e [mV] (%6.2f [%%])\n', std_relative, std_relative_percent )
-fprintf( 'Max Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_relative_max, error_relative_max_percent, Us1_achieved_relative( index_relative_max ), Us2_achieved_relative( index_relative_max ) )
-fprintf( 'Min Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_relative_min, error_relative_min_percent, Us1_achieved_relative( index_relative_min ), Us2_achieved_relative( index_relative_min ) )
-fprintf( 'Range Error: \t%0.3e [mV] (%6.2f [%%])\n', error_relative_range, error_relative_range_percent )
-
-fprintf( '\n' )
-fprintf( 'Absolute vs Relative Transmission Summary Statistics (Encoded):\n' )
-fprintf( 'delta MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', error_difference_mse, error_difference_mse_percent )
-fprintf( 'delta STD:\t%9.3e [V] (%6.2f [%%])\n', error_difference_std, error_difference_std_percent )
-fprintf( 'delta Max Error:\t%9.3e [mV] (%6.2f [%%])\n', error_difference_max, error_difference_max_percent )
-
-% Print out the absolute transmission decoding summary statistics.
-fprintf( 'Absolute Transmission Summary Statistics (Decoded)\n' )
-fprintf( 'MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', mse_decoded_absolute, mse_decoded_absolute_percent )
-fprintf( 'STD: \t\t\t%9.3e [mV] (%6.2f [%%])\n', std_decoded_absolute, std_decoded_absolute_percent )
-fprintf( 'Max Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_decoded_absolute_max, error_decoded_absolute_max_percent, Us_achieved_decoded_absolute( index_decoded_absolute_max, 1 ), Us_achieved_decoded_absolute( index_decoded_absolute_max, 2 ) )
-fprintf( 'Min Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_decoded_absolute_min, error_decoded_absolute_min_percent, Us_achieved_decoded_absolute( index_decoded_absolute_min, 1 ), Us_achieved_decoded_absolute( index_decoded_absolute_min, 2 ) )
-fprintf( 'Range Error: \t%0.3e [mV] (%6.2f [%%])\n', error_decoded_absolute_range, error_decoded_absolute_range_percent )
-
-fprintf( '\n' )
-fprintf( 'Relative Transmission Summary Statistics (Decoded)\n' )
-fprintf( 'MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', mse_decoded_relative, mse_decoded_relative_percent )
-fprintf( 'STD: \t\t\t%9.3e [mV] (%6.2f [%%])\n', std_decoded_relative, std_decoded_relative_percent )
-fprintf( 'Max Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_decoded_relative_max, error_decoded_relative_max_percent, Us_achieved_decoded_relative( index_decoded_relative_max, 1 ), Us_achieved_decoded_relative( index_decoded_relative_max, 2 ) )
-fprintf( 'Min Error: \t\t%9.3e [mV] (%6.2f [%%]) @ (%9.3e [mV], %9.3e [mV])\n', error_decoded_relative_min, error_decoded_relative_min_percent, Us_achieved_decoded_relative( index_decoded_relative_min, 1 ), Us_achieved_decoded_relative( index_decoded_relative_min, 2 ) )
-fprintf( 'Range Error: \t%0.3e [mV] (%6.2f [%%])\n', error_decoded_relative_range, error_decoded_relative_range_percent )
-
-fprintf( '\n' )
-fprintf( 'Absolute vs Relative Transmission Summary Statistics (Decoded):\n' )
-fprintf( 'delta MSE: \t\t\t%9.3e [mV] (%6.2f [%%])\n', error_decoded_difference_mse, error_decoded_difference_mse_percent )
-fprintf( 'delta STD:\t%9.3e [V] (%6.2f [%%])\n', error_decoded_difference_std, error_decoded_difference_std_percent )
-fprintf( 'delta Max Error:\t%9.3e [mV] (%6.2f [%%])\n', error_decoded_difference_max, error_decoded_difference_max_percent )
+% Print out the stability information.
+network_absolute.numerical_method_utilities.print_numerical_stability_info( As_absolute, dts_absolute, network_dt, condition_numbers_absolute );
+network_relative.numerical_method_utilities.print_numerical_stability_info( As_relative, dts_relative, network_dt, condition_numbers_relative );
 
 
-%% Plot the Steady State Transmission Error Surfaces.
+%% Plot the Transmission Steady State Response.
 
-% Create a figure that shows the achieved and desired membrane voltage outputs for the absolute transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Input Membrane Voltage, U1 [mV]' ), ylabel( 'Output Membrane Voltage, U2 [mV]' ), title( 'Absolute Transmission Steady State Response (Comparison)' )
-plot( Us_desired_absolute( :, 1 )*( 10^3 ), Us_desired_absolute( :, end )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_achieved_absolute( :, 1 )*( 10^3 ), Us_achieved_absolute( :, end )*( 10^3 ), '-', 'Linewidth', 3 )
-legend( { 'Desired', 'Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_response_comparison.png' ] )
+% Define the membrane voltage plotting scale factor.
+scale = 10^3;
 
-% Create a figure that shows the decoded achieved and desired membrane voltage outputs for the absolute transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Absolute Transmission Steady State Decoding (Comparison)' ); hold on, grid on, xlabel( 'Input Decoding [-]' ), ylabel( 'Output Decoding [-]' ), title( 'Absolute Transmission Steady State Decoding (Comparison)' )
-plot( Us_desired_decoded_absolute( :, 1 ), Us_desired_decoded_absolute( :, end ), '-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_absolute( :, 1 ), Us_achieved_decoded_absolute( :, end ), '-', 'Linewidth', 3 )
-legend( { 'Desired', 'Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'absolute_transmission_ss_decoding_comparison.png' ] )
+% Define the line colors.
+color_absolute = [ 0.0000, 0.4470, 0.7410, 1.0000 ];
+color_relative = [ 0.8500, 0.3250, 0.0980, 1.0000 ];
 
-% Create a figure that shows the differences between the achieved and desired membrane voltage outputs for the relative transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Membrane Voltage of Input Neuron, U1 [mV]' ), ylabel( 'Membrane Voltage of Output Neuron, U2 [mV]' ), title( 'Relative Transmission Steady State Response (Comparison)' )
-plot( Us_desired_relative( :, 1 )*( 10^3 ), Us_desired_relative( :, end )*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_achieved_relative( :, 1 )*( 10^3 ), Us_achieved_relative( :, end )*( 10^3 ), '-', 'Linewidth', 3 )
-legend( { 'Desired', 'Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_response_comparison.png' ] )
+% Define the subnetwork name.
+subnetwork_name = 'Transmission';
 
-% Create a figure that shows the achieved and desired encoding outputs for the relative transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Encoding (Comparison)' ); hold on, grid on, xlabel( 'Input Encoding [-]' ), ylabel( 'Output Encoding [-]' ), title( 'Relative Transmission Steady State Encoding (Comparison)' )
-plot( Us_desired_encoded_relative( :, 1 ), Us_desired_encoded_relative( :, end ), '-', 'Linewidth', 3 )
-plot( Us_achieved_encoded_relative( :, 1 ), Us_achieved_encoded_relative( :, end ), '-', 'Linewidth', 3 )
-legend( { 'Desired', 'Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_encoding_comparison.png' ] )
+% Create plots of the absolute and relative encoded and decoded steady state responses.
+fig_absolute_encoded_ss_response = plotting_utilities.plot_steady_state_response( Us_desired_absolute( :, 1 ), Us_desired_absolute( :, end ), Us_theoretical_absolute( :, end ), Us_numerical_absolute( :, end ), scale, subnetwork_name, 'Absolute', 'Encoded', 'U1', 'U2', 'mV', save_flag, save_directory );
+fig_absolute_decoded_ss_response = plotting_utilities.plot_steady_state_response( xs_desired, ys_desired_absolute, ys_theoretical_absolute, ys_numerical_absolute, 1.0, subnetwork_name, 'Absolute', 'Decoded', 'x', 'y', '-', save_flag, save_directory );
+fig_relative_encoded_ss_response = plotting_utilities.plot_steady_state_response( Us_desired_relative( :, 1 ), Us_desired_relative( :, end ), Us_theoretical_relative( :, end ), Us_numerical_relative( :, end ), scale, subnetwork_name, 'Relative', 'Encoded', 'U1', 'U2', 'mV', save_flag, save_directory );
+fig_relative_decoded_ss_response = plotting_utilities.plot_steady_state_response( xs_desired, ys_desired_relative, ys_theoretical_relative, ys_numerical_relative, 1.0, subnetwork_name, 'Relative', 'Decoded', 'x', 'y', '-', save_flag, save_directory );
 
-% Create a figure that shows the achieved and desired decoding outputs for the relative transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Relative Transmission Steady State Decoding (Comparison)' ); hold on, grid on, xlabel( 'Input Decoding [-]' ), ylabel( 'Output Decoding [-]' ), title( 'Relative Transmission Steady State Decoding (Comparison)' )
-plot( Us_desired_decoded_relative( :, 1 ), Us_desired_decoded_relative( :, end ), '-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_relative( :, 1 ), Us_achieved_decoded_relative( :, end ), '-', 'Linewidth', 3 )
-legend( { 'Desired', 'Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'relative_transmission_ss_decoding_comparison.png' ] )
+% Create a plot that compares the absolute and relative steady state responses using both encoded and decoded.
+fig_encoded_ss_response = plotting_utilities.plot_steady_state_response_comparison( Us_desired_absolute( :, 1 ), Us_desired_absolute( :, end ), Us_theoretical_absolute( :, end ), Us_numerical_absolute( :, end ), color_absolute, Us_desired_relative( :, 1 ), Us_desired_relative( :, end ), Us_theoretical_relative( :, end ), Us_numerical_relative( :, end ), color_relative, scale, subnetwork_name, 'Encoded', 'U1', 'U2', 'mV', save_flag, save_directory );
+fig_decoded_ss_response = plotting_utilities.plot_steady_state_response_comparison( xs_desired, ys_desired_absolute, ys_theoretical_absolute, ys_numerical_absolute, color_absolute, xs_desired, ys_desired_relative, ys_theoretical_relative, ys_numerical_relative, color_relative, 1.0, subnetwork_name, 'Decoded', 'x', 'y', '-', save_flag, save_directory );
 
-% Create a figure that shows the achieved and desired membrane voltage outputs for the relative transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Response (Comparison)' ); hold on, grid on, xlabel( 'Membrane Voltage of Input Neuron, U1 [mV]' ), ylabel( 'Membrane Voltage of Output Neuron, U2 [mV]' ), title( 'Transmission Steady State Response (Comparison)' )
-plot( Us_desired_absolute( :, 1 )*( 10^3 ), Us_desired_absolute( :, end )*( 10^3 ), 'r-', 'Linewidth', 3 )
-plot( Us_achieved_absolute( :, 1 )*( 10^3 ), Us_achieved_absolute( :, end )*( 10^3 ), 'r--', 'Linewidth', 3 )
-plot( Us_desired_relative( :, 1 )*( 10^3 ), Us_desired_relative( :, end )*( 10^3 ), 'b-', 'Linewidth', 3 )
-plot( Us_achieved_relative( :, 1 )*( 10^3 ), Us_achieved_relative( :, end )*( 10^3 ), 'b--', 'Linewidth', 3 )
-legend( { 'Absolute Desired', 'Absolute Achieved', 'Relative Desired', 'Relative Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_ss_response_comparison.png' ] )
 
-% Create a figure that shows the achieved and desired decoding outputs for the relative transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Decoding (Comparison)' ); hold on, grid on, xlabel( 'Input Decoding [-]' ), ylabel( 'Output Decoding [-]' ), title( 'Transmission Steady State Decoding (Comparison)' )
-plot( Us_desired_decoded_absolute( :, 1 ), Us_desired_decoded_absolute( :, end ), 'r-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_absolute( :, 1 ), Us_achieved_decoded_absolute( :, end ), 'r--', 'Linewidth', 3 )
-plot( Us_desired_decoded_relative( :, 1 ), Us_desired_decoded_relative( :, end ), 'b-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_relative( :, 1 ), Us_achieved_decoded_relative( :, end ), 'b--', 'Linewidth', 3 )
-legend( { 'Absolute Desired', 'Absolute Achieved', 'Relative Desired', 'Relative Achieved' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_ss_response_comparison.png' ] )
+%% Plot the Transmission Steady State Error. 
 
-% Create a surface that shows the membrane voltage error for the transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Error' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Membrane Voltage Error, E [mV]' ), title( 'Transmission Steady State Error' )
-plot( Us_achieved_absolute( :, 1 )*( 10^3 ), error_absolute*( 10^3 ), '-', 'Linewidth', 3 )
-plot( Us_achieved_relative( :, 1 )*( 10^3 ), error_relative*( 10^3 ), '-', 'Linewidth', 3 )
+% Plot the encoded steady state error.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Encoded Steady State Error' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error, dU [mV]' ), title( 'Absolute vs Relative Transmission: Encoded Steady State Error' )
+plot( scale*Us_theoretical_absolute( :, 1 ), scale*errors_theoretical_encoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), scale*errors_numerical_encoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_theoretical_relative( :, 1 ), scale*errors_theoretical_encoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
+plot( scale*Us_numerical_relative( :, 1 ), scale*errors_numerical_encoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
+legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_comparison.png' ] )
+
+% Plot the decoded steady state error.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Decoded Steady State Error' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Absolute vs Relative Transmission: Decoded Steady State Error' )
+plot( xs_theoretical, errors_theoretical_decoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_numerical, errors_numerical_decoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_theoretical, errors_theoretical_decoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
+plot( xs_numerical, errors_numerical_decoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
+legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_comparison.png' ] )
+
+% Plot the encoded state state error percentage.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Encoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Percentage, dU [%]' ), title( 'Absolute vs Relative Transmission: Encoded Steady State Error Percentage' )
+plot( scale*Us_theoretical_absolute( :, 1 ), error_percentages_theoretical_encoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), error_percentages_numerical_encoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_theoretical_relative( :, 1 ), error_percentages_theoretical_encoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
+plot( scale*Us_numerical_relative( :, 1 ), error_percentages_numerical_encoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
+legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_percentage_comparison.png' ] )
+
+% Plot the decoded state state error percentage.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Decoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Percentage, E [%]' ), title( 'Absolute vs Relative Transmission: Decoded Steady State Error Percentage' )
+plot( xs_theoretical, error_percentages_theoretical_decoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_numerical, error_percentages_numerical_decoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_theoretical, error_percentages_theoretical_decoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
+plot( xs_numerical, error_percentages_numerical_decoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
+legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_percentage_comparison.png' ] )
+
+
+%% Plot the Transmission Steady State Error Difference.
+
+% Plot the encoded steady state error difference between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Steady State Error Difference' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Difference, dU [mV]' ), title( 'Transmission: Encoded Steady State Error Difference' )
+plot( scale*Us_theoretical_absolute( :, 1 ), scale*error_diff_theoretical_encoded, '-.', 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), scale*error_diff_numerical_encoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_difference.png' ] )
+
+% Plot the decoded steady state error difference between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Steady State Error Difference' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Steady State Error Difference' )
+plot( xs_theoretical, error_diff_theoretical_decoded, '-.', 'Linewidth', 3 )
+plot( xs_numerical, error_diff_numerical_decoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_difference.png' ] )
+
+% Plot the encoded steady state error percentage difference between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Steady State Error Percentage Difference' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Percentage Difference, dU [%]' ), title( 'Transmission: Encoded Steady State Error Percentage Difference' )
+plot( scale*Us_theoretical_absolute( :, 1 ), error_percent_diff_theoretical_encoded, '-.', 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), error_percent_diff_numerical_encoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_percentage_difference.png' ] )
+
+% Plot the decoded steady state error percentage difference between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Steady State Error Percentage Difference' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Percentage Difference, E [%]' ), title( 'Transmission: Decoded Steady State Error Percentage Difference' )
+plot( xs_theoretical, error_percent_diff_theoretical_decoded, '-.', 'Linewidth', 3 )
+plot( xs_numerical, error_percent_diff_numerical_decoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_percentage_difference.png' ] )
+
+
+%% Plot the Transmission Steady State Error Improvement.
+
+% Plot the encoded steady state error improvement between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Steady State Error Improvement' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Improvement, dU [mV]' ), title( 'Transmission: Encoded Steady State Error Improvement' )
+plot( scale*Us_theoretical_absolute( :, 1 ), scale*error_improv_theoretical_encoded, '-.', 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), scale*error_improv_numerical_encoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement.png' ] )
+
+% Plot the decoded steady state error improvement between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Steady State Error Improvement' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Improvement, E [-]' ), title( 'Transmission: Decoded Steady State Error Improvement' )
+plot( xs_theoretical, error_improv_theoretical_decoded, '-.', 'Linewidth', 3 )
+plot( xs_numerical, error_improv_numerical_decoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement.png' ] )
+
+% Plot the encoded steady state error percentage improvement between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Steady State Error Percentage Improvement' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Percentage Improvement, dU [%]' ), title( 'Transmission: Encoded Steady State Error Percentage Improvement' )
+plot( scale*Us_theoretical_absolute( :, 1 ), error_percent_improv_theoretical_encoded, '-.', 'Linewidth', 3 )
+plot( scale*Us_numerical_absolute( :, 1 ), error_percent_improv_numerical_encoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_percentage_improvement.png' ] )
+
+% Plot the decoded steady state error percentage improvement between the absolute and relative transmission formulations.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Steady State Error Percentage Improvement' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Decoded Steady State Error Percentage Improvement' )
+plot( xs_theoretical, error_percent_improv_theoretical_decoded, '-.', 'Linewidth', 3 )
+plot( xs_numerical, error_percent_improv_numerical_decoded, '--', 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_percentage_improvement.png' ] )
+
+
+%% Plot the Numerical Stability Information.
+
+% Plot the RK4 maximum timestep vs the encoded input.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Encoded Input' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Encoded Input' )
+plot( scale*Us_desired_absolute( :, 1 ), dts_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_desired_relative( :, 1 ), dts_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_error_comparison.png' ] )
+saveas( fig, [ save_directory, '\', 'transmission_rk4_maximum_timestep_encoded' ] )
 
-% Create a surface that shows the decoding error for the transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Decoding Error' ); hold on, grid on, xlabel( 'Input Decoding [-]' ), ylabel( 'Output Decoding Error [-]' ), title( 'Transmission Steady State Decoding Error' )
-plot( Us_achieved_decoded_absolute( :, 1 ), error_decoded_absolute, '-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_relative( :, 1 ), error_decoded_relative, '-', 'Linewidth', 3 )
+% Plot the RK4 maximum timestep vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Decoded Input' )
+plot( xs_desired, dts_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_desired, dts_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_decoding_error_comparison.png' ] )
+saveas( fig, [ save_directory, '\', 'transmission_rk4_maximum_timestep_decoded' ] )
 
-% Create a surface that shows the membrane voltage error percentage of the transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Error Percentage' ); hold on, grid on, xlabel( 'Membrane Voltage of Input Neuron, U1 [mV]' ), ylabel( 'Membrane Voltage Error Percentage, E [%]' ), title( 'Transmission Steady State Error Percentage' )
-plot( Us_achieved_absolute( :, 1 )*( 10^3 ), error_absolute_percent, '-', 'Linewidth', 3 )
-plot( Us_achieved_relative( :, 1 )*( 10^3 ), error_relative_percent, '-', 'Linewidth', 3 )
+% Plot the linearized system condition numbers vs the encoded input.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Condition Number vs Encoded Input' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'Absolute vs Relative Transmission: Condition Numbers vs Encoded Input' )
+plot( scale*Us_desired_absolute( :, 1 ), condition_numbers_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
+plot( scale*Us_desired_relative( :, 1 ), condition_numbers_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_error_percentage_comparison.png' ] )
+saveas( fig, [ save_directory, '\', 'transmission_condition_numbers_encoded' ] )
 
-% Create a surface that shows the decoding error percentage for the transmission subnetwork.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Decoding Error Percentage' ); hold on, grid on, xlabel( 'Input Decoding [-]' ), ylabel( 'Output Decoding Error Percentage [%]' ), title( 'Transmission Steady State Decoding Error Percentage' )
-plot( Us_achieved_decoded_absolute( :, 1 ), error_decoded_absolute, '-', 'Linewidth', 3 )
-plot( Us_achieved_decoded_relative( :, 1 ), error_decoded_relative, '-', 'Linewidth', 3 )
+% Plot the linearized system condition numbers vs the decoded input.
+fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Condition Number vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Condition Number [-]' ), title( 'Absolute vs Relative Transmission: Condition Number vs Decoded Input' )
+plot( xs_desired, condition_numbers_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
+plot( xs_desired, condition_numbers_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_decoding_error_percentage_comparison.png' ] )
-
-% Create a surface that shows the difference in error between the absolute and relative transmission subnetworks.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Error Difference' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Membrane Voltage Error Difference, dE [mV]' ), title( 'Transmission Steady State Error Difference' )
-plot( Us_achieved_absolute( :, 1 )*( 10^3 ), error_difference*( 10^3 ), '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'transmission_error_difference.png' ] )
-
-% Create a surface that shows the difference in decoding error between the absolute and relative transmission subnetworks.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Decoding Error Difference' ); hold on, grid on, xlabel( 'Input Neuron Membrane Voltage, U1 [mV]' ), ylabel( 'Decoding Error Difference, dE [mV]' ), title( 'Transmission Steady State Decoding Error Difference' )
-plot( Us_achieved_decoded_absolute( :, 1 ), error_decoded_difference, '-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'transmission_decoding_error_difference.png' ] )
-
-% Create a surface that shows the difference in error between the absolute and relative percent transmission subnetworks.
-fig = figure( 'Color', 'w', 'Name', 'Transmission Steady State Decoding Error Difference Percentage' ); hold on, grid on, xlabel( 'Membrane Voltage of Input Neuron, U1 [mV]' ), ylabel( 'Membrane Voltage Error Difference Percentage, dE [%]' ), title( 'Transmission Steady State Decoding Error Difference Percentage' )
-plot( Us_achieved_decoded_absolute( :, 1 ), error_decoded_difference_percent, 'b-', 'Linewidth', 3 )
-saveas( fig, [ save_directory, '\', 'transmission_decoding_error_percentage_difference.png' ] )
+saveas( fig, [ save_directory, '\', 'transmission_condition_numbers_decoded' ] )
 

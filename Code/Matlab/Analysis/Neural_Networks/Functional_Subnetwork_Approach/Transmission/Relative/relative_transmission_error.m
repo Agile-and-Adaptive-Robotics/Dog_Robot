@@ -199,7 +199,7 @@ fig = figure( 'Color', 'w', 'Name', 'RT: RK4 Maximum Timestep vs Decoded Input' 
 plot( xs_desired, dts, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'relative_transmission_rk4_maximum_timestep_decoded' ] )
 
-% Plot the linearized system condition numbers.
+% Plot the linearized system condition numbers vs the encoded input.
 fig = figure( 'Color', 'w', 'Name', 'RT: Condition Numbers vs Encoded Input' ); hold on, grid on, xlabel( 'Membrane Voltage 1 (Input), U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'RT: Condition Numbers vs Encoded Input' )
 plot( Us_desired( :, 1 )*( 10^3 ), condition_numbers, '-', 'Linewidth', 3 )
 saveas( fig, [ save_directory, '\', 'relative_transmission_condition_numbers_encoded' ] )
