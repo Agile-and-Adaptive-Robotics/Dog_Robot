@@ -166,6 +166,94 @@ classdef plotting_utilities_class
         end
         
         
+        % Implement a function to plot the steady state error of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_comparison( ~, xs_absolute, errors_theoretical_absolute, errors_numerical_absolute, color_absolute, xs_relative, errors_theoretical_relative, errors_numerical_relative, color_relative, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 17, save_directory = './'; end
+            if nargin < 16, save_flag = true; end
+            if nargin < 15, unit = 'mV'; end
+            if nargin < 14, output_variable_string = 'dU'; end
+            if nargin < 13, input_variable_string = 'U1'; end
+            if nargin < 12, encoded_string = 'Encoded'; end
+            if nargin < 11, subnetwork_name = 'Transmission'; end
+            if nargin < 10, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( 'Absolute vs Relative %s: %s Steady State Error', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error, %s [%s]', encoded_string, output_variable_string, unit );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_absolute, scale*errors_theoretical_absolute, '-.', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_absolute, scale*errors_numerical_absolute, '--', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_relative, scale*errors_theoretical_relative, '-.', 'Color', color_relative, 'Linewidth', 3 )
+            plot( scale*xs_relative, scale*errors_numerical_relative, '--', 'Color', color_relative, 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the steady state error percentage of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_percentage_comparison( ~, xs_absolute, error_percentages_theoretical_absolute, error_percentages_numerical_absolute, color_absolute, xs_relative, error_percentages_theoretical_relative, error_percentages_numerical_relative, color_relative, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 17, save_directory = './'; end
+            if nargin < 16, save_flag = true; end
+            if nargin < 15, unit = 'mV'; end
+            if nargin < 14, output_variable_string = 'dU'; end
+            if nargin < 13, input_variable_string = 'U1'; end
+            if nargin < 12, encoded_string = 'Encoded'; end
+            if nargin < 11, subnetwork_name = 'Transmission'; end
+            if nargin < 10, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( 'Absolute vs Relative %s: %s Steady State Error Percentage', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error, %s [%%]', encoded_string, output_variable_string );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_absolute, error_percentages_theoretical_absolute, '-.', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_absolute, error_percentages_numerical_absolute, '--', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_relative, error_percentages_theoretical_relative, '-.', 'Color', color_relative, 'Linewidth', 3 )
+            plot( scale*xs_relative, error_percentages_numerical_relative, '--', 'Color', color_relative, 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error_percentage.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
     end
     
     

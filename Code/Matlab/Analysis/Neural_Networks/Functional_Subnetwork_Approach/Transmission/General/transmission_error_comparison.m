@@ -399,41 +399,13 @@ fig_decoded_ss_response = plotting_utilities.plot_steady_state_response_comparis
 
 %% Plot the Transmission Steady State Error. 
 
-% Plot the encoded steady state error.
-fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Encoded Steady State Error' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error, dU [mV]' ), title( 'Absolute vs Relative Transmission: Encoded Steady State Error' )
-plot( scale*Us_theoretical_absolute( :, 1 ), scale*errors_theoretical_encoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_numerical_absolute( :, 1 ), scale*errors_numerical_encoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_theoretical_relative( :, 1 ), scale*errors_theoretical_encoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
-plot( scale*Us_numerical_relative( :, 1 ), scale*errors_numerical_encoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
-legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_encoded_error_comparison.png' ] )
+% Plot the encoded and decoded steady state error.
+fig_encoded_ss_error = plotting_utilities.plot_steady_state_error_comparison( Us_theoretical_absolute( :, 1 ), errors_theoretical_encoded_absolute, errors_numerical_encoded_absolute, color_absolute, Us_theoretical_relative( :, 1 ), errors_theoretical_encoded_relative, errors_numerical_encoded_relative, color_relative, scale, subnetwork_name, 'Encoded', 'U1', 'dU', 'mV', save_flag, save_directory );
+fig_decoded_ss_error = plotting_utilities.plot_steady_state_error_comparison( xs_theoretical, errors_theoretical_decoded_absolute, errors_numerical_decoded_absolute, color_absolute, xs_theoretical, errors_theoretical_decoded_relative, errors_numerical_decoded_relative, color_relative, 1.0, subnetwork_name, 'Decoded', 'x', 'E', '-', save_flag, save_directory );
 
-% Plot the decoded steady state error.
-fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Decoded Steady State Error' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Absolute vs Relative Transmission: Decoded Steady State Error' )
-plot( xs_theoretical, errors_theoretical_decoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_numerical, errors_numerical_decoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_theoretical, errors_theoretical_decoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
-plot( xs_numerical, errors_numerical_decoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
-legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_decoded_error_comparison.png' ] )
-
-% Plot the encoded state state error percentage.
-fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Encoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Encoded Error Percentage, dU [%]' ), title( 'Absolute vs Relative Transmission: Encoded Steady State Error Percentage' )
-plot( scale*Us_theoretical_absolute( :, 1 ), error_percentages_theoretical_encoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_numerical_absolute( :, 1 ), error_percentages_numerical_encoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_theoretical_relative( :, 1 ), error_percentages_theoretical_encoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
-plot( scale*Us_numerical_relative( :, 1 ), error_percentages_numerical_encoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
-legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_encoded_error_percentage_comparison.png' ] )
-
-% Plot the decoded state state error percentage.
-fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Decoded Steady State Error Percentage' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Decoded Error Percentage, E [%]' ), title( 'Absolute vs Relative Transmission: Decoded Steady State Error Percentage' )
-plot( xs_theoretical, error_percentages_theoretical_decoded_absolute, '-.', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_numerical, error_percentages_numerical_decoded_absolute, '--', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_theoretical, error_percentages_theoretical_decoded_relative, '-.', 'Color', line_color2, 'Linewidth', 3 )
-plot( xs_numerical, error_percentages_numerical_decoded_relative, '--', 'Color', line_color2, 'Linewidth', 3 )
-legend( { 'Absolute Theoretical', 'Absolute Numerical', 'Relative Theoretical', 'Relative Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
-saveas( fig, [ save_directory, '\', 'transmission_decoded_error_percentage_comparison.png' ] )
+% Plot the encoded and decoded steady state error percentage.
+fig_encoded_ss_error_percentage = plotting_utilities.plot_steady_state_error_percentage_comparison( Us_theoretical_absolute( :, 1 ), error_percentages_theoretical_encoded_absolute, error_percentages_numerical_encoded_absolute, color_absolute, Us_theoretical_relative( :, 1 ), error_percentages_theoretical_encoded_relative, error_percentages_numerical_encoded_relative, color_relative, scale, subnetwork_name, 'Encoded', 'U1', 'dU', 'mV', save_flag, save_directory );
+fig_decoded_ss_error_percentage = plotting_utilities.plot_steady_state_error_percentage_comparison( xs_theoretical, error_percentages_theoretical_decoded_absolute, error_percentages_numerical_decoded_absolute, color_absolute, xs_theoretical, error_percentages_theoretical_decoded_relative, error_percentages_numerical_decoded_relative, color_relative, 1.0, subnetwork_name, 'Decoded', 'x', 'E', '-', save_flag, save_directory );
 
 
 %% Plot the Transmission Steady State Error Difference.
@@ -502,29 +474,29 @@ saveas( fig, [ save_directory, '\', 'transmission_decoded_error_percentage_impro
 
 % Plot the RK4 maximum timestep vs the encoded input.
 fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Encoded Input' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Encoded Input' )
-plot( scale*Us_desired_absolute( :, 1 ), dts_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_desired_relative( :, 1 ), dts_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
+plot( scale*Us_desired_absolute( :, 1 ), dts_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+plot( scale*Us_desired_relative( :, 1 ), dts_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_rk4_maximum_timestep_encoded' ] )
 
 % Plot the RK4 maximum timestep vs the decoded input.
 fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'RK4 Maximum Timestep, dt [s]' ), title( 'Absolute vs Relative Transmission: RK4 Maximum Timestep vs Decoded Input' )
-plot( xs_desired, dts_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_desired, dts_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
+plot( xs_desired, dts_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+plot( xs_desired, dts_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_rk4_maximum_timestep_decoded' ] )
 
 % Plot the linearized system condition numbers vs the encoded input.
 fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Condition Number vs Encoded Input' ); hold on, grid on, xlabel( 'Encoded Input, U1 [mV]' ), ylabel( 'Condition Number [-]' ), title( 'Absolute vs Relative Transmission: Condition Numbers vs Encoded Input' )
-plot( scale*Us_desired_absolute( :, 1 ), condition_numbers_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
-plot( scale*Us_desired_relative( :, 1 ), condition_numbers_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
+plot( scale*Us_desired_absolute( :, 1 ), condition_numbers_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+plot( scale*Us_desired_relative( :, 1 ), condition_numbers_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_condition_numbers_encoded' ] )
 
 % Plot the linearized system condition numbers vs the decoded input.
 fig = figure( 'Color', 'w', 'Name', 'Absolute vs Relative Transmission: Condition Number vs Decoded Input' ); hold on, grid on, xlabel( 'Decoded Input, x [-]' ), ylabel( 'Condition Number [-]' ), title( 'Absolute vs Relative Transmission: Condition Number vs Decoded Input' )
-plot( xs_desired, condition_numbers_absolute, '-', 'Color', line_color1, 'Linewidth', 3 )
-plot( xs_desired, condition_numbers_relative, '-', 'Color', line_color2, 'Linewidth', 3 )
+plot( xs_desired, condition_numbers_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+plot( xs_desired, condition_numbers_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_condition_numbers_decoded' ] )
 
