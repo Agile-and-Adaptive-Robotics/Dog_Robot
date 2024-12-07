@@ -254,6 +254,257 @@ classdef plotting_utilities_class
         end
         
         
+        % Implement a function to plot the steady state error difference of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_difference( ~, xs_theoretical, error_difference_theoretical, xs_numerical, error_difference_numerical, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 13, save_directory = './'; end
+            if nargin < 12, save_flag = true; end
+            if nargin < 11, unit = 'mV'; end
+            if nargin < 10, output_variable_string = 'dU'; end
+            if nargin < 9, input_variable_string = 'U1'; end
+            if nargin < 8, encoded_string = 'Encoded'; end
+            if nargin < 7, subnetwork_name = 'Transmission'; end
+            if nargin < 6, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s Steady State Error Difference', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error Difference, %s [%s]', encoded_string, output_variable_string, unit );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_theoretical, scale*error_difference_theoretical, '-.', 'Linewidth', 3 )
+            plot( scale*xs_numerical, scale*error_difference_numerical, '--', 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error_difference.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the steady state error difference of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_percentage_difference( ~, xs_theoretical, error_percentages_difference_theoretical, xs_numerical, error_percentages_difference_numerical, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 13, save_directory = './'; end
+            if nargin < 12, save_flag = true; end
+            if nargin < 11, unit = 'mV'; end
+            if nargin < 10, output_variable_string = 'dU'; end
+            if nargin < 9, input_variable_string = 'U1'; end
+            if nargin < 8, encoded_string = 'Encoded'; end
+            if nargin < 7, subnetwork_name = 'Transmission'; end
+            if nargin < 6, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s Steady State Error Percentage Difference', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error Percentage Difference, %s [%%]', encoded_string, output_variable_string );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_theoretical, error_percentages_difference_theoretical, '-.', 'Linewidth', 3 )
+            plot( scale*xs_numerical, error_percentages_difference_numerical, '--', 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error_percentage_difference.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the steady state error improvement of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_improvement( ~, xs_theoretical, error_improvement_theoretical, xs_numerical, error_improvement_numerical, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 13, save_directory = './'; end
+            if nargin < 12, save_flag = true; end
+            if nargin < 11, unit = 'mV'; end
+            if nargin < 10, output_variable_string = 'dU'; end
+            if nargin < 9, input_variable_string = 'U1'; end
+            if nargin < 8, encoded_string = 'Encoded'; end
+            if nargin < 7, subnetwork_name = 'Transmission'; end
+            if nargin < 6, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s Steady State Error Improvement', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error Improvement, %s [%s]', encoded_string, output_variable_string, unit );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_theoretical, scale*error_improvement_theoretical, '-.', 'Linewidth', 3 )
+            plot( scale*xs_numerical, scale*error_improvement_numerical, '--', 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error_improvement.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the steady state error improvement of a subnetwork for a specific gain.
+        function fig = plot_steady_state_error_percentage_improvement( ~, xs_theoretical, error_percentages_improvement_theoretical, xs_numerical, error_percentages_improvement_numerical, scale, subnetwork_name, encoded_string, input_variable_string, output_variable_string, unit, save_flag, save_directory )
+            
+            % Set the default input arguments.
+            if nargin < 13, save_directory = './'; end
+            if nargin < 12, save_flag = true; end
+            if nargin < 11, unit = 'mV'; end
+            if nargin < 10, output_variable_string = 'dU'; end
+            if nargin < 9, input_variable_string = 'U1'; end
+            if nargin < 8, encoded_string = 'Encoded'; end
+            if nargin < 7, subnetwork_name = 'Transmission'; end
+            if nargin < 6, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s Steady State Error Percentage Improvement', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( '%s Error Percentage Improvement, %s [%%]', encoded_string, output_variable_string );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the absolute and relative theoretical and numerical errors.
+            plot( scale*xs_theoretical, error_percentages_improvement_theoretical, '-.', 'Linewidth', 3 )
+            plot( scale*xs_numerical, error_percentages_improvement_numerical, '--', 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal')
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_%s_steady_state_error_percentage_improvement.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the maximum rk4 step size for a specific gain.
+        function fig = plot_rk4_maximum_timestep( ~, xs_absolute, dts_absolute, color_absolute, xs_relative, dts_relative, color_relative, scale, subnetwork_name, encoded_string, input_variable_string, unit, save_flag, save_directory )
+        
+            % Set the default input arguments.
+            if nargin < 14, save_directory = './'; end
+            if nargin < 13, save_flag = true; end
+            if nargin < 12, unit = 'mV'; end
+            if nargin < 11, input_variable_string = 'U1'; end
+            if nargin < 10, encoded_string = 'Encoded'; end
+            if nargin < 9, subnetwork_name = 'Transmission'; end
+            if nargin < 8, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s RK4 Maximum Timestep', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( 'RK4 Maximum Timestep, dt [s]' );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the desired, theoretical, and numerical steady state responses.
+            plot( scale*xs_absolute, dts_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_relative, dts_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_rk4_maximum_timestep_%s.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        % Implement a function to plot the condition number for a specific gain.
+        function fig = plot_condition_numbers( ~, xs_absolute, condition_numbers_absolute, color_absolute, xs_relative, condition_numbers_relative, color_relative, scale, subnetwork_name, encoded_string, input_variable_string, unit, save_flag, save_directory )
+        
+            % Set the default input arguments.
+            if nargin < 14, save_directory = './'; end
+            if nargin < 13, save_flag = true; end
+            if nargin < 12, unit = 'mV'; end
+            if nargin < 11, input_variable_string = 'U1'; end
+            if nargin < 10, encoded_string = 'Encoded'; end
+            if nargin < 9, subnetwork_name = 'Transmission'; end
+            if nargin < 8, scale = 1; end
+            
+            % Compute the figure labels.
+            title_string = sprintf( '%s: %s Condition Numbers', subnetwork_name, encoded_string );
+            xlabel_string = sprintf( '%s Input, %s [%s]', encoded_string, input_variable_string, unit );
+            ylabel_string = sprintf( 'Condition Numbers [-]' );
+
+            % Create the figure.
+            fig = figure( 'Color', 'w', 'Name', title_string ); hold on, grid on, xlabel( xlabel_string ), ylabel( ylabel_string ), title( title_string )
+            
+            % Plot the desired, theoretical, and numerical steady state responses.
+            plot( scale*xs_absolute, condition_numbers_absolute, '-', 'Color', color_absolute, 'Linewidth', 3 )
+            plot( scale*xs_relative, condition_numbers_relative, '-', 'Color', color_relative, 'Linewidth', 3 )
+            
+            % Add a legend to the figure.
+            legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+            
+            % Determine whether to save the figure.
+            if save_flag                            % If we want to save the figure...
+                    
+                % Define the file name.
+                file_name = sprintf( '%s_condition_number_%s.png', lower( subnetwork_name ), lower( encoded_string ) );
+                
+                % Save the figure.
+                saveas( fig, [ save_directory, '\', file_name ] ) 
+            
+            end
+            
+        end
+        
+        
+        
     end
     
     
