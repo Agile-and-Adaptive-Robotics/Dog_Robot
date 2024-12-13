@@ -536,12 +536,14 @@ plot( cs, errors_min_percent_diff_numerical_decoded, '--', 'Color', color2, 'Lin
 plot( cs, errors_max_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
 
 
-%% Plot the Encoded Error Improvement.
+%% Plot the Encoded Error Improvement vs Gain.
 
 
-%% Plot the Decoded Error Improvement.
+%% Plot the Decoded Error Improvement vs Gain.
 
 
 %% Plot the Numerical Stability Information vs Gain.
 
+
+%% Plot Network Parameters vs Gain.
 
