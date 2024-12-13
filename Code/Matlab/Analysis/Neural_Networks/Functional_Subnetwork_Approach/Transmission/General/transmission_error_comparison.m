@@ -8,7 +8,7 @@ clear, close( 'all' ), clc
 
 % Define the save and load directories.
 save_directory = '.\Save';                         	% [str] Save Directory.
-load_directory = '.\Load';                        	% [str] Load Directory.
+load_directory = '.\Load';                         	% [str] Load Directory.
 
 % Set a flag to determine whether to simulate.
 simulate_flag = true;                             	% [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)

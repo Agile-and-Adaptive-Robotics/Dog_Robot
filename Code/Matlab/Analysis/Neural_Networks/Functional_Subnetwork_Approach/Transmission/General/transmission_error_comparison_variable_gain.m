@@ -11,11 +11,9 @@ save_directory = '.\Save';                         	% [str] Save Directory.
 load_directory = '.\Load';                        	% [str] Load Directory.
 
 % Set a flag to determine whether to simulate.
-simulate_flag = true;                             	% [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)
 % simulate_flag = false;                            % [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)
 
 % Set the level of verbosity.
-verbose_flag = true;                            	% [T/F] Printing Flag. (Determines whether to print out information.)
 
 % Define the undetected option.
 undetected_option = 'Error';                        % [str] Undetected Option.
@@ -41,8 +39,10 @@ integration_method = 'RK4';                         % [str] Integration Method (
 % Define the number of input signals.
 n_input_signals = 20;                               % [#] Number of Input Signals.
 
-% Define whether to save the figures.
-save_flag = true;                                   % [T/F] Save Flag.
+% Define whether to save simulation data.
+simulate_flag = false;                             	% [T/F] Simulation Flag. (Determines whether to create a new simulation of the steady state error or to load a previous simulation.)
+save_flag = true;                                   % [T/F] Save Flag.  (Determine whether to save simulation data.
+verbose_flag = true;                            	% [T/F] Printing Flag. (Determines whether to print out information.)
 
 % Create an instance of the network utilities class.
 network_utilities = network_utilities_class(  );
@@ -214,19 +214,44 @@ for k = 1:n_gains               % Iterate through each of the gains...
         [ xs_numerical_absolute, Us_numerical_absolute, Ias_magnitude_absolute ] = network_absolute.compute_steady_state_simulation_decoded( network_dt, network_tf, integration_method, input_current_ID_absolute, xs_numerical_input, f_general_encode_absolute, encode_parameters_absolute, f_general_decode_absolute, decode_parameters_absolute, network_absolute.neuron_manager, network_absolute.synapse_manager, network_absolute.applied_current_manager, network_absolute.applied_voltage_manager, filter_disabled_flag, process_option, undetected_option, network_absolute.network_utilities );
         [ xs_numerical_relative, Us_numerical_relative, Ias_magnitude_relative ] = network_relative.compute_steady_state_simulation_decoded( network_dt, network_tf, integration_method, input_current_ID_absolute, xs_numerical_input, f_general_encode_relative, encode_parameters_relative, f_general_decode_relative, decode_parameters_relative, network_relative.neuron_manager, network_relative.synapse_manager, network_relative.applied_current_manager, network_relative.applied_voltage_manager, filter_disabled_flag, process_option, undetected_option, network_relative.network_utilities );
         
-        % Save the simulation results.
-        save( [ save_directory, '\', 'absolute_transmission_subnetwork_error' ], 'Ias_magnitude_absolute', 'Us_numerical_absolute', 'xs_numerical_absolute' )
-        save( [ save_directory, '\', 'relative_transmission_subnetwork_error' ], 'Ias_magnitude_relative', 'Us_numerical_relative', 'xs_numerical_relative' )
+        % Determine whether to save the simulation data.
+        if save_flag                    % If we want to save the simulation data...
+            
+            data_absolute.Ias_magnitude = Ias_magnitude_absolute;
+            data_absolute.Us_numerical = Us_numerical_absolute;
+            data_absolute.xs_numerical = xs_numerical_absolute;
+            
+            data_relative.Ias_magnitude = Ias_magnitude_relative;
+            data_relative.Us_numerical = Us_numerical_relative;
+            data_relative.xs_numerical = xs_numerical_relative;
+            
+            % Define the save file names.
+            file_name_absolute = sprintf( 'absolute_transmission_subnetwork_error_gain_%0.0f', c );
+            file_name_relative = sprintf( 'relative_transmission_subnetwork_error_gain_%0.0f', c );
+            
+            % Save the simulation results.
+            save( [ save_directory, '\', file_name_absolute ], 'data_absolute' )
+            save( [ save_directory, '\', file_name_relative ], 'data_relative' )
+            % save( [ save_directory, '\', file_name_absolute ], 'Ias_magnitude_absolute', 'Us_numerical_absolute', 'xs_numerical_absolute' )
+            % save( [ save_directory, '\', file_name_relative ], 'Ias_magnitude_relative', 'Us_numerical_relative', 'xs_numerical_relative' )
+
+        end
         
     else                % Otherwise... ( We must want to load data from an existing simulation... )
         
+        % Define the load file names.
+        file_name_absolute = sprintf( 'absolute_transmission_subnetwork_error_gain_%0.0f', c );
+        file_name_relative = sprintf( 'relative_transmission_subnetwork_error_gain_%0.0f', c );
+        
         % Load the simulation results.
-        data_absolute = load( [ load_directory, '\', 'absolute_transmission_subnetwork_error' ] );
-        data_relative = load( [ load_directory, '\', 'relative_transmission_subnetwork_error' ] );
+        data_absolute = load( [ load_directory, '\', file_name_absolute ] );
+        data_relative = load( [ load_directory, '\', file_name_relative ] );
         
         % Unpack the steady state simulation data.
-        [ xs_numerical_absolute, Us_numerical_absolute, Ias_magnitude_absolute ] = network_absolute.unpack_steady_state_simulation_data( data_absolute );
-        [ xs_numerical_relative, Us_numerical_relative, Ias_magnitude_relative ] = network_relative.unpack_steady_state_simulation_data( data_relative );
+        [ xs_numerical_absolute, Us_numerical_absolute, Ias_magnitude_absolute ] = network_absolute.unpack_steady_state_simulation_data( data_absolute.data_absolute );
+        [ xs_numerical_relative, Us_numerical_relative, Ias_magnitude_relative ] = network_relative.unpack_steady_state_simulation_data( data_relative.data_relative );
+        % [ xs_numerical_absolute, Us_numerical_absolute, Ias_magnitude_absolute ] = network_absolute.unpack_steady_state_simulation_data( data_absolute );
+        % [ xs_numerical_relative, Us_numerical_relative, Ias_magnitude_relative ] = network_relative.unpack_steady_state_simulation_data( data_relative );
         
     end
     
@@ -378,25 +403,145 @@ for k = 1:n_gains               % Iterate through each of the gains...
     
     %% Print the Numerical Stability Information.
     
-%     % Print out the stability information.
-%     network_absolute.numerical_method_utilities.print_numerical_stability_info( As_absolute, dts_absolute, network_dt, condition_numbers_absolute );
-%     network_relative.numerical_method_utilities.print_numerical_stability_info( As_relative, dts_relative, network_dt, condition_numbers_relative );
+    % % Print out the stability information.
+    % network_absolute.numerical_method_utilities.print_numerical_stability_info( As_absolute, dts_absolute, network_dt, condition_numbers_absolute );
+    % network_relative.numerical_method_utilities.print_numerical_stability_info( As_relative, dts_relative, network_dt, condition_numbers_relative );
     
     
 end
 
-%% Plot Error vs Gain.
+
+%% Plot the Encoded Error vs Gain.
+
+% Theoretical and Numerical.
+% Absolute and Relative.
+% Ideally all on the same plot.
+
+
+%% Plot the Decoded Error vs Gain.
+
+
+%% Plot the Encoded Error Difference vs Gain.
+
+
+%% Plot Decoded Error Difference vs Gain.
+
+% Define the line colors.
+color1 = [ 0.0000, 0.4470, 0.7410, 1.0000 ];
+color2 = [ 0.8500, 0.3250, 0.0980, 1.0000 ];
+
+% Retrieve the numerical input.
+xs_numerical_input = xs_numerical_absolute( :, 1 );
 
 % Define the input grid.
 [ Xs, Ys ] = meshgrid( cs, xs_numerical_input );
 
-% Plot the decoded theoretical error difference.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Difference' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Error Difference vs Gain & Decoded Input' )
+% Plot the decoded error difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Difference' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Error Difference' )
 surf( Xs, Ys, errors_diff_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Xs, Ys, errors_diff_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_difference_gain' ] ) 
 
-% % Plot the decoded numerical error difference
-% fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Difference' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Error Difference vs Gain & Decoded Input' )
-% surf( Xs, Ys, errors_diff_theoretical_decoded, 'Edgecolor', 'None' )
+% Plot the decoded error difference percentage.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Difference Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Difference Percentage, E [%]' ), title( 'Transmission: Decoded Error Difference Percentage' )
+surf( Xs, Ys, errors_percent_diff_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Xs, Ys, errors_percent_diff_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_difference_percentage_gain' ] ) 
+
+% Plot the decoded mse difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded MSE Difference' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded MSE Difference, mse [-]' ), title( 'Transmission: Decoded MSE Difference' )
+plot( cs, errors_mse_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_mse_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_mse_difference_gain' ] ) 
+
+% Plot the decoded mse difference percentage.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded MSE Difference Percentage' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded MSE Difference Percentage, mse [%]' ), title( 'Transmission: Decoded MSE Difference Percentage' )
+plot( cs, errors_mse_percent_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_mse_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_mse_percent_difference_gain' ] ) 
+
+% Plot the decoded std difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded STD Difference' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded STD Difference, std [-]' ), title( 'Transmission: Decoded STD Difference' )
+plot( cs, errors_std_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_std_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_std_difference_gain' ] ) 
+
+% Plot the decoded std percentage difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded STD Difference Percentage' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded STD Difference Percentage, std [%]' ), title( 'Transmission: Decoded STD Difference Percentage' )
+plot( cs, errors_std_percent_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_std_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_std_percent_difference_gain' ] ) 
+
+% Plot the decoded minimum error difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Minimum Error Difference' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Minimum Error Difference, Emin [-]' ), title( 'Transmission: Decoded Minimum Error Difference' )
+plot( cs, errors_min_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_min_error_difference_gain' ] ) 
+
+% Plot the decoded minimum error difference percentage.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Minimum Error Difference Percentage' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Minimum Error Difference Percentage, Emin [%]' ), title( 'Transmission: Decoded Minimum Error Difference Percentage' )
+plot( cs, errors_min_percent_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_min_percent_error_difference_gain' ] ) 
+
+% Plot the decoded maximum error difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Maximum Error Difference' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Maximum Error Difference, Emin [-]' ), title( 'Transmission: Decoded Maximum Error Difference' )
+plot( cs, errors_max_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_max_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_max_error_difference_gain' ] ) 
+
+% Plot the decoded maximum error difference percentage.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Maximum Error Difference Percentage' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Maximum Error Difference Percentage, Emax [%]' ), title( 'Transmission: Decoded Maximum Error Difference Percentage' )
+plot( cs, errors_max_percent_diff_theoretical_decoded, '-.', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_max_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 3 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_max_percent_error_difference_gain' ] ) 
+
+% Plot the decoded error difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Difference' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Theoretical Error Difference' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_diff_theoretical_decoded; flipud( errors_max_diff_theoretical_decoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_diff_theoretical_decoded, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_diff_theoretical_decoded, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, errors_max_diff_theoretical_decoded, '--', 'Color', color1, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Difference, E [-]' ), title( 'Transmission: Decoded Numerical Error Difference' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_diff_numerical_decoded; flipud( errors_max_diff_numerical_decoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_diff_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_error_difference_gain_summary' ] ) 
+
+% Plot the decoded error percentage difference.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Percentage Difference' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Percentage Difference, E [%]' ), title( 'Transmission: Decoded Theoretical Error Percentage Difference' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_diff_theoretical_decoded; flipud( errors_max_percent_diff_theoretical_decoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_percent_diff_theoretical_decoded, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_percent_diff_theoretical_decoded, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, errors_max_percent_diff_theoretical_decoded, '--', 'Color', color1, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Percentage Difference, E [%]' ), title( 'Transmission: Decoded Numerical Error Percentage Difference' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_diff_numerical_decoded; flipud( errors_max_percent_diff_numerical_decoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_percent_diff_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_percent_diff_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+
+
+%% Plot the Encoded Error Improvement.
+
+
+%% Plot the Decoded Error Improvement.
+
+
+%% Plot the Numerical Stability Information vs Gain.
+
 
