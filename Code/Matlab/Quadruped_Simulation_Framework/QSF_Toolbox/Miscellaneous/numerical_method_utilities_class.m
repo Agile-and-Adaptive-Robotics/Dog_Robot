@@ -218,24 +218,24 @@ classdef numerical_method_utilities_class
         function [ error_improvement, error_percent_improvement, error_mse_improvement, error_mse_percent_improvment, error_std_improvement, error_std_percent_improvement, error_min_improvement, error_min_percent_improvement, error_max_improvement, error_max_percent_improvement ] = compute_error_improvement_statistics( ~, error_absolute, error_relative, error_absolute_percent, error_relative_percent, mse_absolute, mse_relative, mse_absolute_percent, mse_relative_percent, std_absolute, std_relative, std_absolute_percent, std_relative_percent, error_absolute_min, error_relative_min, error_absolute_min_percent, error_relative_min_percent, error_absolute_max, error_relative_max, error_absolute_max_percent, error_relative_max_percent )
             
             % Compute the improvement in the error between the absolute and relative schemes.
-            error_improvement = abs( error_relative ) - abs( error_absolute );
-            error_percent_improvement = abs( error_relative_percent ) - abs( error_absolute_percent );
+            error_improvement = abs( error_absolute ) - abs( error_relative );
+            error_percent_improvement = abs( error_absolute_percent ) - abs( error_relative_percent );
 
             % Compute the error mean squared error improvement.
-            error_mse_improvement = abs( mse_relative ) - abs( mse_absolute );
-            error_mse_percent_improvment = abs( mse_relative_percent ) - abs( mse_absolute_percent );
+            error_mse_improvement = abs( mse_absolute ) - abs( mse_relative );
+            error_mse_percent_improvment = abs( mse_absolute_percent ) - abs( mse_relative_percent );
 
             % Compute the error standard deviation improvement.
-            error_std_improvement = abs( std_relative ) - abs( std_absolute );
-            error_std_percent_improvement = abs( std_relative_percent ) - abs( std_absolute_percent );
+            error_std_improvement = abs( std_absolute ) - abs( std_relative );
+            error_std_percent_improvement = abs( std_absolute_percent ) - abs( std_relative_percent );
 
             % Compute the minimum error improvement.
-            error_min_improvement = abs( error_relative_min ) - abs( error_absolute_min );
-            error_min_percent_improvement = abs( error_relative_min_percent ) - abs( error_absolute_min_percent );
+            error_min_improvement = abs( error_absolute_min ) - abs( error_relative_min );
+            error_min_percent_improvement = abs( error_absolute_min_percent ) - abs( error_relative_min_percent );
 
             % Compute the maximum error improvement.
-            error_max_improvement = abs( error_relative_max ) - abs( error_absolute_max );
-            error_max_percent_improvement = abs( error_relative_max_percent ) - abs( error_absolute_max_percent );
+            error_max_improvement = abs( error_absolute_max ) - abs( error_relative_max );
+            error_max_percent_improvement = abs( error_absolute_max_percent ) - abs( error_relative_max_percent );
 
         end
         
