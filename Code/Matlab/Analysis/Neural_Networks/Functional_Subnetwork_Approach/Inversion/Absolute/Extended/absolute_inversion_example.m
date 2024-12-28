@@ -11,45 +11,108 @@ save_directory = '.\Save';                        	% [str] Save Directory.
 load_directory = '.\Load';                         	% [str] Load Directory.
 
 % Define the level of verbosity.
-b_verbose = true;                                   % [T/F] Printing Flag.
+verbose_flag = true;                             	% [T/F] Printing Flag.
+
+% Define the undetected option.
+undetected_option = 'error';                        % [str] Undetected Option.
 
 % Define the network integration step size.
-network_dt = 1.3e-4;                                % [s] Simulation Timestep.
+network_dt = 1e-3;                                  % [s] Simulation Timestep.
+% network_dt = 1.3e-4;                                % [s] Simulation Timestep.
+% network_dt = 1e-4;                            	% [s] Simulation Timestep.
 
 % Define the network simulation duration.
-network_tf = 3;                                     % [s] Simulation Duration.
+network_tf = 0.5;                                 	% [s] Simulation Duration.
+% network_tf = 1;                                 	% [s] Simulation Duration.
+% network_tf = 3;                                 	% [s] Simulation Duration.
+
+% Compute the number of simulation timesteps.
+n_timesteps = floor( network_tf/network_dt ) + 1;   % [#] Number of Simulation Timesteps.
+
+% Construct the simulation times associated with the input currents.
+ts = ( 0:network_dt:network_tf )';                 	% [s] Simulation Times.
+
+% Define the integration method.
+integration_method = 'RK4';                         % [str] Integration Method (Either FE for Forward Euler or RK4 for Fourth Order Runge-Kutta).
+
+% Define the encoding scheme.
+encoding_scheme = 'absolute';
 
 
-%% Define Absolute Inversion Subnetwork Parameters.
+%% Define the Desired Inversion Subnetwork Parameters.
 
-% Define the maximum membrane voltages.
-R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
+% Create an instance of the network utilities class.
+network_utilities = network_utilities_class(  );
 
-% Define the membrane conductances.
-Gm1 = 1e-6;                                       	% [S] Membrane Conductance (Neuron 1)
-Gm2 = 1e-6;                                      	% [S] Membrane Conductance (Neuron 2) 
-
-% Define the membrane capacitance.
-Cm1 = 5e-9;                                     	% [F] Membrane Capacitance (Neuron 1)
-Cm2 = 5e-9;                                      	% [F] Membrane Capacitance (Neuron 2)
-
-% Define the sodium channel conductance.
-Gna1 = 0;                                           % [S] Sodium Channel Conductance (Neuron 1).
-Gna2 = 0;                                           % [S] Sodium Channel Conductance (Neuron 2).
-
-% Define the synaptic conductances.
-dEs21 = 0;                                          % [V] Synaptic Reversal Potential (Synapse 21).
-
-% Define the applied currents.
-Ia1 = R1*Gm1;                                     	% [A] Applied Current (Neuron 1)
-
-% Define the current state.
-current_state1 = 0;                                 % [-] Current State (Neuron 1). (Specified as a ratio of the total applied current that is active.)
-
-% Define the network design parameters.
+% Define the inversion subnetwork parameters.
 c1 = 0.40e-9;                                       % [W] Design Constant 1.
 c3 = 20e-9;                                         % [A] Design Constant 2.
 delta = 1e-3;                                       % [V] Membrane Voltage Offset.
+
+% Define the desired mapping operation.
+f_desired = @( x, c2 ) network_utilities.compute_desired_inversion_sso( x, c1, c2, c3 );
+
+
+%% Define the Encoding & Decoding Operations.
+
+% Define the domain of the input and output signals.
+x_max = 20;
+% y_max = f_desired( x_max );
+
+% Define the encoding scheme.
+f_encode = @( x ) x*( 10^( -3 ) );
+
+% Define the decoding scheme.
+f_decode = @( U ) U*( 10^3 );
+
+
+%% Define Additional Absolute Inversion Design Subnetwork Parameters.
+
+% Define the inversion subnetwork design parameters.
+R1 = 20e-3;                                         % [V] Maximum Membrane Voltage (Neuron 1).
+Gm1 = 1e-6;                                         % [S] Membrane Conductance (Neuron 1).
+Gm2 = 1e-6;                                       	% [S] Membrane Conductance (Neuron 2).
+Cm1 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 1).
+Cm2 = 5e-9;                                         % [F] Membrane Capacitance (Neuron 2).
+% Cm1 = 30e-9;                                     	% [F] Membrane Capacitance (Neuron 1).
+% Cm2 = 30e-9;                                      % [F] Membrane Capacitance (Neuron 2).
+
+% Store the inversion subnetwork design parameters in a cell.
+inversion_parameters = { c1, c3, delta, R1, Gm1, Gm2, Cm1, Cm2 };
+
+
+%% Define the Desired Input Signal.
+
+% Define the desired decoded input signal.
+xs_desired = x_max*ones( n_timesteps, 1 );
+
+% Encode the input signal.
+Us1_desired = f_encode( xs_desired );
+
+
+%% Define the Absolute Inversion Subnetwork Input Current Parameters.
+
+% Define the current identification properties.
+input_current_ID = 1;                               % [#] Input Current ID.
+input_current_name = 'Applied Current 1';           % [str] Input Current Name.
+input_current_to_neuron_ID = 1;                     % [#] Neuron ID to Which Input Current is Applied.
+
+% Define the magnitudes of the applied current input.
+Ias1 = Us1_desired*Gm1;                           	% [A] Applied Currents.
+
+
+%% Create Absolute Inversion Subnetwork.
+
+% Create an instance of the network class.
+network = network_class( network_dt, network_tf );
+
+% Create a inversion subnetwork.
+[ c, Gnas, R2, dEs21, gs21, Ia2, neurons, synapses, neuron_manager, synapse_manager, network ] = network.create_inversion_subnetwork( inversion_parameters, encoding_scheme, network.neuron_manager, network.synapse_manager, network.applied_current_manager, true, true, false, undetected_option );
+
+% Create the input applied current.
+[ ~, ~, ~, network.applied_current_manager ] = network.applied_current_manager.create_applied_current( input_current_ID, input_current_name, input_current_to_neuron_ID, ts, Ias1, true, network.applied_current_manager.applied_currents, true, false, network.applied_current_manager.array_utilities );
+
+
 
 
 %% Compute Derived Absolute Inversion Subnetwork Constraints.

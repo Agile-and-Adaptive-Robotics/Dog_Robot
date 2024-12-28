@@ -67,6 +67,12 @@ classdef network_class
         synapse_enabled_flag_DEFAULT = true;                      	% [T/F] Synapse Enabled Flag.
         
         
+        % ---------- Applied Current Properties ----------
+        
+        % Define the applied current parameters.
+        applied_current_enabled_flag_DEFAULT = true;             	% [T/F] Applied Current Enabled Flag.
+        
+        
         % ---------- Transmission Properties ----------
 
         % Define the number of transmission components.
@@ -14352,7 +14358,7 @@ classdef network_class
             % Define the number of subtraction neurons.
             n_neurons = self.n_inversion_neurons_DEFAULT;
             n_synapses = self.n_inversion_synapses_DEFAULT;
-            n_applied_currents = self.n_applied_currents_DEFAULT;
+            n_applied_currents = self.n_inversion_applied_currents_DEFAULT;
             
             % Unpack the subtraction parameters.
             [ ~, ~, ~, R1, Gm1, Gm2, Cm1, Cm2 ] = self.unpack_absolute_inversion_parameters( inversion_parameters );

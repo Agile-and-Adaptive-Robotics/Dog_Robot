@@ -36,6 +36,9 @@ classdef applied_current_manager_class
         n_vbi_applied_currents = 2;                                                                             % [#] Number of Voltage Based Integration Applied Currents.
         n_svbi_applied_currents_DEFAULT = 3;                                                                    % [#] Number of Split Voltage Based Integration Applied Currents.
         
+        % Define the subnetwork neuron quantities.
+        n_inversion_neurons_DEFAULT = 2;                                                                        % [#] Number of 
+        
         % Define the default applied current properties.
         ts_DEFAULT = 0;                                                                                         % [s] Applied Current Times.
         Ias_DEFAULT = 0;                                                                                        % [A] Applied Current Magnitudes.
@@ -60,16 +63,18 @@ classdef applied_current_manager_class
     methods
         
         % Implement the class constructor.
-        function self = applied_current_manager_class( applied_currents, data_loader_utilities, array_utilities )
+        function self = applied_current_manager_class( applied_currents, applied_current_utilities, data_loader_utilities, array_utilities )
             
             % Set the default input arguments.
-            if nargin < 3, array_utilities = array_utilities_class(  ); end                         % [class] Array Utilities Class.
-            if nargin < 2, data_loader_utilities = data_loader_utilities_class(  ); end             % [class] Data Loader Utilities Class.
+            if nargin < 4, array_utilities = array_utilities_class(  ); end                         % [class] Array Utilities Class.
+            if nargin < 3, data_loader_utilities = data_loader_utilities_class(  ); end             % [class] Data Loader Utilities Class.
+            if nargin < 2, applied_current_utilities = applied_current_utilities_class(  ); end     % [class] Applied Current Utilities Class.
             if nargin < 1, applied_currents = [  ]; end                                             % [class] Array of Applied Current Class Objects.
             
             % Store the utility class properties.
             self.array_utilities = array_utilities;                                                 
             self.data_loader_utilities = data_loader_utilities;
+            self.applied_current_utilities = applied_current_utilities;
             
             % Store the applied currents property.
             self.applied_currents = applied_currents;
