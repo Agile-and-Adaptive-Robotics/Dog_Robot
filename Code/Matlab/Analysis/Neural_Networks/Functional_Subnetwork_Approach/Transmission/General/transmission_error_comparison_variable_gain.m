@@ -661,43 +661,43 @@ Us_numerical_input = Us_numerical_absolute( :, 1 );
 %% Plot the Encoded Steady State Behavior.
 
 % Plot the encoded steady state behavior.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Absolute Encoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 30 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Output, U2 [mV]' ), title( 'Transmission: Absolute Encoded Steady State Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Absolute Encoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Output, U2 [mV]' ), title( 'Transmission: Absolute Encoded Steady State Response' ), zlim( [ 0, 0.160*scale ] )
 surf( Cs, scale*Us_input, scale*Us_desired_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*Us_theoretical_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'g', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*Us_numerical_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_absolute_encoded_ss_response_gain' ] ) 
 
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Relative Encoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 30 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Output, U2 [mV]' ), title( 'Transmission: Relative Encoded Steady State Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Relative Encoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Output, U2 [mV]' ), title( 'Transmission: Relative Encoded Steady State Response' ), zlim( [ 0, 0.160*scale ] )
 surf( Cs, scale*Us_input, scale*Us_desired_relative_output, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*Us_theoretical_relative_output, 'Edgecolor', 'None', 'Facecolor', 'g', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*Us_numerical_relative_output, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_relative_encoded_ss_response_gain' ] ) 
 
 
 %% Plot the Decoded Steady State Behavior.
 
 % Plot the absolute decoded steady state behavior.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Absolute Decoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 30 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Output, x2 [-]' ), title( 'Transmission: Absolute Decoded Steady State Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Absolute Decoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Output, x2 [-]' ), title( 'Transmission: Absolute Decoded Steady State Response' )
 surf( Cs, Xs_input, Xs_desired_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, Xs_theoretical_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'g', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, Xs_numerical_absolute_output, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_absolute_decoded_ss_response_gain' ] ) 
 
 % Plot the relative decoded steady state behavior.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Absolute Decoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 30 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Output, x2 [-]' ), title( 'Transmission: Relative Decoded Steady State Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Relative Decoded Steady State Response' ); hold on, grid on, rotate3d on, view( 45, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Output, x2 [-]' ), title( 'Transmission: Relative Decoded Steady State Response' )
 surf( Cs, Xs_input, Xs_desired_relative_output, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, Xs_theoretical_relative_output, 'Edgecolor', 'None', 'Facecolor', 'g', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, Xs_numerical_relative_output, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+legend( { 'Desired', 'Achieved (Theory)', 'Achieved (Numerical)' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_relative_decoded_ss_response_gain' ] ) 
 
 
 %% Plot the Encoded Error vs Gain.
 
-% Plot the encoded error vs gain.
+% Plot the encoded error vs gain comparison.
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error' ); 
 subplot( 2, 1, 1 ), hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Error' )
 surf( Cs, scale*Us_input, scale*errors_theoretical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
@@ -708,34 +708,100 @@ subplot( 2, 1, 2 ), hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain_comparison' ] ) 
+
+% Plot the theoretical encoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Error' )
+surf( Cs, scale*Us_input, scale*errors_theoretical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_theoretical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_theoretical_encoded_error_gain' ] ) 
+
+% Plot the numerical encoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Error' )
+surf( Cs, scale*Us_input, scale*errors_numerical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_numerical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_numerical_encoded_error_gain' ] ) 
+
+% Plot the encoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Error' )
+surf( Cs, scale*Us_input, scale*errors_numerical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_numerical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain' ] ) 
 
 % Plot the encoded error vs gain summary.
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Summary' );
-subplot( 2, 2, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Theoretical Absolute Error Summary' )
+subplot( 2, 2, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Absolute Error Summary' )
 patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_theoretical_encoded_absolute; flipud( scale*errors_max_theoretical_encoded_absolute ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, scale*errors_rmse_theoretical_encoded_absolute, '-', 'Color', color1, 'Linewidth', 3 )
 plot( cs, scale*errors_min_theoretical_encoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
 plot( cs, scale*errors_max_theoretical_encoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
 
-subplot( 2, 2, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Theoretical Relative Error Summary' )
+subplot( 2, 2, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Relative Error Summary' )
 patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_theoretical_encoded_relative; flipud( scale*errors_max_theoretical_encoded_relative ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, scale*errors_rmse_theoretical_encoded_relative, '-', 'Color', color1, 'Linewidth', 3 )
 plot( cs, scale*errors_min_theoretical_encoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
 plot( cs, scale*errors_max_theoretical_encoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
 
-subplot( 2, 2, 3 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Numerical Absolute Error Summary' )
+subplot( 2, 2, 3 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Absolute Error Summary' )
 patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_absolute; flipud( scale*errors_max_numerical_encoded_absolute ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, scale*errors_rmse_numerical_encoded_absolute, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, scale*errors_min_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
 plot( cs, scale*errors_max_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
 
-subplot( 2, 2, 4 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Numerical Relative Error Summary' )
+subplot( 2, 2, 4 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Relative Error Summary' )
 patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_relative; flipud( scale*errors_max_numerical_encoded_relative ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, scale*errors_rmse_numerical_encoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, scale*errors_min_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
 plot( cs, scale*errors_max_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
-saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain_summary' ] ) 
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain_summary_comparison' ] )
+
+% Plot the theoretical encoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Encoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_theoretical_encoded_absolute; flipud( scale*errors_max_theoretical_encoded_absolute ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_theoretical_encoded_absolute, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, scale*errors_min_theoretical_encoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, scale*errors_max_theoretical_encoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_theoretical_encoded_relative; flipud( scale*errors_max_theoretical_encoded_relative ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_theoretical_encoded_relative, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, scale*errors_min_theoretical_encoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, scale*errors_max_theoretical_encoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_theoretical_encoded_error_gain_summary' ] ) 
+
+% Plot the numerical encoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Encoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_absolute; flipud( scale*errors_max_numerical_encoded_absolute ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_numerical_encoded_absolute, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_relative; flipud( scale*errors_max_numerical_encoded_relative ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_numerical_encoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_numerical_encoded_error_gain_summary' ] )
+
+% Plot the encoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_absolute; flipud( scale*errors_max_numerical_encoded_absolute ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_numerical_encoded_absolute, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_numerical_encoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_numerical_encoded_relative; flipud( scale*errors_max_numerical_encoded_relative ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_rmse_numerical_encoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_numerical_encoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain_summary' ] )
 
 
 %% Plot the Decoded Error vs Gain.
@@ -751,6 +817,27 @@ subplot( 2, 1, 2 ), hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain
 surf( Cs, Xs_input, errors_numerical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, errors_numerical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_comparison' ] ) 
+
+% Plot the theoretical decoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Theoretical Decoded Error' )
+surf( Cs, Xs_input, errors_theoretical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, Xs_input, errors_theoretical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_theoretical_decoded_error_gain' ] ) 
+
+% Plot the numerical decoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Numerical Decoded Error' )
+surf( Cs, Xs_input, errors_numerical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, Xs_input, errors_numerical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_numerical_decoded_error_gain' ] ) 
+
+% Plot the decoded error vs gain.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Decoded Error' )
+surf( Cs, Xs_input, errors_numerical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, Xs_input, errors_numerical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain' ] ) 
 
 % Plot the decoded error vs gain summary.
@@ -778,7 +865,52 @@ patch( [ cs'; flipud( cs' ) ], [ errors_min_numerical_decoded_relative; flipud( 
 plot( cs, errors_rmse_numerical_decoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, errors_min_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
 plot( cs, errors_max_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
-saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_summary' ] ) 
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_summary_comparison' ] ) 
+
+% Plot the theoretical decoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Decoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Theoretical Decoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_theoretical_decoded_absolute; flipud( errors_max_theoretical_decoded_absolute ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_theoretical_decoded_absolute, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_theoretical_decoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, errors_max_theoretical_decoded_absolute, '--', 'Color', color1, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Theoretical Decoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_theoretical_decoded_relative; flipud( errors_max_theoretical_decoded_relative ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_theoretical_decoded_relative, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, errors_min_theoretical_decoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, errors_max_theoretical_decoded_relative, '--', 'Color', color1, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_theoretical_decoded_error_gain_summary' ] ) 
+
+% Plot the numerical decoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Decoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Numerical Decoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_numerical_decoded_absolute; flipud( errors_max_numerical_decoded_absolute ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_numerical_decoded_absolute, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_numerical_decoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_numerical_decoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Numerical Decoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_numerical_decoded_relative; flipud( errors_max_numerical_decoded_relative ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_numerical_decoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_numerical_decoded_error_gain_summary' ] )
+
+% Plot the decoded error vs gain summary.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Summary' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Decoded Absolute Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_numerical_decoded_absolute; flipud( errors_max_numerical_decoded_absolute ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_numerical_decoded_absolute, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_numerical_decoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_numerical_decoded_absolute, '--', 'Color', color2, 'Linewidth', 1 )
+
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error, E [-]' ), title( 'Transmission: Decoded Relative Error Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_numerical_decoded_relative; flipud( errors_max_numerical_decoded_relative ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_rmse_numerical_decoded_relative, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_numerical_decoded_relative, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_summary' ] )
 
 
 %% Plot the Encoded Error Difference vs Gain.
