@@ -818,13 +818,13 @@ classdef applied_current_manager_class
             n_applied_currents = length( applied_currents );
             
             % Initialize the applied current detected flag.
-            b_applied_current_detected = false;
+            applied_current_detected_flag = false;
             
             % Initialize the loop counter.
             k = 0;
             
             % Search for the applied current(s) that connect the specified neurons.
-            while ( ~b_applied_current_detected ) && ( k < n_applied_currents )              % While a matching applied current has not yet been detected and we haven't looked through all of the applied currents...
+            while ( ~applied_current_detected_flag ) && ( k < n_applied_currents )              % While a matching applied current has not yet been detected and we haven't looked through all of the applied currents...
                 
                 % Advance the loop counter.
                 k = k + 1;
@@ -833,14 +833,14 @@ classdef applied_current_manager_class
                 if ( applied_currents( k ).to_neuron_ID == to_neuron_ID )
                     
                     % Set the applied current detected flag to true.
-                    b_applied_current_detected = true;
+                    applied_current_detected_flag = true;
                     
                 end
                 
             end
             
             % Determine whether a matching applied current was detected.
-            if b_applied_current_detected                                   % If we found a matching applied current....
+            if applied_current_detected_flag                                   % If we found a matching applied current....
                 
                 % Retrieve the ID of the matching applied current.
                 applied_current_ID = applied_currents( k ).ID;
@@ -3141,7 +3141,7 @@ classdef applied_current_manager_class
         function [ ID_new, applied_current_new, applied_currents, self ] = create_inversion_applied_current( self, neuron_IDs, applied_current_ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, set_flag, as_cell_flag, array_utilities )
         
             % Set the number of neurons.
-            n_neurons = self.num_inversion_neurons_DEFAULT;
+            n_neurons = self.n_inversion_neurons_DEFAULT;
             
             % Set the default input arguments.
             if nargin < 8, enabled_flag = self.enabled_flags_DEFAULT; end
@@ -3176,7 +3176,7 @@ classdef applied_current_manager_class
         function [ ID_new, applied_current_new, applied_currents, self ] = create_reduced_inversion_applied_current( self, neuron_IDs, applied_current_ID, name, to_neuron_ID, ts, Ias, enabled_flag, applied_currents, set_flag, as_cell_flag, array_utilities )
         
             % Set the number of neurons.
-            n_neurons = self.num_inversion_neurons_DEFAULT;
+            n_neurons = self.n_inversion_neurons_DEFAULT;
             
             % Set the default input arguments.
             if nargin < 8, enabled_flag = self.enabled_flags_DEFAULT; end
@@ -3768,7 +3768,7 @@ classdef applied_current_manager_class
         function [ Ias2, applied_currents, self ] = design_inversion_applied_current( self, neuron_IDs, inversion_parameters, encoding_scheme, applied_currents, set_flag, undetected_option )
             
             % Compute the number of neurons.
-            n_neurons = self.num_inversion_neurons;
+            n_neurons = self.n_inversion_neurons_DEFAULT;
             
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end                  % [str] Undetected Option (Determines what to do if neuron ID is not detected.)
@@ -3779,7 +3779,7 @@ classdef applied_current_manager_class
             if nargin < 2, neuron_IDs = 1:n_neurons; end
             
             % Retrieve the applied current IDs associated with the provided neuron IDs.
-            applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs, applied_currents, undetected_option );
+            applied_current_IDs = self.to_neuron_IDs2applied_current_IDs( neuron_IDs( 2 ), applied_currents, undetected_option );
             
             % Process the parameters.
             inversion_parameters = self.process_inversion_Ias2_parameters( inversion_parameters, encoding_scheme );

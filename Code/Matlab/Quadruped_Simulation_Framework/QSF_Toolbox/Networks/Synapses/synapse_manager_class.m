@@ -9436,7 +9436,7 @@ classdef synapse_manager_class
             synapse_IDs = self.validate_synapse_IDs( synapse_IDs, synapses );
             
             % Process the parameters.
-            parameters = process_inversion_gs21_parameters( synapse_IDs, parameters, encoding_scheme, synapses, undetected_option );
+            parameters = self.process_inversion_gs21_parameters( synapse_IDs, parameters, encoding_scheme, synapses, undetected_option );
 
             % Retrieve the index associated with this synapse ID.
             synapse_index = self.get_synapse_index( synapse_IDs( 1 ), synapses, undetected_option );
@@ -11294,7 +11294,7 @@ classdef synapse_manager_class
             if name_flag, name = sprintf( 'Inversion %0.0f%0.0f', from_neuron_ID, to_neuron_ID ); end
             
             % Create the modulation subnetwork synapse.    
-            [ ID_new, synapse_new, synapses, synapse_manager ] = self.create_synapse( synapse_ID, name, dEs, gs, from_neuron_ID, to_neuron_ID, delta, enabled_flag, synapses, true, false, array_utilities );
+            [ ID_new, synapse_new, synapses, synapse_manager ] = self.create_synapse( synapse_ID, name{ 1 }, dEs, gs, from_neuron_ID, to_neuron_ID, delta, enabled_flag, synapses, true, false, array_utilities );
                
             % Determine how to format the synapse IDs and objects.
             [ ID_new, synapse_new ] = self.process_synapse_creation_outputs( ID_new, synapse_new, as_cell_flag, array_utilities );
@@ -12885,13 +12885,13 @@ classdef synapse_manager_class
             inversion_parameters = self.process_inversion_parameters( inversion_parameters, encoding_scheme );
             
             % Compute and set the synapse reversal potential.            
-            [ dEs21, synapses, synapse_manager ] = self.compute_inversion_dEs21( synapse_IDs, encoding_scheme, synapses, true, undetected_option );
+            [ dEs21, synapses, synapse_manager ] = self.compute_inversion_dEs21( synapse_ID, encoding_scheme, synapses, true, undetected_option );
             
             % Convert the generic parameters into gs parameters.
             inversion_gs_parameters = self.convert_inversion_parameters2gs_parameters( synapse_ID, inversion_parameters, dEs21, encoding_scheme, synapses, undetected_option );
                         
             % Compute the synaptic conductance.
-            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_inversion_gs21( synapse_IDs, inversion_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
+            [ gs21, synapses, synapse_manager ] = synapse_manager.compute_inversion_gs21( synapse_ID, inversion_gs_parameters, encoding_scheme, synapses, true, validation_flag, undetected_option );
             
             % Determine whether to update the synapse manager.
             if set_flag, self = synapse_manager; end

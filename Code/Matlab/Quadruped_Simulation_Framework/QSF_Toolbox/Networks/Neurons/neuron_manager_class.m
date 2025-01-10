@@ -1368,8 +1368,8 @@ classdef neuron_manager_class
                 neuron_index = self.get_neuron_index( neuron_IDs( k ), neurons, undetected_option );
                 
                 % Compute and set the sodium channel conductance for this neuron.
-                [ Gnas( k ), neurons( neuron_index ) ] = neurons( neuron_index ).compute_inversion_Gnas( encoding_scheme, true, neurons( neuron_index ).neuron_utilities );
-                
+                [ Gnas( k ), neurons( neuron_index ) ] = neurons( neuron_index ).compute_inversion_Gna( encoding_scheme, true, neurons( neuron_index ).neuron_utilities );
+
             end
             
             % Determine whether to update the neuron manager.
@@ -3036,9 +3036,11 @@ classdef neuron_manager_class
         % ---------- Inversion Subnetwork Functions ----------
                 
         % Implement a function to process the inversion subnetwork output activation domain parameters.
-        function inversion_R2_parameters = process_inversion_R2_parameters( self, inversion_R2_parameters, encoding_scheme )
+        function inversion_R2_parameters = process_inversion_R2_parameters( self, inversion_R2_parameters, encoding_scheme, neurons, undetected_option )
             
             % Set the default input arguments.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end    	% [-] Undetected Option.
+            if nargin < 4, neurons = self.neurons; end                                 	% [class] Array of Neuron Class Objects.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end         	% [str] Encoding Scheme (Either 'absolute' or 'relative'.)
             if nargin < 2, inversion_R2_parameters = {  }; end                          % [cell] Inversion R2 Parameters Cell.
             
@@ -3069,11 +3071,24 @@ classdef neuron_manager_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                               % If this operation uses a relative encoding scheme...
                 
-                % Determine whether parameters cell is valid given that this operation is using a relative encoding scheme.
-                if ~isempty( inversion_R2_parameters )                                 	% If the parameters cell is not empty...
+                % Determine how to create the parameters cell given that this operation is using a relative encoding scheme.
+                if isempty( inversion_R2_parameters )                                	% If no parameters were provided...
                     
-                    % Throw an error.
-                    error( 'Invalid parameters detected.' )
+                    % Retrieve the maximum membrane voltage.
+                    R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage.
+
+                    % Store the required parameters in a cell.
+                    inversion_R2_parameters = { R2 };
+                    
+                else                                                                    % Otherwise...
+                    
+                    % Determine whether the parameters cell has a valid number of entries.
+                    if length( inversion_R2_parameters ) ~= 1                         	% If there is anything other than three parameter entries...
+                        
+                        % Throw an error.
+                        error( 'Invalid parameters detected.' )
+                        
+                    end
                     
                 end
                 
@@ -3088,12 +3103,12 @@ classdef neuron_manager_class
         
         
         % Implement a function to process the inversion subnetwork parameters.
-        function inversion_parameters = process_inversion_parameters( self, inversion_parameters, encoding_scheme )
-        % function inversion_parameters = process_inversion_parameters( self, inversion_parameters, encoding_scheme, neurons, undetected_option )
+        % function inversion_parameters = process_inversion_parameters( self, inversion_parameters, encoding_scheme )
+        function inversion_parameters = process_inversion_parameters( self, inversion_parameters, encoding_scheme, neurons, undetected_option )
 
             % Set the default input arguments.
-            % if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end                                          	% [-] Undetected Option.
-            % if nargin < 4, neurons = self.neurons; end                                                                       	% [class] Array of Neuron Class Objects.
+            if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end                                          	% [-] Undetected Option.
+            if nargin < 4, neurons = self.neurons; end                                                                       	% [class] Array of Neuron Class Objects.
             if nargin < 3, encoding_scheme = self.encoding_scheme_DEFAULT; end                                                	% [str] Encoding Scheme (Either 'absolute' or 'relative'.)
             if nargin < 2, inversion_parameters = {  }; end                                                                  	% [cell] Parameters Cell.  (Absolute: , Ia2; Relative: R2, Gm2, dEs21, Ia2)
             
@@ -3132,11 +3147,24 @@ classdef neuron_manager_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                                                     	% If this operation uses a relative encoding scheme...
                 
-                % Determine whether parameters cell is valid given that this operation is using a relative encoding scheme.
-                if ~isempty( inversion_parameters )                                 	% If the parameters cell is not empty...
+                % Determine how to create the parameters cell given that this operation is using an absolute encoding scheme.
+                if isempty( inversion_parameters )                                                                            	% If no parameters were provided...
+                                                          
+                    % Set the default parameter values.
+                    R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );          % [V] Maximum Membrane Voltage.
+
+                    % Store the required parameters in a cell.
+                    inversion_parameters = { R2 };
+
+                else                                                                                                         	% Otherwise...
                     
-                    % Throw an error.
-                    error( 'Invalid parameters detected.' )
+                    % Determine whether the parameters cell has a valid number of entries.
+                    if length( inversion_parameters ) ~= 1                                                                    	% If there is anything other than the required number of parameter entries...
+
+                        % Throw an error.
+                        error( 'Invalid parameters detected.' )
+                        
+                    end
                     
                 end
                 
@@ -4673,6 +4701,36 @@ classdef neuron_manager_class
         end
         
         
+        % Implement a function to unpack the parameters for designing a relative inversion subnetwork.
+        function R2 = unpack_relative_inversion_parameters( self, inversion_parameters, neurons, undetected_option )
+        % function R2 = unpack_relative_inversion_parameters( self, inversion_parameters )
+
+            % Set the default input arguments.
+            if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end                                    % [-] Undetected Option.
+            if nargin < 3, neurons = self.neurons; end                                                                % [class] Array of Neuron Class Objects.
+            if nargin < 2, inversion_parameters = {  }; end                                                             % [-] Input Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( inversion_parameters )                                                                          % If the parameters are empty...
+            
+                % Set the parameters to default values.
+                R2 = self.get_neuron_property( neurons( 2 ).ID, 'R', true, neurons, undetected_option );      % [V] Maximum Membrane Voltage 2.
+
+            elseif length( inversion_parameters ) == 1                                                                  % If there are a specific number of parameters...
+
+                % Unpack the parameters.
+                R2 = inversion_parameters{ 1 };                                                                       % [V] Maximum Membrane Voltage 2.
+
+            else                                                                                                        % Otherwise...
+               
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end 
+            
+        end
+        
+        
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to unpack the parameters for computing R2 of a reduced absolute inversion subnetwork.
@@ -5615,6 +5673,21 @@ classdef neuron_manager_class
         end
         
         
+        % Implement a function to pack the parameters for computing the R2 of a relative inversion subnetwork.
+        function inversion_parameters = pack_relative_inversion_R2_parameters( self, R2 )
+
+            % Set the default input arguments.
+            if nargin < 2, R2 = self.R2_relative_inversion_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            inversion_parameters = cell( 1, 1 );
+
+            % Pack the parameters.
+            inversion_parameters{ 1 } = R2;
+            
+        end
+        
+        
         % Implement a function to pack the parameters for an absolute inversion subnetwork.
         function inversion_parameters = pack_absolute_inversion_parameters( self, c1, c3 )
         % function inversion_parameters = pack_absolute_inversion_parameters( self, c1, c3, delta, R1, Gm1, Gm2, Cm1, Cm2, neurons, undetected_option )
@@ -5636,6 +5709,21 @@ classdef neuron_manager_class
             % inversion_parameters{ 6 } = Gm2;
             % inversion_parameters{ 7 } = Cm1;
             % inversion_parameters{ 8 } = Cm2;
+            
+        end
+        
+        
+        % Implement a function to pack the parameters for a relative inversion subnetwork.
+        function inversion_parameters = pack_relative_inversion_parameters( self, R2 )
+
+            % Set the default input arguments.
+            if nargin < 2, R2 = self.R2_relative_inversion_DEFAULT; end
+            
+            % Preallocate a cell array to store the parameters.
+            inversion_parameters = cell( 1, 1 );
+
+            % Pack the parameters.
+            inversion_parameters{ 1 } = R2;
             
         end
         
@@ -6261,15 +6349,19 @@ classdef neuron_manager_class
             if strcmpi( encoding_scheme, 'absolute' )                                                                       % If this operation is using an absolute encoding scheme...
                 
                 % Unpack the absolute inversion parameters.
-                [ c1, c3 ] = self.unpack_absolute_inversion_parameters( inversion_parameters, neurons, undetected_option );
-                
+                % [ c1, c3 ] = self.unpack_absolute_inversion_parameters( inversion_parameters, neurons, undetected_option );
+                [ c1, c3 ] = self.unpack_absolute_inversion_parameters( inversion_parameters );
+
                 % Pack the absolute inversion R2 parameters.
                 inversion_R2_parameters = self.pack_absolute_inversion_R2_parameters( c1, c3 );
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                                                   % If this operation uses a relative encoding scheme...
                 
+                % Unpack the relative inversion parameters.
+                R2 = self.unpack_relative_inversion_parameters( inversion_parameters, neurons, undetected_option );
+                
                 % Pack the relative inversion R2 parameters.
-                inversion_R2_parameters = {  };
+                inversion_R2_parameters = self.pack_relative_inversion_R2_parameters( R2 );
                 
             else                                                                                                            % Otherwise...
                 
@@ -9445,7 +9537,8 @@ classdef neuron_manager_class
             
             % Process the inversion parameters.
             inversion_parameters = self.process_inversion_parameters( inversion_parameters, encoding_scheme, neurons, undetected_option );
-            
+            % inversion_parameters = self.process_inversion_parameters( inversion_parameters, encoding_scheme );
+
             % Compute the sodium channel conductance of the inversion subnetwork neurons.
             [ Gnas, neurons, neuron_manager ] = self.compute_inversion_Gnas( neuron_IDs, encoding_scheme, neurons, true, undetected_option );
             

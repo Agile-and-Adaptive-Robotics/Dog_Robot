@@ -711,21 +711,21 @@ legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'H
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_gain_comparison' ] ) 
 
 % Plot the theoretical encoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Theoretical Encoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, scale*Us_input, scale*errors_theoretical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*errors_theoretical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_theoretical_encoded_error_gain' ] ) 
 
 % Plot the numerical encoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Numerical Encoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_numerical_encoded_error_gain' ] ) 
 
 % Plot the encoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mv]' ), zlabel( 'Encoded Error, E [mV]' ), title( 'Transmission: Encoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, scale*Us_input, scale*errors_numerical_encoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
@@ -820,21 +820,21 @@ legend( { 'Absolute', 'Relative' }, 'Location', 'Bestoutside', 'Orientation', 'H
 saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_comparison' ] ) 
 
 % Plot the theoretical decoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Theoretical Decoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Theoretical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Theoretical Decoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, Xs_input, errors_theoretical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, errors_theoretical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_theoretical_decoded_error_gain' ] ) 
 
 % Plot the numerical decoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Numerical Decoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Numerical Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Numerical Decoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, Xs_input, errors_numerical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, errors_numerical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
 saveas( fig, [ save_directory, '\', 'transmission_numerical_decoded_error_gain' ] ) 
 
 % Plot the decoded error vs gain.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Decoded Error' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error' ); hold on, grid on, rotate3d on, view( 25, 10 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error, E [-]' ), title( 'Transmission: Decoded Error' ), zlim( [ 0, 70 ] )
 surf( Cs, Xs_input, errors_numerical_decoded_absolute, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
 surf( Cs, Xs_input, errors_numerical_decoded_relative, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Absolute', 'Relative' }, 'Location', 'Best', 'Orientation', 'Vertical' )
@@ -915,33 +915,33 @@ saveas( fig, [ save_directory, '\', 'transmission_decoded_error_gain_summary' ] 
 
 %% Plot the Encoded Error Difference vs Gain.
 
-% Plot the encoded error difference.
+% Plot the encoded error difference. 
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Difference' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Difference, dE [mV]' ), title( 'Transmission: Encoded Error Difference' )
-surf( Cs, Us_input, errors_diff_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_diff_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_diff_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_diff_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_difference_gain' ] ) 
 
 % Plot the encoded error difference percentage.
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Difference Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Difference Percentage, dE [%]' ), title( 'Transmission: Encoded Error Difference Percentage' )
-surf( Cs, Us_input, errors_percent_diff_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_percent_diff_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, errors_percent_diff_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, errors_percent_diff_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_difference_percentage_gain' ] ) 
 
 % Plot the encoded error difference.
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Difference Summary' );
 subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Difference, dE [mV]' ), title( 'Transmission: Encoded Theoretical Error Difference  Summary' )
-patch( [ cs'; flipud( cs' ) ], [ errors_min_diff_theoretical_encoded; flipud( errors_max_diff_theoretical_encoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
-plot( cs, errors_mse_diff_theoretical_encoded, '-', 'Color', color1, 'Linewidth', 3 )
-plot( cs, errors_min_diff_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
-plot( cs, errors_max_diff_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_diff_theoretical_encoded; flipud( scale*errors_max_diff_theoretical_encoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_mse_diff_theoretical_encoded, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, scale*errors_min_diff_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, scale*errors_max_diff_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
 
 subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Difference Summary, dE [mV]' ), title( 'Transmission: Encoded Numerical Error Difference Summary' )
-patch( [ cs'; flipud( cs' ) ], [ errors_min_diff_numerical_encoded; flipud( errors_max_diff_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
-plot( cs, errors_mse_diff_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
-plot( cs, errors_min_diff_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
-plot( cs, errors_max_diff_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_diff_numerical_encoded; flipud( scale*errors_max_diff_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_mse_diff_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_diff_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_diff_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_difference_gain_summary' ] ) 
 
 % Plot the encoded error percentage difference.
@@ -1064,37 +1064,55 @@ plot( cs, errors_max_percent_diff_numerical_decoded, '--', 'Color', color2, 'Lin
 
 %% Plot the Encoded Error Improvement vs Gain.
 
+% Plot the encoded error improvement comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Comparison' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Improvement, E [mV]' ), title( 'Transmission: Encoded Error Improvement Comparison' )
+surf( Cs, scale*Us_input, scale*errors_improv_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, scale*errors_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_gain_comparison' ] ) 
+
 % Plot the encoded error improvement.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, x1 [-]' ), zlabel( 'Encoded Error Improvement, E [-]' ), title( 'Transmission: Encoded Error Improvement' )
-surf( Cs, Us_input, errors_improv_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Improvement, E [mV]' ), title( 'Transmission: Encoded Error Improvement' )
+surf( Cs, scale*Us_input, scale*errors_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_gain' ] ) 
 
+% Plot the encoded error improvement percentage comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Percentage Comparison' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Encoded Error Improvement Percentage Comparison' )
+surf( Cs, scale*Us_input, errors_percent_improv_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, scale*Us_input, errors_percent_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Best', 'Orientation', 'Vertical' )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_percentage_gain_comparison' ] ) 
+
 % Plot the encoded error improvement percentage.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, x1 [-]' ), zlabel( 'Encoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Encoded Error Improvement Percentage' )
-surf( Cs, Us_input, errors_percent_improv_theoretical_encoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_percent_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Input, U1 [mV]' ), zlabel( 'Encoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Encoded Error Improvement Percentage' )
+surf( Cs, scale*Us_input, errors_percent_improv_numerical_encoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_percentage_gain' ] ) 
 
-% Plot the encoded error improvement.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Summary' );
-subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Improvement, E [-]' ), title( 'Transmission: Encoded Theoretical Error Improvement Summary' )
-patch( [ cs'; flipud( cs' ) ], [ errors_min_improv_theoretical_encoded; flipud( errors_max_improv_theoretical_encoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
-plot( cs, errors_mse_improv_theoretical_encoded, '-', 'Color', color1, 'Linewidth', 3 )
-plot( cs, errors_min_improv_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
-plot( cs, errors_max_improv_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
+% Plot the encoded error improvement comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Summary Comparison' );
+subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Improvement, E [mV]' ), title( 'Transmission: Encoded Theoretical Error Improvement Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_improv_theoretical_encoded; flipud( scale*errors_max_improv_theoretical_encoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_mse_improv_theoretical_encoded, '-', 'Color', color1, 'Linewidth', 3 )
+plot( cs, scale*errors_min_improv_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
+plot( cs, scale*errors_max_improv_theoretical_encoded, '--', 'Color', color1, 'Linewidth', 1 )
 
-subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Improvement, E [-]' ), title( 'Transmission: Encoded Numerical Error Improvement Summary' )
-patch( [ cs'; flipud( cs' ) ], [ errors_min_improv_numerical_encoded; flipud( errors_max_improv_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
-plot( cs, errors_mse_improv_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
-plot( cs, errors_min_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
-plot( cs, errors_max_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
-saveas( fig, [ save_directory, '\', 'transmission_encoded_error_difference_gain_summary' ] ) 
+subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Improvement, E [mV]' ), title( 'Transmission: Encoded Numerical Error Improvement Summary' )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_improv_numerical_encoded; flipud( scale*errors_max_improv_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_mse_improv_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_gain_summary' ] ) 
+
+% Plot the encoded error improvement.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Improvement Summary' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Improvement, E [mV]' ), title( 'Transmission: Encoded Error Improvement Summary' ), ylim( [ 0, 0.07 ] )
+patch( [ cs'; flipud( cs' ) ], [ scale*errors_min_improv_numerical_encoded; flipud( scale*errors_max_improv_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, scale*errors_mse_improv_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, scale*errors_min_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, scale*errors_max_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_gain_summary' ] ) 
 
 % Plot the encoded error percentage improvement.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Percentage Improvement Summary' );
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Percentage Improvement Summary Comparison' );
 subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Encoded Theoretical Error Percentage Improvement Summary' )
 patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_theoretical_encoded; flipud( errors_max_percent_improv_theoretical_encoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, errors_mse_percent_improv_theoretical_encoded, '-', 'Color', color1, 'Linewidth', 3 )
@@ -1106,27 +1124,45 @@ patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_numerical_encoded; fl
 plot( cs, errors_mse_percent_improv_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, errors_min_percent_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
 plot( cs, errors_max_percent_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_percentage_gain_summary_comparison' ] ) 
+
+% Plot the encoded error percentage improvement.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Encoded Error Percentage Improvement Summary' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Encoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Encoded Error Percentage Improvement Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_numerical_encoded; flipud( errors_max_percent_improv_numerical_encoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_percent_improv_numerical_encoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_percent_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_percent_improv_numerical_encoded, '--', 'Color', color2, 'Linewidth', 1 )
 saveas( fig, [ save_directory, '\', 'transmission_encoded_error_improvement_percentage_gain_summary' ] ) 
 
 
 %% Plot the Decoded Error Improvement vs Gain.
 
+% Plot the decoded error improvement comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Comparison' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Improvement, E [-]' ), title( 'Transmission: Decoded Error Improvement Comparison' )
+surf( Cs, Xs_input, errors_improv_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, Xs_input, errors_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement_gain_comparison' ] ) 
+
 % Plot the decoded error improvement.
 fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Improvement, E [-]' ), title( 'Transmission: Decoded Error Improvement' )
-surf( Cs, Us_input, errors_improv_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
-legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+surf( Cs, Xs_input, errors_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement_gain' ] ) 
 
-% Plot the encoded error improvement percentage.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Decoded Error Improvement Percentage' )
-surf( Cs, Us_input, errors_percent_improv_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
-surf( Cs, Us_input, errors_percent_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
+% Plot the decoded error improvement percentage comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Percentage Comparison' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Decoded Error Improvement Percentage Comparison' )
+surf( Cs, Xs_input, errors_percent_improv_theoretical_decoded, 'Edgecolor', 'None', 'Facecolor', 'b', 'Facealpha', 0.5 )
+surf( Cs, Xs_input, errors_percent_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 legend( { 'Theoretical', 'Numerical' }, 'Location', 'Bestoutside', 'Orientation', 'Horizontal' )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement_percentage_gain_comparison' ] ) 
+
+% Plot the decoded error improvement percentage.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Percentage' ); hold on, grid on, rotate3d on, view( 45, 20 ), xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Input, x1 [-]' ), zlabel( 'Decoded Error Improvement Percentage, E [%]' ), title( 'Transmission: Decoded Error Improvement Percentage' )
+surf( Cs, Xs_input, errors_percent_improv_numerical_decoded, 'Edgecolor', 'None', 'Facecolor', 'r', 'Facealpha', 0.5 )
 saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement_percentage_gain' ] ) 
 
-% Plot the encoded error improvement.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Summary' );
+% Plot the decoded error improvement comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Summary Comparison' );
 subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Improvement, E [-]' ), title( 'Transmission: Decoded Theoretical Error Improvement Summary' )
 patch( [ cs'; flipud( cs' ) ], [ errors_min_improv_theoretical_decoded; flipud( errors_max_improv_theoretical_decoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, errors_mse_improv_theoretical_decoded, '-', 'Color', color1, 'Linewidth', 3 )
@@ -1138,10 +1174,18 @@ patch( [ cs'; flipud( cs' ) ], [ errors_min_improv_numerical_decoded; flipud( er
 plot( cs, errors_mse_improv_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, errors_min_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
 plot( cs, errors_max_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_difference_gain_summary_comparison' ] ) 
+
+% Plot the decoded error improvement.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Improvement Summary' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Improvement, E [-]' ), title( 'Transmission: Decoded Numerical Error Improvement Summary' ), ylim( [ 0, 70 ] )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_improv_numerical_decoded; flipud( errors_max_improv_numerical_decoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_improv_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
 saveas( fig, [ save_directory, '\', 'transmission_decoded_error_difference_gain_summary' ] ) 
 
-% Plot the encoded error percentage improvement.
-fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Percentage Improvement Summary' );
+% Plot the encoded error percentage improvement comparison.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Percentage Improvement Summary Comparison' );
 subplot( 2, 1, 1 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Decoded Theoretical Error Percentage Improvement Summary' )
 patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_theoretical_decoded; flipud( errors_max_percent_improv_theoretical_decoded ) ], color1( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, errors_mse_percent_improv_theoretical_decoded, '-', 'Color', color1, 'Linewidth', 3 )
@@ -1149,6 +1193,14 @@ plot( cs, errors_min_percent_improv_theoretical_decoded, '--', 'Color', color1, 
 plot( cs, errors_max_percent_improv_theoretical_decoded, '--', 'Color', color1, 'Linewidth', 1 )
 
 subplot( 2, 1, 2 ), hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Decoded Numerical Error Percentage Improvement Summary' )
+patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_numerical_decoded; flipud( errors_max_percent_improv_numerical_decoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
+plot( cs, errors_mse_percent_improv_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
+plot( cs, errors_min_percent_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+plot( cs, errors_max_percent_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )
+saveas( fig, [ save_directory, '\', 'transmission_decoded_error_improvement_percentage_gain_summary_comparison' ] ) 
+
+% Plot the encoded error percentage improvement.
+fig = figure( 'Color', 'w', 'Name', 'Transmission: Decoded Error Percentage Improvement Summary' ); hold on, grid on, xlabel( 'Gain, c [-]' ), ylabel( 'Decoded Error Percentage Improvement, E [%]' ), title( 'Transmission: Decoded Numerical Error Percentage Improvement Summary' )
 patch( [ cs'; flipud( cs' ) ], [ errors_min_percent_improv_numerical_decoded; flipud( errors_max_percent_improv_numerical_decoded ) ], color2( 1:end - 1 ), 'FaceAlpha', 0.5, 'EdgeColor', 'None' )
 plot( cs, errors_mse_percent_improv_numerical_decoded, '-', 'Color', color2, 'Linewidth', 3 )
 plot( cs, errors_min_percent_improv_numerical_decoded, '--', 'Color', color2, 'Linewidth', 1 )

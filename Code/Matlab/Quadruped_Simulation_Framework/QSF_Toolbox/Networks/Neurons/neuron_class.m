@@ -1716,6 +1716,33 @@ classdef neuron_class
         end
         
         
+        % Implement a function to unpack the parameters required to compute the relative inversion output activation domain.
+        function R2 = unpack_relative_inversion_R2_parameters( self, parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, parameters = {  }; end                   % [-] Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( parameters )                                % If the parameters are empty...
+
+                % Set the default parameters.
+                R2 = self.R2_relative_inversion_DEFAULT;          	% [V] Maximum Membrane Voltage.
+
+            elseif length( parameters ) == 1                     	% If there are a specific number of parameters...
+
+                % Retrieve the parameters.
+                R2 = parameters{ 1 };                            	% [V] Maximum Membrane Voltage.
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end            
+            
+        end
+        
+        
         % Implement a function to unpack the parameters required to compute the reduced absolute inversion output activation domain.
         function [ c1, c2 ] = unpack_reduced_absolute_inversion_R2_parameters( self, parameters )
         
@@ -1741,6 +1768,33 @@ classdef neuron_class
                 error( 'Unable to unpack parameters.' )
                 
             end            
+            
+        end
+        
+        
+        % Implement a function to unpack the parameters required to compute the reduced absolute inversion output activation domain.
+        function R2 = unpack_reduced_relative_inversion_R2_parameters( self, parameters )
+        
+            % Set the default input arguments.
+            if nargin < 2, parameters = {  }; end                           % [-] Parameters Cell.
+            
+            % Determine how to set the parameters.
+            if isempty( parameters )                                % If the parameters are empty...
+
+                % Set the default parameters.
+                R2 = self.R2_relative_inversion_DEFAULT;          	% [V] Maximum Membrane Voltage.
+
+            elseif length( parameters ) == 1                     	% If there are a specific number of parameters...
+
+                % Retrieve the parameters.
+                R2 = parameters{ 1 };                            	% [V] Maximum Membrane Voltage.
+                
+            else                                                    % Otherwise...
+                
+                % Throw an error.
+                error( 'Unable to unpack parameters.' )
+                
+            end               
             
         end
         
@@ -2150,8 +2204,11 @@ classdef neuron_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                                               % If the encoding scheme is set to relative...
             
-                % Throw an error.
-                error( 'R2 is a free parameter for relative inversion subnetworks.' )
+                % Unpack the parameters required to compute the relative inversion subnetwork output activation domain.
+                R2 = self.unpack_relative_inversion_R2_parameters( parameters );
+                
+                % Compute the membrane capacitance for this neuron assuming that it belongs to a relative inversion subnetwork.            
+                R2 = neuron_utilities.compute_relative_inversion_R2( R2 );                          % [V] Activation Domain.
 
             else                                                                                        % Otherwise...
 

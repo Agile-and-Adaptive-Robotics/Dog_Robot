@@ -1217,6 +1217,15 @@ classdef neuron_utilities_class
         end
         
         
+        % Implement a function to compute the operational domain of the relative inversion subnetwork output neuron.
+        function R2 = compute_relative_inversion_R2( self, R2 )
+
+            % Set the default input arguments.
+            if nargin < 2, R2 = self.R_relative_inversion_DEFAULT; end          % [V] Maximum Membrane Voltage.
+
+        end
+        
+        
         % ---------- Reduced Inversion Subnetwork Functions ----------
         
         % Implement a function to compute the operational domain of the reduced absolute inversion subnetwork output neuron.

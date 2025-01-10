@@ -3769,11 +3769,11 @@ classdef network_class
             % Set the default input parameters.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 8, neuron_manager = self.neuron_manager; end
-            if nargin < 7, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, c = self.c_absolute_transmission_DEFAULT; end
             
             % Preallocate a cell to store the parameters.
@@ -3796,12 +3796,12 @@ classdef network_class
             % Set the default input parameters.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 8, neuron_manager = self.neuron_manager; end
-            if nargin < 7, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 2, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Preallocate a cell to store the parameters.
             transmission_parameters = cell( 1, 6 );
@@ -3848,8 +3848,8 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
-            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R2;
@@ -3865,7 +3865,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia2;
@@ -3920,7 +3920,7 @@ classdef network_class
             if nargin < 6, neuron_manager = self.neuron_manager; end
             if nargin < 5, Cms = neuron_manager.get_neuron_property( 'all', 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, Gms = neuron_manager.get_neuron_property( 'all', 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, Rs_input = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, Rs_input = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, cs = self.c_absolute_addition_DEFAULT*ones( 1, neuron_manager.num_neurons - 1 ); end
             
             % Preallocate a cell to store the parameters.
@@ -3995,7 +3995,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia_n;
@@ -4010,7 +4010,7 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             if nargin < 2, c_n = self.c_relative_addition_DEFAULT; end
             
             % Pack the design parameters.
@@ -4067,7 +4067,7 @@ classdef network_class
             if nargin < 7, neuron_manager = self.neuron_manager; end
             if nargin < 6, Cms = neuron_manager.get_neuron_property( 'all', 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, Gms = neuron_manager.get_neuron_property( 'all', 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Rs_input = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Rs_input = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, ss = self.signature_DEFAULT; end
             if nargin < 2, cs = self.c_absolute_subtraction_DEFAULT*ones( 1, neuron_manager.num_neurons - 1 ); end
             
@@ -4146,7 +4146,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia_n;
@@ -4161,7 +4161,7 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 3, Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             if nargin < 2, c_n = self.c_relative_subtraction_DEFAULT; end
             
             % Pack the design parameters.
@@ -4216,11 +4216,11 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 11, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 10, neuron_manager = self.neuron_manager; end
-            if nargin < 9, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_inversion_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_inversion_DEFAULT; end
@@ -4247,12 +4247,12 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 11, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 10, neuron_manager = self.neuron_manager; end
-            if nargin < 9, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_relative_inversion_DEFAULT; end
             if nargin < 2, c3 = self.c3_relative_inversion_DEFAULT; end
             
@@ -4263,11 +4263,11 @@ classdef network_class
             inversion_parameters{ 1 } = c3;
             inversion_parameters{ 2 } = delta;
             inversion_parameters{ 3 } = R1;
-            inversion_parameters{ 3 } = R2;
-            inversion_parameters{ 3 } = Gm1;
-            inversion_parameters{ 3 } = Gm2;
-            inversion_parameters{ 3 } = Cm1;
-            inversion_parameters{ 3 } = Cm2;
+            inversion_parameters{ 4 } = R2;
+            inversion_parameters{ 5 } = Gm1;
+            inversion_parameters{ 6 } = Gm2;
+            inversion_parameters{ 7 } = Cm1;
+            inversion_parameters{ 8 } = Cm2;
             
         end
         
@@ -4278,7 +4278,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_inversion_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_inversion_DEFAULT; end
@@ -4301,7 +4301,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
-            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 2, c3 = self.c3_absolute_inversion_DEFAULT; end
             
@@ -4323,7 +4323,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia2;
@@ -4338,7 +4338,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia2;
@@ -4388,7 +4388,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R2;
@@ -4445,11 +4445,11 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 9, neuron_manager = self.neuron_manager; end
-            if nargin < 8, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_reduced_absolute_inversion_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_inversion_DEFAULT; end
             
@@ -4474,12 +4474,12 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 9, neuron_manager = self.neuron_manager; end
-            if nargin < 8, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, delta = self.delta_reduced_relative_inversion_DEFAULT; end
             
             % Preallocate a cell to store the parameters.
@@ -4503,7 +4503,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_inversion_DEFAULT; end
             
@@ -4524,7 +4524,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, delta = self.delta_absolute_inversion_DEFAULT; end
             
             % Preallocate the gain parameters.
@@ -4544,7 +4544,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia2;
@@ -4559,7 +4559,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia2;
@@ -4609,7 +4609,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R2;
@@ -4667,13 +4667,13 @@ classdef network_class
             if nargin < 14, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 13, neuron_manager = self.neuron_manager; end
             if nargin < 12, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 9, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta = self.delta_absolute_division_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
@@ -4704,14 +4704,14 @@ classdef network_class
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
             if nargin < 4, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, delta = self.delta_relative_division_DEFAULT; end
             if nargin < 2, c3 = self.c3_relative_division_DEFAULT; end
             
@@ -4740,8 +4740,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neuron_manager = self.neuron_manager; end
-            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta = self.delta_absolute_division_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
@@ -4765,7 +4765,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
-            if nargin < 4, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_relative_division_DEFAULT; end
             if nargin < 2, c3 = self.c3_relative_division_DEFAULT; end
             
@@ -4787,8 +4787,8 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -4804,7 +4804,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia3;
@@ -4858,13 +4858,13 @@ classdef network_class
             if nargin < 13, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 12, neuron_manager = self.neuron_manager; end
             if nargin < 11, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 8, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_reduced_absolute_division_DEFAULT; end
             
@@ -4893,14 +4893,14 @@ classdef network_class
             if nargin < 13, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 12, neuron_manager = self.neuron_manager; end
             if nargin < 11, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 8, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, delta = self.delta_reduced_relative_division_DEFAULT; end
             
             % Preallocate a cell to store the parameters.
@@ -4927,8 +4927,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta = self.delta_absolute_division_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_division_DEFAULT; end
 
@@ -4950,7 +4950,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 2, delta = self.delta_relative_division_DEFAULT; end
             
             % Preallocate the gain parameters.
@@ -5024,8 +5024,8 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -5041,7 +5041,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia3;
@@ -5093,14 +5093,14 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 15, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 14, neuron_manager = self.neuron_manager; end
-            if nargin < 13, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 12, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 13, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 4, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_dai_DEFAULT; end
@@ -5132,15 +5132,15 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 15, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 14, neuron_manager = self.neuron_manager; end
-            if nargin < 13, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 12, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 13, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta2 = self.delta_relative_dai_DEFAULT; end
             if nargin < 3, delta1 = self.delta_relative_inversion_DEFAULT; end
             if nargin < 2, c3 = self.c3_relative_dai_DEFAULT; end
@@ -5171,8 +5171,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neuron_manager = self.neuron_manager; end
-            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 3, c3 = self.c3_absolute_dai_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_dai_DEFAULT; end
@@ -5196,8 +5196,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 8, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 7, neuron_manager = self.neuron_manager; end
-            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta2 = self.delta_relative_dai_DEFAULT; end
             if nargin < 3, delta1 = self.delta_relative_inversion_DEFAULT; end
             if nargin < 2, c3 = self.c3_relative_dai_DEFAULT; end
@@ -5328,14 +5328,14 @@ classdef network_class
             % Set the default input arguments. 
             if nargin < 14, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 13, neuron_manager = self.neuron_manager; end
-            if nargin < 12, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 4, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 3, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_dai_DEFAULT; end
@@ -5365,15 +5365,15 @@ classdef network_class
            % Set the default input arguments.
             if nargin < 14, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 13, neuron_manager = self.neuron_manager; end
-            if nargin < 12, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 2, delta1 = self.delta_absolute_inversion_DEFAULT; end
             
@@ -5402,8 +5402,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 2, c1 = self.c1_absolute_dai_DEFAULT; end
 
@@ -5425,8 +5425,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
-            if nargin < 5, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta2 = self.delta_relative_dai_DEFAULT; end
             if nargin < 2, delta1 = self.delta_relative_inversion_DEFAULT; end
             
@@ -5502,7 +5502,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Set the design parameters.
             design_parameters{ 1 } = R3;
@@ -5560,14 +5560,14 @@ classdef network_class
             if nargin < 18, neuron_manager = self.neuron_manager; end
             if nargin < 17, Cm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 16, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 15, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 14, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 15, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 14, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 13, Gm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 12, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 7, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 6, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 5, c6 = self.c3_absolute_dai_DEFAULT; end
@@ -5605,18 +5605,18 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 19, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 18, neuron_manager = self.neuron_manager; end
-            if nargin < 17, Cm4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 16, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 15, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 14, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 13, Gm4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 12, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 11, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 10, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 17, Cm4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 16, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 15, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 14, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 13, Gm4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 11, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 4, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c6 = self.c3_absolute_dai_DEFAULT; end
@@ -5652,9 +5652,9 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 12, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 11, neuron_manager = self.neuron_manager; end
-            if nargin < 10, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 10, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 7, delta2 = self.delta_absolute_division_DEFAULT; end
             if nargin < 6, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 5, c6 = self.c3_absolute_division_DEFAULT; end
@@ -5685,8 +5685,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 9, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 8, neuron_manager = self.neuron_manager; end
-            if nargin < 7, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, delta2 = self.delta_relative_division_DEFAULT; end
             if nargin < 4, delta1 = self.delta_relative_inversion_DEFAULT; end
             if nargin < 3, c6 = self.c3_relative_division_DEFAULT; end
@@ -5767,8 +5767,8 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -5784,7 +5784,7 @@ classdef network_class
             if nargin < 6, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 5, applied_current_manager = self.applied_current_manager; end
             if nargin < 4, neuron_manager = self.neuron_manager; end
-            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 3, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             if nargin < 2, c4 = self.c1_relative_dai_DEFAULT; end
             
             % Pack the design parameters.
@@ -5837,7 +5837,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -5895,14 +5895,14 @@ classdef network_class
             if nargin < 16, neuron_manager = self.neuron_manager; end
             if nargin < 15, Cm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 14, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 13, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 12, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 13, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 11, Gm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 4, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c3 = self.c1_reduced_absolute_dai_DEFAULT; end
@@ -5938,16 +5938,16 @@ classdef network_class
             if nargin < 16, neuron_manager = self.neuron_manager; end
             if nargin < 15, Cm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 14, Cm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 13, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 12, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 13, Cm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 12, Cm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 11, Gm4 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 10, Gm3 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neuron.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 9, Gm2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, Gm1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta2 = self.delta_absolute_dai_DEFAULT; end
             if nargin < 2, delta1 = self.delta_absolute_inversion_DEFAULT; end
             
@@ -5979,9 +5979,9 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 9, neuron_manager = self.neuron_manager; end
-            if nargin < 8, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 8, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 7, R2 = neuron_manager.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 6, R1 = neuron_manager.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 5, delta2 = self.delta_absolute_division_DEFAULT; end
             if nargin < 4, delta1 = self.delta_absolute_inversion_DEFAULT; end
             if nargin < 3, c3 = self.c3_reduced_absolute_inversion_DEFAULT; end
@@ -6008,8 +6008,8 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, neuron_manager = self.neuron_manager; end
-            if nargin < 5, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 4, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 5, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             if nargin < 3, delta2 = self.delta_relative_division_DEFAULT; end
             if nargin < 2, delta1 = self.delta_relative_inversion_DEFAULT; end
             
@@ -6089,9 +6089,9 @@ classdef network_class
             if nargin < 7, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 6, applied_current_manager = self.applied_current_manager; end
             if nargin < 5, neuron_manager = self.neuron_manager; end
-            if nargin < 4, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
-            if nargin < 3, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 4, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 3, R4 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -6108,7 +6108,7 @@ classdef network_class
             if nargin < 5, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 4, applied_current_manager = self.applied_current_manager; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
+            if nargin < 2, Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = Ia3;
@@ -6159,7 +6159,7 @@ classdef network_class
             % Set the default input arguments.
             if nargin < 4, undetected_option = self.undetected_option_DEFAULT; end
             if nargin < 3, neuron_manager = self.neuron_manager; end
-            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
+            if nargin < 2, R3 = neuron_manager.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option ); end
             
             % Pack the design parameters.
             design_parameters{ 1 } = R3;
@@ -6224,11 +6224,11 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 c = self.c_absolute_transmission_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( transmission_parameters ) == 6           % If there are a specific number of parameters...
                 
@@ -6262,12 +6262,12 @@ classdef network_class
             if isempty( transmission_parameters )                 	% If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( transmission_parameters ) == 6           % If there are a specific number of parameters...
                 
@@ -6337,8 +6337,8 @@ classdef network_class
             if isempty( design_parameters )                   % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2           % If there are a specific number of parameters...
                 
@@ -6369,7 +6369,7 @@ classdef network_class
             if isempty( design_parameters )                   % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1           % If there are a specific number of parameters...
                 
@@ -6401,7 +6401,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 cs = self.c_absolute_addition_DEFAULT*ones( 1, neuron_manager.num_neurons - 1 );
-                Rs_input = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option );
+                Rs_input = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option );
                 Gms = neuron_manager.neurons.get_neuron_property( 'all', 'Gm', true, neuron_manager.neurons, undetected_option );
                 Cms = neuron_manager.neurons.get_neuron_property( 'all', 'Cm', true, neuron_manager.neurons, undetected_option );
                 
@@ -6525,7 +6525,7 @@ classdef network_class
             if isempty( design_parameters )                   % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1       	% If there are a specific number of parameters...
                 
@@ -6556,7 +6556,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 c_n = self.c_relative_addition_DEFAULT; 
-                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2       	% If there are a specific number of parameters...
                 
@@ -6590,7 +6590,7 @@ classdef network_class
                 % Set the parameters to default values.
                 cs = self.c_absolute_subtraction_DEFAULT*ones( 1, neuron_manager.num_neurons - 1 );
                 ss = self.signature_DEFAULT;
-                Rs_input = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option );
+                Rs_input = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 1:( end - 1 ) ), 'R', true, neuron_manager.neurons, undetected_option );
                 Gms = neuron_manager.neurons.get_neuron_property( 'all', 'Gm', true, neuron_manager.neurons, undetected_option );
                 Cms = neuron_manager.neurons.get_neuron_property( 'all', 'Cm', true, neuron_manager.neurons, undetected_option );
                 
@@ -6717,7 +6717,7 @@ classdef network_class
             if isempty( design_parameters )                   % If the parameters are empty...
                 
                 % Set the parameters to default values.
-                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1       	% If there are a specific number of parameters...
                 
@@ -6748,7 +6748,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 c_n = self.c_relative_subtraction_DEFAULT; 
-                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia_n = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( end ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2       	% If there are a specific number of parameters...
                 
@@ -6783,11 +6783,11 @@ classdef network_class
                 c1 = self.c1_absolute_inversion_DEFAULT;
                 c3 = self.c3_absolute_inversion_DEFAULT;
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( inversion_parameters ) == 8              % If there are a specific number of parameters...
                 
@@ -6825,12 +6825,12 @@ classdef network_class
                 % Set the parameters to default values.
                 c3 = self.c3_relative_inversion_DEFAULT;
                 delta = self.delta_relative_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( inversion_parameters ) == 8              % If there are a specific number of parameters...
                 
@@ -6867,7 +6867,7 @@ classdef network_class
                 c1 = self.c1_absolute_inversion_DEFAULT;
                 c3 = self.c3_absolute_inversion_DEFAULT;
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 4           % If there are a specific number of parameters...
                 
@@ -6899,7 +6899,7 @@ classdef network_class
                 % Set the parameters to default values.
                 c3 = self.c3_absolute_inversion_DEFAULT;
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 3           % If there are a specific number of parameters...
                 
@@ -6931,7 +6931,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -6961,7 +6961,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -6990,7 +6990,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -7031,11 +7031,11 @@ classdef network_class
                 % Set the parameters to default values.
                 c1 = self.c1_reduced_absolute_inversion_DEFAULT;
                 delta = self.delta_reduced_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( reduced_inversion_parameters ) == 7           % If there are a specific number of parameters...
                 
@@ -7071,12 +7071,12 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 delta = self.delta_relative_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( reduced_inversion_parameters ) == 7         	% If there are a specific number of parameters...
                 
@@ -7111,7 +7111,7 @@ classdef network_class
                 % Set the parameters to default values.
                 c1 = self.c1_absolute_inversion_DEFAULT;
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 3           % If there are a specific number of parameters...
                 
@@ -7141,7 +7141,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 delta = self.delta_reduced_absolute_inversion_DEFAULT;
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 2           % If there are a specific number of parameters...
                 
@@ -7207,7 +7207,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -7237,7 +7237,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 2 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia2 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons( 2 ).ID, applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -7266,7 +7266,7 @@ classdef network_class
             if isempty( design_parameters )                      % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( design_parameters ) == 1              % If there are a specific number of parameters...
                 
@@ -7308,14 +7308,14 @@ classdef network_class
                 c1 = self.c1_absolute_division_DEFAULT;
                 c3 = self.c3_absolute_division_DEFAULT;
                 delta = self.delta_absolute_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( division_parameters ) == 11        	% If there are a specific number of parameters...
                 
@@ -7356,15 +7356,15 @@ classdef network_class
                 % Set the parameters to default values.
                 c3 = self.c3_relative_division_DEFAULT;
                 delta = self.delta_relative_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( division_parameters ) == 11        	% If there are a specific number of parameters...
                 
@@ -7404,8 +7404,8 @@ classdef network_class
                 c1 = self.c1_absolute_division_DEFAULT;
                 c3 = self.c3_absolute_division_DEFAULT;
                 delta = self.delta_absolute_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 5       	% If there are a specific number of parameters...
                 
@@ -7438,7 +7438,7 @@ classdef network_class
                 % Set the parameters to default values.
                 c3 = self.c3_absolute_division_DEFAULT;
                 delta = self.delta_absolute_division_DEFAULT;
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 3       	% If there are a specific number of parameters...
                 
@@ -7470,8 +7470,8 @@ classdef network_class
             if isempty( design_parameters )                	% If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2        	% If there are a specific number of parameters...
                 
@@ -7502,7 +7502,7 @@ classdef network_class
             if isempty( design_parameters )                	% If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1        	% If there are a specific number of parameters...
                 
@@ -7535,14 +7535,14 @@ classdef network_class
                 % Set the parameters to default values.
                 c1 = self.c1_reduced_absolute_division_DEFAULT;
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( division_parameters ) == 10              % If there are a specific number of parameters...
                 
@@ -7581,15 +7581,15 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 delta = self.delta_absolute_inversion_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( division_parameters ) == 10           % If there are a specific number of parameters...
                 
@@ -7627,8 +7627,8 @@ classdef network_class
                 % Set the parameters to default values.
                 c1 = self.c1_reduced_absolute_division_DEFAULT;
                 delta = self.delta_reduced_absolute_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 4       	% If there are a specific number of parameters...
                 
@@ -7659,7 +7659,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 delta = self.delta_reduced_relative_division_DEFAULT;
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 2       	% If there are a specific number of parameters...
                 
@@ -7725,8 +7725,8 @@ classdef network_class
             if isempty( design_parameters )                	% If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2        	% If there are a specific number of parameters...
                 
@@ -7757,7 +7757,7 @@ classdef network_class
             if isempty( design_parameters )                	% If the parameters are empty...
                  
                 % Set the parameters to default values.
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1        	% If there are a specific number of parameters...
                 
@@ -7792,14 +7792,14 @@ classdef network_class
                 c3 = self.c3_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_absolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( dai_parameters ) == 12            % If there are a specific number of parameters...
                 
@@ -7842,15 +7842,15 @@ classdef network_class
                 c3 = self.c3_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_absolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( dai_parameters ) == 12            % If there are a specific number of parameters...
                 
@@ -7891,8 +7891,8 @@ classdef network_class
                 c1 = self.c1_absolute_dai_DEFAULT;
                 c3 = self.c3_reduced_absolute_dai_DEFAULT;
                 delta2 = self.delta_absolute_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 5       	% If there are a specific number of parameters...
                 
@@ -7926,8 +7926,8 @@ classdef network_class
                 c3 = self.c3_reduced_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_absolute_division_DEFAULT;
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 5       	% If there are a specific number of parameters...
                 
@@ -8035,14 +8035,14 @@ classdef network_class
                 c1 = self.c1_reduced_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_absolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
 
             elseif length( dai_parameters ) == 11         	% If there are a specific number of parameters...
                 
@@ -8083,15 +8083,15 @@ classdef network_class
                 % Set the parameters to default values.
                 delta1 = self.delta_reduced_relative_inversion_DEFAULT;
                 delta2 = self.delta_reduced_relative_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( dai_parameters ) == 11        	% If there are a specific number of parameters...
                 
@@ -8130,8 +8130,8 @@ classdef network_class
                 % Set the parameters to default values.
                 c1 = self.c1_reduced_absolute_dai_DEFAULT;
                 delta2 = self.delta_reduced_absolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 4       	% If there are a specific number of parameters...
                 
@@ -8163,8 +8163,8 @@ classdef network_class
                 % Set the parameters to default values.
                 delta1 = self.delta_reduced_absolute_inversion_DEFAULT;
                 delta2 = self.delta_reduced_absolute_dai_DEFAULT;
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 4       	% If there are a specific number of parameters...
                 
@@ -8231,7 +8231,7 @@ classdef network_class
             if isempty( design_parameters )                    % If the parameters are empty...
                  
                 % Set the parameters to default values. 
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
 
             elseif length( design_parameters ) == 1         	% If there are a specific number of parameters...
                 
@@ -8276,16 +8276,16 @@ classdef network_class
                 c6 = self.c3_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_absolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( multiplication_parameters ) == 16            % If there are a specific number of parameters...
                 
@@ -8333,18 +8333,18 @@ classdef network_class
                 c6 = self.c3_relative_dai_DEFAULT;
                 delta1 = self.delta_relative_inversion_DEFAULT;
                 delta2 = self.delta_relative_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( multiplication_parameters ) == 16             % If there are a specific number of parameters...
                 
@@ -8392,9 +8392,9 @@ classdef network_class
                 c6 = self.c3_absolute_dai_DEFAULT;
                 delta1 = self.delta_absolute_inversion_DEFAULT;
                 delta2 = self.delta_abolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 9       	% If there are a specific number of parameters...
                 
@@ -8433,8 +8433,8 @@ classdef network_class
                 c6 = self.c3_relative_dai_DEFAULT;
                 delta1 = self.delta_relative_inversion_DEFAULT;
                 delta2 = self.delta_relative_dai_DEFAULT;
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
 
             elseif length( gain_parameters ) == 6       	% If there are a specific number of parameters...
                 
@@ -8504,8 +8504,8 @@ classdef network_class
             if isempty( design_parameters )                     % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2             % If there are a specific number of parameters...
                 
@@ -8537,7 +8537,7 @@ classdef network_class
                  
                 % Set the parameters to default values.
                 c4 = self.c1_relative_dai_DEFAULT;
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 2           	% If there are a specific number of parameters...
                 
@@ -8567,7 +8567,7 @@ classdef network_class
             if isempty( design_parameters )                     % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
                 
@@ -8610,16 +8610,16 @@ classdef network_class
                 c3 = self.c1_relative_dai_DEFAULT;
                 delta1 = self.delta_relative_inversion_DEFAULT;
                 delta2 = self.delta_relative_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( multiplication_parameters ) == 14            % If there are a specific number of parameters...
                 
@@ -8663,18 +8663,18 @@ classdef network_class
                 % Set the parameters to default values.
                 delta1 = self.delta_relative_inversion_DEFAULT;
                 delta2 = self.delta_relative_division_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
-                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
-                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Gm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Gm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Gm', true, neuron_manager.neurons, undetected_option );
+                Cm1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'Cm', true, neuron_manager.neurons, undetected_option );
+                Cm4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'Cm', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( multiplication_parameters ) == 14            % If there are a specific number of parameters...
                 
@@ -8718,9 +8718,9 @@ classdef network_class
                 c3 = self.c3_reduced_absolute_inversion_DEFAULT;
                 delta1 = self.delta_reduced_absolute_inversion_DEFAULT;
                 delta2 = self.delta_reduced_abolute_dai_DEFAULT;
-                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 1 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 2 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R1 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 1 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R2 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons( 2 ).ID, 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( gain_parameters ) == 7       	% If there are a specific number of parameters...
                 
@@ -8755,8 +8755,8 @@ classdef network_class
                 % Set the parameters to default values.
                 delta1 = self.delta_reduced_relative_inversion_DEFAULT;
                 delta2 = self.delta_reduced_relative_dai_DEFAULT;
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
 
             elseif length( gain_parameters ) == 4       	% If there are a specific number of parameters...
                 
@@ -8826,9 +8826,9 @@ classdef network_class
             if isempty( design_parameters )                     % If the parameters are empty...
 
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
-                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R4 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 4 ), 'R', true, neuron_manager.neurons, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 3             % If there are a specific number of parameters...
 
@@ -8860,7 +8860,7 @@ classdef network_class
             if isempty( design_parameters )                     % If the parameters are empty...
 
                 % Set the parameters to default values.
-                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.neuron_IDs( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
+                Ia3 = applied_current_manager.applied_currents.get_applied_current_property( applied_current_manager.applied_currents.to_neuron_ID2applied_current_ID( neuron_manager.neurons.ID( 3 ), applied_current_manager.applied_currents, undetected_option ), 'Ias', true, applied_current_manager.applied_currents, undetected_option );
                 
             elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
 
@@ -8889,7 +8889,7 @@ classdef network_class
             if isempty( design_parameters )                     % If the parameters are empty...
                  
                 % Set the parameters to default values.
-                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.neuron_IDs( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
+                R3 = neuron_manager.neurons.get_neuron_property( neuron_manager.neurons.ID( 3 ), 'R', true, neuron_manager.neurons, undetected_option );
                 
             elseif length( design_parameters ) == 1             % If there are a specific number of parameters...
                 
@@ -9374,8 +9374,11 @@ classdef network_class
                 
             elseif strcmpi( encoding_scheme, 'relative' )                   % If the encoding scheme is 'relative'...
                 
+                % Unpack transmission parameters.                
+                [ ~, ~, ~, R2, ~, ~, ~, ~ ] = self.unpack_relative_inversion_parameters( inversion_parameters, neuron_manager, undetected_option );
+
                 % Pack neuron parameters.
-                neuron_parameters = {  };
+                neuron_parameters = neuron_manager.pack_relative_inversion_parameters( R2 );
                 
             else                                                            % Otherwise...
                 
@@ -10701,7 +10704,7 @@ classdef network_class
         % ---------- Inversion Subnetwork Functions ----------
         
         % Implement a function to design an inversion subnetwork ( using the specified neurons, synapses, and applied currents ).
-        function [ cs, Gnas, R2, dEs21, gs21, Ias2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_inversion_subnetwork( self, neuron_IDs, inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, validation_flag, undetected_option )
+        function [ cs, Gnas, R2, dEs21, gs21, Ia2, neurons, synapses, applied_currents, neuron_manager, synapse_manager, applied_current_manager, self ] = design_inversion_subnetwork( self, neuron_IDs, inversion_parameters, encoding_scheme, neuron_manager, synapse_manager, applied_current_manager, set_flag, validation_flag, undetected_option )
             
             % Set the default input arguments.
             if nargin < 10, undetected_option = self.undetected_option_DEFAULT; end                                     % [str] Undetected Option.
@@ -10759,11 +10762,11 @@ classdef network_class
                 
             end 
                         
-            % Convert subnetwork parameters to applied current parameters.            
+            % Convert subnetwork parameters to applied current parameters.
             applied_current_parameters = network.inversion_parameters2applied_current_parameters( inversion_parameters, applied_current_design_parameters, encoding_scheme, neuron_manager, applied_current_manager, undetected_option );
             
-            % Design the inversion subnetwork applied current.            
-            [ Ias2, applied_currents, applied_current_manager, network ] = network.design_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
+            % Design the inversion subnetwork applied current.
+            [ Ia2, applied_currents, applied_current_manager, network ] = network.design_inversion_applied_current( neuron_IDs, applied_current_parameters, encoding_scheme, applied_current_manager, true, undetected_option );
             
             
             % -------------------- Synapse Design --------------------
@@ -10773,7 +10776,7 @@ classdef network_class
 
                 % Pack the design parameters.
                 synapse_design_parameters = self.pack_absolute_inversion_synapse_design_parameters( Ia2, neuron_manager, applied_current_manager, undetected_option );
-                
+                                
             elseif strcmpi( encoding_scheme, 'relative' )           % If the encoding scheme is 'relative'...
                 
                 % Pack the design parameters.                

@@ -260,7 +260,7 @@ classdef applied_current_class
                 
                 % Throw an error.
                 error( 'Unable to unpack parameters.' )
-                
+            
             end      
             
         end
@@ -276,14 +276,15 @@ classdef applied_current_class
             if isempty( parameters )                                    % If the parameters are empty...
                 
                 % Set the parameters to default values.
-                Gm2 = self.Gm_DEFAULT;                                	% [S] Membrane Conductance.
                 R2 = self.R_DEFAULT;                                    % [V] Activation Domain.
+                Gm2 = self.Gm_DEFAULT;                                	% [S] Membrane Conductance.
                 
-            elseif length( parameters ) == 1                          	% If there are a specific number of parameters...
+            elseif length( parameters ) == 2                          	% If there are a specific number of parameters...
                 
                 % Unpack the parameters.
-                Gm2 = parameters{ 1 };                                  % [S] Membrane Conductance.
-                R2 = parameters{ 2 };                                 	% [V] Activation Domain.
+                R2 = parameters{ 1 };                                 	% [V] Activation Domain.
+                Gm2 = parameters{ 2 };                                  % [S] Membrane Conductance.
+                
                 
             else                                                     	% Otherwise...
                 
